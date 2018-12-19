@@ -103,7 +103,7 @@ public class AugFileTab {
 		JPanel tab = new JPanel();
 		tab.setLayout(new GridBagLayout());
 
-		nameLabel = new JLabel("Name: " + augFile.getName());
+		nameLabel = new JLabel(augFile.getFilename());
 		nameLabel.setPreferredSize(new Dimension(0, nameLabel.getPreferredSize().height*2));
 		tab.add(nameLabel, new Arrangement(0, 0, 1.0, 0.0));
 
@@ -126,6 +126,14 @@ public class AugFileTab {
 				break;
 			default:
 				highlighter = new PlainText(fileContentMemo);
+		}
+		switch (gui.currentScheme) {
+			case GUI.LIGHT_SCHEME:
+				highlighter.setLightScheme();
+				break;
+			case GUI.DARK_SCHEME:
+				highlighter.setDarkScheme();
+				break;
 		}
 		fileContentMemo.setText(augFile.getContent());
 		highlighter.setOnChange(onChangeCallback);
@@ -203,6 +211,10 @@ public class AugFileTab {
 
 		// scroll to the top
 		fileContentMemo.setCaretPosition(0);
+	}
+	
+	public AugFile getFile() {
+		return augFile;
 	}
 	
 	public void save() {

@@ -70,9 +70,21 @@ public class GUI extends MainWindow {
 	private final static String CHANGE_INDICATOR = " *";
 	
 	private final static String CONFIG_KEY_LAST_DIRECTORY = "lastDirectory";
+	private final static String CONFIG_KEY_CODE_KIND = "currentCodeKind";
+	private final static String CONFIG_KEY_SCHEME = "scheme";
+	final static String LIGHT_SCHEME = "light";
+	final static String DARK_SCHEME = "dark";
 
 	private JMenuItem saveFile;
 	private JMenuItem saveAllFiles;
+	private JMenuItem deleteFile;
+	private JMenuItem closeFile;
+	private JMenuItem closeAllFiles;
+	private JMenuItem saveFilePopup;
+	private JMenuItem deleteFilePopup;
+	private JMenuItem closeFilePopup;
+	private JCheckBoxMenuItem setLightSchemeItem;
+	private JCheckBoxMenuItem setDarkSchemeItem;
 	private JMenuItem close;
 	private List<JCheckBoxMenuItem> codeKindItems;
 
@@ -84,6 +96,7 @@ public class GUI extends MainWindow {
 	private String[] strAugFiles;
 	
 	private CodeKind currentCodeKind = null;
+	String currentScheme;
 
 
 	public GUI(ConfigFile config) {
@@ -96,8 +109,14 @@ public class GUI extends MainWindow {
 		
 		augFileCtrl = new AugFileCtrl(configuration);
 		
-		String currentCodeKindStr = configuration.getValue("currentCodeKind");
+		String currentCodeKindStr = configuration.getValue(CONFIG_KEY_CODE_KIND);
 		currentCodeKind = CodeKind.getFromString(currentCodeKindStr);
+		
+		currentScheme = configuration.getValue(CONFIG_KEY_SCHEME);
+		
+		if (currentScheme == null) {
+			currentScheme = LIGHT_SCHEME;
+		}
 	}
 
 	@Override
@@ -120,6 +139,8 @@ public class GUI extends MainWindow {
 
 		reEnableDisableMenuItems();
 
+		reSelectSchemeItems();
+		
 		super.show();
 		
 		reloadAllAugFileTabs();
@@ -174,6 +195,37 @@ public class GUI extends MainWindow {
 			}
 		});
 		file.add(saveAllFiles);
+		
+		file.addSeparator();
+		
+		deleteFile = new JMenuItem("Delete Current File");
+		deleteFile.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				deleteFile();
+			}
+		});
+		file.add(deleteFile);
+		
+		file.addSeparator();
+		
+		closeFile = new JMenuItem("Close Current File");
+		closeFile.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				closeFile();
+			}
+		});
+		file.add(closeFile);
+		
+		closeAllFiles = new JMenuItem("Close All Files");
+		closeAllFiles.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				closeAllFiles();
+			}
+		});
+		file.add(closeAllFiles);
 		
 		/*
 		refreshAugFiles = new JMenuItem("Refresh All AugFiles From Shared Disk");
@@ -267,6 +319,25 @@ public class GUI extends MainWindow {
 			codeKindItems.add(ckItem);
 		}
 		
+		JMenu settings = new JMenu("Settings");
+		setLightSchemeItem = new JCheckBoxMenuItem("Light Scheme");
+		setLightSchemeItem.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				setScheme(LIGHT_SCHEME);
+			}
+		});
+		settings.add(setLightSchemeItem);
+		setDarkSchemeItem = new JCheckBoxMenuItem("Dark Scheme");
+		setDarkSchemeItem.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				setScheme(DARK_SCHEME);
+			}
+		});
+		settings.add(setDarkSchemeItem);
+		menu.add(settings);
+
 		JMenu huh = new JMenu("?");
 		JMenuItem about = new JMenuItem("About");
 		about.addActionListener(new ActionListener() {
@@ -290,6 +361,34 @@ public class GUI extends MainWindow {
 
 		fileListPopup = new JPopupMenu();
 
+		saveFilePopup = new JMenuItem("Save This File");
+		saveFilePopup.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, ActionEvent.CTRL_MASK));
+		saveFilePopup.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				saveFile();
+			}
+		});
+		fileListPopup.add(saveFilePopup);
+		
+		deleteFilePopup = new JMenuItem("Delete This File");
+		deleteFilePopup.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				deleteFile();
+			}
+		});
+		fileListPopup.add(deleteFilePopup);
+		
+		closeFilePopup = new JMenuItem("Close This File");
+		closeFilePopup.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				closeFile();
+			}
+		});
+		fileListPopup.add(closeFilePopup);
+		
 		/*
 		addPersonPopup = new JMenuItem("Add Person");
 		addPersonPopup.addActionListener(new ActionListener() {
@@ -472,7 +571,42 @@ public class GUI extends MainWindow {
 		}
 	}
 
-	public void setOrUnsetCurrentCodeKind(CodeKind ck) {
+	private void deleteFile() {
+
+		augFileCtrl.removeFile(currentlyShownTab.getFile());
+		
+		currentlyShownTab.delete();
+		
+		augFileTabs.remove(currentlyShownTab);
+
+		regenerateAugFileList();
+	}
+
+	private void closeFile() {
+
+		augFileCtrl.removeFile(currentlyShownTab.getFile());
+			
+		currentlyShownTab.remove();
+		
+		augFileTabs.remove(currentlyShownTab);
+
+		regenerateAugFileList();
+	}
+
+	private void closeAllFiles() {
+	
+		augFileCtrl.removeAllFiles();
+
+		for (AugFileTab tab : augFileTabs) {
+			tab.remove();
+		}
+		
+		augFileTabs = new ArrayList<>();
+		
+		regenerateAugFileList();
+	}
+
+	private void setOrUnsetCurrentCodeKind(CodeKind ck) {
 
 		String currentCodeKindStr = null;
 		
@@ -491,7 +625,35 @@ public class GUI extends MainWindow {
 			}
 		}
 		
-		configuration.set("currentCodeKind", currentCodeKindStr);
+		configuration.set(CONFIG_KEY_CODE_KIND, currentCodeKindStr);
+
+		reloadAllAugFileTabs();
+	}
+	
+	private void reSelectSchemeItems() {
+	
+		setLightSchemeItem.setSelected(false);
+		setDarkSchemeItem.setSelected(false);
+		
+		switch (currentScheme) {
+		
+			case LIGHT_SCHEME:
+				setLightSchemeItem.setSelected(true);
+				break;
+		
+			case DARK_SCHEME:
+				setDarkSchemeItem.setSelected(true);
+				break;
+		}
+	}
+	
+	private void setScheme(String scheme) {
+	
+		currentScheme = scheme;
+		
+		reSelectSchemeItems();
+
+		configuration.set(CONFIG_KEY_SCHEME, currentScheme);
 
 		reloadAllAugFileTabs();
 	}
@@ -1115,7 +1277,7 @@ public class GUI extends MainWindow {
 	public void regenerateAugFileList() {
 
 		List<AugFileTab> tabs = new ArrayList<>();
-		
+
 		for (AugFileTab curTab : augFileTabs) {
 			tabs.add(curTab);
 		}

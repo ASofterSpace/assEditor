@@ -89,6 +89,12 @@ public class AugFileCtrl {
 		return files;
 	}
 	
+	public void removeAllFiles() {
+		files = new ArrayList<>();
+		
+		updateConfigFileList();
+	}
+	
 	public void removeFile(AugFile fileToRemove) {
 		files.remove(fileToRemove);
 		
