@@ -4,6 +4,11 @@
  */
 package com.asofterspace.assEditor;
 
+import com.asofterspace.toolbox.codeeditor.Code;
+import com.asofterspace.toolbox.codeeditor.GroovyCode;
+import com.asofterspace.toolbox.codeeditor.JavaCode;
+import com.asofterspace.toolbox.codeeditor.MarkdownCode;
+import com.asofterspace.toolbox.codeeditor.PlainText;
 import com.asofterspace.toolbox.configuration.ConfigFile;
 import com.asofterspace.toolbox.io.Directory;
 import com.asofterspace.toolbox.io.File;
@@ -55,6 +60,8 @@ public class AugFileTab {
 	private AugFile augFile;
 	
 	private AugFileCtrl augFileCtrl;
+	
+	private CodeKind codeKind;
 
 	private GUI gui;
 
@@ -67,13 +74,15 @@ public class AugFileTab {
 	private JTextPane fileContentMemo;
 
 
-	public AugFileTab(JPanel parentPanel, AugFile augFile, final GUI gui, AugFileCtrl augFileCtrl) {
+	public AugFileTab(JPanel parentPanel, AugFile augFile, final GUI gui, AugFileCtrl augFileCtrl, CodeKind codeKind) {
 
 		this.parent = parentPanel;
 
 		this.augFile = augFile;
 
 		this.augFileCtrl = augFileCtrl;
+		
+		this.codeKind = codeKind;
 		
 		this.gui = gui;
 		
@@ -103,7 +112,21 @@ public class AugFileTab {
 				return getUI().getPreferredSize(this).width <= getParent().getSize().width;
 			}
 		};
-		DetailsHighlighter highlighter = new DetailsHighlighter(fileContentMemo);
+		
+		Code highlighter;
+		switch (codeKind) {
+			case JAVA:
+				highlighter = new JavaCode(fileContentMemo);
+				break;
+			case GROOVY:
+				highlighter = new GroovyCode(fileContentMemo);
+				break;
+			case MARKDOWN:
+				highlighter = new MarkdownCode(fileContentMemo);
+				break;
+			default:
+				highlighter = new PlainText(fileContentMemo);
+		}
 		fileContentMemo.setText(augFile.getContent());
 		highlighter.setOnChange(onChangeCallback);
 		JScrollPane sourceCodeScroller = new JScrollPane(fileContentMemo);

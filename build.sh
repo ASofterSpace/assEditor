@@ -12,6 +12,7 @@ rm -rf toolbox
 mkdir toolbox
 cd toolbox
 
+mkdir codeeditor
 mkdir configuration
 mkdir io
 mkdir gui
@@ -20,6 +21,7 @@ mkdir utils
 cd ../../../..
 
 cp ../Toolbox-Java/src/com/asofterspace/toolbox/*.java src/com/asofterspace/toolbox
+cp ../Toolbox-Java/src/com/asofterspace/toolbox/codeeditor/*.* src/com/asofterspace/toolbox/codeeditor
 cp ../Toolbox-Java/src/com/asofterspace/toolbox/configuration/*.* src/com/asofterspace/toolbox/configuration
 cp ../Toolbox-Java/src/com/asofterspace/toolbox/io/*.* src/com/asofterspace/toolbox/io
 cp ../Toolbox-Java/src/com/asofterspace/toolbox/gui/*.* src/com/asofterspace/toolbox/gui

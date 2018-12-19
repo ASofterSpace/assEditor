@@ -12,6 +12,7 @@ public enum CodeKind {
 	GROOVY("Groovy"),
 	JAVA("Java"),
 	JAVASCRIPT("JavaScript"),
+	MARKDOWN("Markdown"),
 	PHP("PHP");
 	
 	

@@ -450,7 +450,7 @@ public class GUI extends MainWindow {
 				// load the CDM files
 				configuration.set(CONFIG_KEY_LAST_DIRECTORY, augFilePicker.getCurrentDirectory().getAbsolutePath());
 				File fileToOpen = new File(augFilePicker.getSelectedFile());
-				augFileCtrl.loadAnotherFile(fileToOpen);			
+				augFileCtrl.loadAnotherFile(fileToOpen);
 				reloadAllAugFileTabs();
 				break;
 
@@ -492,6 +492,8 @@ public class GUI extends MainWindow {
 		}
 		
 		configuration.set("currentCodeKind", currentCodeKindStr);
+
+		reloadAllAugFileTabs();
 	}
 
 	private void showSelectedTab() {
@@ -888,7 +890,7 @@ public class GUI extends MainWindow {
 			tmpCi.delete();
 
 			// add an file tab for the new file as currentlyShownTab
-			currentlyShownTab = new AugFileTab(mainPanelRight, augFilesAfter.iterator().next(), this, augFileCtrl);
+			currentlyShownTab = new AugFileTab(mainPanelRight, augFilesAfter.iterator().next(), this, augFileCtrl, currentCodeKind);
 
 			currentlyShownTab.setChanged(true);
 
@@ -1251,7 +1253,7 @@ public class GUI extends MainWindow {
 
 		List<AugFile> files = augFileCtrl.getFiles();
 		for (AugFile file : files) {
-			augFileTabs.add(new AugFileTab(mainPanelRight, file, this, augFileCtrl));
+			augFileTabs.add(new AugFileTab(mainPanelRight, file, this, augFileCtrl, currentCodeKind));
 		}
 
 		regenerateAugFileList();
