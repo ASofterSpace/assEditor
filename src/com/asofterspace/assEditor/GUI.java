@@ -94,7 +94,7 @@ public class GUI extends MainWindow {
 
 		augFileTabs = new ArrayList<>();
 		
-		augFileCtrl = new AugFileCtrl();
+		augFileCtrl = new AugFileCtrl(configuration);
 		
 		String currentCodeKindStr = configuration.getValue("currentCodeKind");
 		currentCodeKind = CodeKind.getFromString(currentCodeKindStr);

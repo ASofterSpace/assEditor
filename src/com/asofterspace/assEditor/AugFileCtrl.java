@@ -4,8 +4,10 @@
  */
 package com.asofterspace.assEditor;
 
+import com.asofterspace.toolbox.configuration.ConfigFile;
 import com.asofterspace.toolbox.io.Directory;
 import com.asofterspace.toolbox.io.File;
+import com.asofterspace.toolbox.io.JSON;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -20,12 +22,27 @@ import java.util.Set;
  */
 public class AugFileCtrl {
 
+	private ConfigFile configuration;
+
 	private List<AugFile> files;
 	
 
-	public AugFileCtrl () {
+	public AugFileCtrl (ConfigFile configuration) {
 	
+		this.configuration = configuration;
+
 		files = new ArrayList<>();
+
+		JSON jsonConfig = configuration.getAllContents();
+		
+		List<JSON> jsonFiles = jsonConfig.getArray("files");
+		
+		if (jsonFiles != null) {
+			for (JSON jsonFile : jsonFiles) {
+				File fileToOpen = new File(jsonFile.asString());
+				loadAnotherFile(fileToOpen);
+			}
+		}
 	}
 	
 	/*
@@ -63,6 +80,8 @@ public class AugFileCtrl {
 		
 		files.add(result);
 		
+		updateConfigFileList();
+		
 		return result;
 	}
 	
@@ -72,6 +91,36 @@ public class AugFileCtrl {
 	
 	public void removeFile(AugFile fileToRemove) {
 		files.remove(fileToRemove);
+		
+		updateConfigFileList();
+	}
+	
+	public void updateConfigFileList() {
+	
+		// TODO :: ugly - fix me! (we are setting JSON via String, which works, but wäh... ^^)
+		JSON jsonConfig = configuration.getAllContents();
+		
+		StringBuilder fileListBuilder = new StringBuilder();
+		String sep = "";
+		
+		for (AugFile augFile : files) {
+			fileListBuilder.append("\"" + augFile.getFilename() + "\"");
+			fileListBuilder.append(sep);
+			sep = ", ";
+		}
+		
+		configuration.set("files", new JSON("[" + fileListBuilder.toString() + "]"));
+	/*
+		
+		List<JSON> jsonFiles = jsonConfig.getArray("files");
+		
+		if (jsonFiles != null) {
+			for (JSON jsonFile : jsonFiles) {
+				File fileToOpen = new File(jsonFile.asString());
+				loadAnotherFile(fileToOpen);
+			}
+		}
+		*/
 	}
 	
 	/**

@@ -28,6 +28,10 @@ public class AugFile {
 		return file.getLocalFilename();
 	}
 
+	public String getFilename() {
+		return file.getFilename();
+	}
+
 	public String getContent() {
 		return file.getContent();
 	}
