@@ -108,6 +108,8 @@ public class AugFileTab {
 		tab.add(nameLabel, new Arrangement(0, 0, 1.0, 0.0));
 
 		fileContentMemo = new JTextPane() {
+			private final static long serialVersionUID = 1L;
+			
 			public boolean getScrollableTracksViewportWidth() {
 				return getUI().getPreferredSize(this).width <= getParent().getSize().width;
 			}

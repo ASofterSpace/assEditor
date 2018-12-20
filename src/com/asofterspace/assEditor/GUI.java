@@ -660,7 +660,7 @@ public class GUI extends MainWindow {
 
 	private void showSelectedTab() {
 
-		String selectedItem = (String) fileListComponent.getSelectedValue();
+		String selectedItem = fileListComponent.getSelectedValue();
 
 		if (selectedItem == null) {
 			return;
