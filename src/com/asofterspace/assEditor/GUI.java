@@ -553,9 +553,14 @@ public class GUI extends MainWindow {
 				// load the CDM files
 				configuration.set(CONFIG_KEY_LAST_DIRECTORY, augFilePicker.getCurrentDirectory().getAbsolutePath());
 				File fileToOpen = new File(augFilePicker.getSelectedFile());
-				augFileCtrl.loadAnotherFile(fileToOpen);
-				// TODO NOW :: only load this tab, do not reload all other tabs!
-				reloadAllAugFileTabs();
+				AugFile newFile = augFileCtrl.loadAnotherFile(fileToOpen);
+
+				augFileTabs.add(new AugFileTab(mainPanelRight, newFile, this, augFileCtrl, currentCodeKind));
+
+				regenerateAugFileList();
+
+				reEnableDisableMenuItems();
+
 				break;
 
 			case JFileChooser.CANCEL_OPTION:
@@ -632,8 +637,9 @@ public class GUI extends MainWindow {
 		
 		configuration.set(CONFIG_KEY_CODE_KIND, currentCodeKindStr);
 
-		// TODO NOW :: just change the highlighter, but do NOT reload all tabs!
-		reloadAllAugFileTabs();
+		for (AugFileTab augFileTab : augFileTabs) {
+			augFileTab.setCodeKind(currentCodeKind);
+		}
 	}
 	
 	private void reSelectSchemeItems() {
@@ -782,7 +788,7 @@ public class GUI extends MainWindow {
 					augFileTab.invalidateInfo();
 				}
 
-				refreshTitleBar();
+				// refreshTitleBar();
 
 				JOptionPane.showMessageDialog(mainFrame, "The currently opened CDM files have been saved!", "CDM Saved", JOptionPane.INFORMATION_MESSAGE);
 
@@ -1288,28 +1294,19 @@ public class GUI extends MainWindow {
 	 */
 	private void reEnableDisableMenuItems() {
 
-		/*
-		boolean dirLoaded = augFileCtrl.hasDirectoryBeenLoaded();
-		
-		boolean companiesExist = augFileCtrl.getCompanies().size() > 0;
-
 		boolean augFilesExist = augFileTabs.size() > 0;
 
 		boolean fileIsSelected = currentlyShownTab != null;
 
-		// enabled and disable menu items according to the state of the application
-		refreshFiles.setEnabled(dirLoaded);
-		saveAugFiles.setEnabled(dirLoaded);
-		// saveAugFilesAs.setEnabled(dirLoaded);
-		addPerson.setEnabled(companiesExist);
-		addPersonPopup.setEnabled(companiesExist);
-		addCompany.setEnabled(dirLoaded);
-		addCompanyPopup.setEnabled(dirLoaded);
-		renameCurAugFile.setEnabled(AugFileIsSelected);
-		renameCurAugFilePopup.setEnabled(AugFileIsSelected);
-		deleteCurAugFile.setEnabled(AugFileIsSelected);
-		deleteCurAugFilePopup.setEnabled(AugFileIsSelected);
-		*/
+		refreshFiles.setEnabled(augFilesExist);
+		saveFile.setEnabled(fileIsSelected);
+		saveAllFiles.setEnabled(augFilesExist);
+		deleteFile.setEnabled(fileIsSelected);
+		closeFile.setEnabled(fileIsSelected);
+		closeAllFiles.setEnabled(augFilesExist);
+		saveFilePopup.setEnabled(fileIsSelected);
+		deleteFilePopup.setEnabled(fileIsSelected);
+		closeFilePopup.setEnabled(fileIsSelected);
 	}
 	
 	private void refreshTitleBar() {
@@ -1326,7 +1323,7 @@ public class GUI extends MainWindow {
 		}
 		*/
 		
-			mainFrame.setTitle(Main.PROGRAM_TITLE);
+		mainFrame.setTitle(Main.PROGRAM_TITLE);
 	}
 
 	private void clearAllaugFileTabs() {
@@ -1363,7 +1360,7 @@ public class GUI extends MainWindow {
 
 		reEnableDisableMenuItems();
 
-		refreshTitleBar();
+		// refreshTitleBar();
 	}
 
 	/**

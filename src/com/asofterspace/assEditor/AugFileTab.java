@@ -62,6 +62,8 @@ public class AugFileTab {
 	private AugFileCtrl augFileCtrl;
 	
 	private CodeKind codeKind;
+	
+	private Code highlighter;
 
 	private GUI gui;
 
@@ -115,30 +117,10 @@ public class AugFileTab {
 			}
 		};
 		
-		Code highlighter;
-		switch (codeKind) {
-			case JAVA:
-				highlighter = new JavaCode(fileContentMemo);
-				break;
-			case GROOVY:
-				highlighter = new GroovyCode(fileContentMemo);
-				break;
-			case MARKDOWN:
-				highlighter = new MarkdownCode(fileContentMemo);
-				break;
-			default:
-				highlighter = new PlainText(fileContentMemo);
-		}
-		switch (gui.currentScheme) {
-			case GUI.LIGHT_SCHEME:
-				highlighter.setLightScheme();
-				break;
-			case GUI.DARK_SCHEME:
-				highlighter.setDarkScheme();
-				break;
-		}
 		fileContentMemo.setText(augFile.getContent());
-		highlighter.setOnChange(onChangeCallback);
+		
+		setCodeKind(codeKind);
+		
 		JScrollPane sourceCodeScroller = new JScrollPane(fileContentMemo);
 		sourceCodeScroller.setPreferredSize(new Dimension(1, 1));
 		tab.add(sourceCodeScroller, new Arrangement(0, 3, 1.0, 0.8));
@@ -204,6 +186,39 @@ public class AugFileTab {
 	public void hide() {
 
 		visualPanel.setVisible(false);
+	}
+	
+	public void setCodeKind(CodeKind newCodeKind) {
+
+		this.codeKind = newCodeKind;
+		
+		if (highlighter != null) {
+			highlighter.discard();
+		}
+
+		switch (codeKind) {
+			case JAVA:
+				highlighter = new JavaCode(fileContentMemo);
+				break;
+			case GROOVY:
+				highlighter = new GroovyCode(fileContentMemo);
+				break;
+			case MARKDOWN:
+				highlighter = new MarkdownCode(fileContentMemo);
+				break;
+			default:
+				highlighter = new PlainText(fileContentMemo);
+		}
+		switch (gui.currentScheme) {
+			case GUI.LIGHT_SCHEME:
+				highlighter.setLightScheme();
+				break;
+			case GUI.DARK_SCHEME:
+				highlighter.setDarkScheme();
+				break;
+		}
+
+		highlighter.setOnChange(onChangeCallback);
 	}
 
 	public void setFileContent(String newContent) {

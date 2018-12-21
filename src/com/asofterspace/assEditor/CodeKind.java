@@ -7,13 +7,19 @@ package com.asofterspace.assEditor;
 
 public enum CodeKind {
 
+	ASSEMBLER("Assembler"),
+	C("C"),
+	CPP("C++"),
 	CSHARP("C#"),
+	DATEX("DaTeX"),
 	DELPHI("Delphi"),
 	GROOVY("Groovy"),
 	JAVA("Java"),
 	JAVASCRIPT("JavaScript"),
 	MARKDOWN("Markdown"),
-	PHP("PHP");
+	PLAINTEXT("Plain Text"),
+	PHP("PHP"),
+	Python("Python");
 	
 	
 	String kindStr;
