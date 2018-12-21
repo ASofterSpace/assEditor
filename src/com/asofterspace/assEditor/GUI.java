@@ -4,6 +4,7 @@
  */
 package com.asofterspace.assEditor;
 
+import com.asofterspace.toolbox.codeeditor.Code;
 import com.asofterspace.toolbox.configuration.ConfigFile;
 import com.asofterspace.toolbox.io.Directory;
 import com.asofterspace.toolbox.io.File;
@@ -75,6 +76,7 @@ public class GUI extends MainWindow {
 	final static String LIGHT_SCHEME = "light";
 	final static String DARK_SCHEME = "dark";
 
+	private JMenuItem refreshFiles;
 	private JMenuItem saveFile;
 	private JMenuItem saveAllFiles;
 	private JMenuItem deleteFile;
@@ -165,6 +167,21 @@ public class GUI extends MainWindow {
 		});
 		file.add(openFile);
 		
+		refreshFiles = new JMenuItem("Refresh All Files From Disk");
+		refreshFiles.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// ifAllowedToLeaveCurrentDirectory(new Callback() {
+					// public void call() {
+						reloadAllAugFileTabs();
+					// }
+				// });
+			}
+		});
+		file.add(refreshFiles);
+		
+		file.addSeparator();
+		
 		saveFile = new JMenuItem("Save Current File");
 		saveFile.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, ActionEvent.CTRL_MASK));
 		saveFile.addActionListener(new ActionListener() {
@@ -228,19 +245,6 @@ public class GUI extends MainWindow {
 		file.add(closeAllFiles);
 		
 		/*
-		refreshAugFiles = new JMenuItem("Refresh All AugFiles From Shared Disk");
-		refreshAugFiles.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				ifAllowedToLeaveCurrentDirectory(new Callback() {
-					public void call() {
-						reloadAllAugFileTabs();
-					}
-				});
-			}
-		});
-		file.add(refreshAugFiles);
-		file.addSeparator();
 		addPerson = new JMenuItem("Add Person");
 		addPerson.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_U, ActionEvent.CTRL_MASK));
 		addPerson.addActionListener(new ActionListener() {
@@ -550,6 +554,7 @@ public class GUI extends MainWindow {
 				configuration.set(CONFIG_KEY_LAST_DIRECTORY, augFilePicker.getCurrentDirectory().getAbsolutePath());
 				File fileToOpen = new File(augFilePicker.getSelectedFile());
 				augFileCtrl.loadAnotherFile(fileToOpen);
+				// TODO NOW :: only load this tab, do not reload all other tabs!
 				reloadAllAugFileTabs();
 				break;
 
@@ -627,6 +632,7 @@ public class GUI extends MainWindow {
 		
 		configuration.set(CONFIG_KEY_CODE_KIND, currentCodeKindStr);
 
+		// TODO NOW :: just change the highlighter, but do NOT reload all tabs!
 		reloadAllAugFileTabs();
 	}
 	
@@ -655,7 +661,14 @@ public class GUI extends MainWindow {
 
 		configuration.set(CONFIG_KEY_SCHEME, currentScheme);
 
-		reloadAllAugFileTabs();
+		switch (currentScheme) {
+			case LIGHT_SCHEME:
+				Code.setLightSchemeForAllEditors();
+				break;
+			case DARK_SCHEME:
+				Code.setDarkSchemeForAllEditors();
+				break;
+		}
 	}
 
 	private void showSelectedTab() {
@@ -698,79 +711,7 @@ public class GUI extends MainWindow {
 		*/
 	}
 
-	/*
-	private void openLoadAugFilesDialog() {
-
-		ifAllowedToLeaveCurrentDirectory(new Callback() {
-			public void call() {
-				// TODO :: de-localize the JFileChooser (by default it seems localized, which is inconsistent when the rest of the program is in English...)
-				// (while you're at it, make Öffnen into Save for the save dialog, but keep it as Open for the open dialog... ^^)
-				JFileChooser augFilePicker;
-
-				String lastDirectory = configuration.getValue(CONFIG_KEY_LAST_DIRECTORY);
-
-				if ((lastDirectory != null) && !"".equals(lastDirectory)) {
-					augFilePicker = new JFileChooser(new java.io.File(lastDirectory));
-				} else {
-					augFilePicker = new JFileChooser();
-				}
-
-				// TODO :: also allow opening a CDM zipfile
-
-				augFilePicker.setDialogTitle("Open a CDM working directory");
-				augFilePicker.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-
-				int result = augFilePicker.showOpenDialog(mainFrame);
-
-				switch (result) {
-
-					case JFileChooser.APPROVE_OPTION:
-
-						clearAllaugFileTabs();
-
-						// load the CDM files
-						configuration.set(CONFIG_KEY_LAST_DIRECTORY, augFilePicker.getCurrentDirectory().getAbsolutePath());
-						final Directory cdmDir = new Directory(augFilePicker.getSelectedFile());
-
-						new Thread(new Runnable() {
-							@Override
-							public void run() {
-								try {
-									// add a progress bar (which is especially helpful when the CDM contains no augFiles
-									// so the main view stays empty after loading a CDM!)
-									ProgressDialog progress = new ProgressDialog("Loading the CDM directory...");
-									augFileCtrl.loadCdmDirectory(cdmDir, progress);
-								} catch (AttemptingEmfException | CdmLoadingException e) {
-									JOptionPane.showMessageDialog(mainFrame, e.getMessage(), "CDM Loading Failed", JOptionPane.ERROR_MESSAGE);
-								}
-
-								SwingUtilities.invokeLater(new Runnable() {
-									public void run() {
-										reloadAllAugFileTabs();
-									}
-								});
-							}
-						}).start();
-
-						break;
-
-					case JFileChooser.CANCEL_OPTION:
-						// cancel was pressed... do nothing for now
-						break;
-				}
-			}
-		});
-	}
-	*/
-
 	private void saveAugFiles() {
-
-		/*
-		if (!augFileCtrl.hasDirectoryBeenLoaded()) {
-			JOptionPane.showMessageDialog(mainFrame, "The augFiles cannot be saved as no directory has been opened.", "Sorry", JOptionPane.ERROR_MESSAGE);
-			return;
-		}
-		*/
 
 		// TODO :: add validation step here, in which we validate that all augFiles are assigned to activities, and if they are not,
 		// then we ask the user explicitly whether we should really save the augFiles in the current state or not
@@ -1357,7 +1298,7 @@ public class GUI extends MainWindow {
 		boolean fileIsSelected = currentlyShownTab != null;
 
 		// enabled and disable menu items according to the state of the application
-		refreshAugFiles.setEnabled(dirLoaded);
+		refreshFiles.setEnabled(dirLoaded);
 		saveAugFiles.setEnabled(dirLoaded);
 		// saveAugFilesAs.setEnabled(dirLoaded);
 		addPerson.setEnabled(companiesExist);
