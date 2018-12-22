@@ -213,8 +213,10 @@ public class AugFileTab {
 		}
 
 		highlighter.setOnChange(onChangeCallback);
-		
+
 		highlighter.setCopyOnCtrlEnter(gui.copyOnEnter);
+
+		highlighter.setTabEntireBlocks(gui.tabEntireBlocks);
 	}
 
 	public void setFileContent(String newContent) {

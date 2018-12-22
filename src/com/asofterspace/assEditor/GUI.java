@@ -75,6 +75,7 @@ public class GUI extends MainWindow {
 	private final static String CONFIG_KEY_SCHEME = "scheme";
 	private final static String CONFIG_KEY_REMOVE_TRAILING_WHITESPACE = "removeTrailingWhitespace";
 	private final static String CONFIG_KEY_COPY_ON_ENTER = "copyOnEnter";
+	private final static String CONFIG_KEY_TAB_ENTIRE_BLOCKS = "tabEntireBlocks";
 	final static String LIGHT_SCHEME = "light";
 	final static String DARK_SCHEME = "dark";
 
@@ -91,6 +92,7 @@ public class GUI extends MainWindow {
 	private JCheckBoxMenuItem setDarkSchemeItem;
 	private JCheckBoxMenuItem removeTrailingWhitespaceOnSaveItem;
 	private JCheckBoxMenuItem copyOnEnterItem;
+	private JCheckBoxMenuItem tabEntireBlocksItem;
 	private JMenuItem close;
 	private List<JCheckBoxMenuItem> codeKindItems;
 
@@ -105,6 +107,7 @@ public class GUI extends MainWindow {
 	String currentScheme;
 	Boolean removeTrailingWhitespaceOnSave;
 	Boolean copyOnEnter;
+	Boolean tabEntireBlocks;
 
 
 	public GUI(ConfigFile config) {
@@ -136,6 +139,12 @@ public class GUI extends MainWindow {
 
 		if (copyOnEnter == null) {
 			copyOnEnter = true;
+		}
+
+		tabEntireBlocks = configuration.getBoolean(CONFIG_KEY_TAB_ENTIRE_BLOCKS);
+
+		if (tabEntireBlocks == null) {
+			tabEntireBlocks = true;
 		}
 	}
 
@@ -399,6 +408,16 @@ public class GUI extends MainWindow {
 		});
 		setCopyOnEnter(copyOnEnter);
 		settings.add(copyOnEnterItem);
+
+		tabEntireBlocksItem = new JCheckBoxMenuItem("[Tab] Entire Blocks");
+		tabEntireBlocksItem.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				setTabEntireBlocks(!tabEntireBlocks);
+			}
+		});
+		setTabEntireBlocks(tabEntireBlocks);
+		settings.add(tabEntireBlocksItem);
 
 		JMenu huh = new JMenu("?");
 		JMenuItem about = new JMenuItem("About");
@@ -692,6 +711,13 @@ public class GUI extends MainWindow {
 		regenerateAugFileList();
 	}
 
+	private void updateHighlightersOnAllTabs() {
+
+		for (AugFileTab augFileTab : augFileTabs) {
+			augFileTab.updateHighlighterConfig();
+		}
+	}
+
 	private void setOrUnsetCurrentCodeKind(CodeKind ck) {
 
 		String currentCodeKindStr = null;
@@ -713,9 +739,7 @@ public class GUI extends MainWindow {
 
 		configuration.set(CONFIG_KEY_CODE_KIND, currentCodeKindStr);
 
-		for (AugFileTab augFileTab : augFileTabs) {
-			augFileTab.updateHighlighterConfig();
-		}
+		updateHighlightersOnAllTabs();
 	}
 
 	private void reSelectSchemeItems() {
@@ -763,7 +787,7 @@ public class GUI extends MainWindow {
 
 		configuration.set(CONFIG_KEY_REMOVE_TRAILING_WHITESPACE, removeTrailingWhitespaceOnSave);
 
-		removeTrailingWhitespaceOnSaveItem.setSelected(setTo);
+		removeTrailingWhitespaceOnSaveItem.setSelected(removeTrailingWhitespaceOnSave);
 	}
 
 	private void setCopyOnEnter(Boolean setTo) {
@@ -776,11 +800,24 @@ public class GUI extends MainWindow {
 
 		configuration.set(CONFIG_KEY_COPY_ON_ENTER, copyOnEnter);
 
-		copyOnEnterItem.setSelected(setTo);
-		
-		for (AugFileTab augFileTab : augFileTabs) {
-			augFileTab.updateHighlighterConfig();
+		copyOnEnterItem.setSelected(copyOnEnter);
+
+		updateHighlightersOnAllTabs();
+	}
+
+	private void setTabEntireBlocks(Boolean setTo) {
+
+		if (setTo == null) {
+			setTo = true;
 		}
+
+		tabEntireBlocks = setTo;
+
+		configuration.set(CONFIG_KEY_TAB_ENTIRE_BLOCKS, tabEntireBlocks);
+
+		tabEntireBlocksItem.setSelected(tabEntireBlocks);
+
+		updateHighlightersOnAllTabs();
 	}
 
 	private void showSelectedTab() {

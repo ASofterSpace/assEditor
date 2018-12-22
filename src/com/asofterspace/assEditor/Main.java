@@ -41,7 +41,6 @@ public class Main {
 	 * ask to save before closing if files are unsaved
 	 * search with Ctrl + F
 	 * replace (like with edit.exe, replace also including newlines etc.!)
-	 * [TAB] after selecting several
 	 * select source kind based on extension when opening file
 	 */
 	public static void main(String[] args) {
