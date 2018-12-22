@@ -7,6 +7,7 @@ package com.asofterspace.assEditor;
 import com.asofterspace.toolbox.codeeditor.Code;
 import com.asofterspace.toolbox.codeeditor.GroovyCode;
 import com.asofterspace.toolbox.codeeditor.JavaCode;
+import com.asofterspace.toolbox.codeeditor.LineNumbering;
 import com.asofterspace.toolbox.codeeditor.MarkdownCode;
 import com.asofterspace.toolbox.codeeditor.PlainText;
 import com.asofterspace.toolbox.configuration.ConfigFile;
@@ -14,6 +15,7 @@ import com.asofterspace.toolbox.io.Directory;
 import com.asofterspace.toolbox.io.File;
 import com.asofterspace.toolbox.gui.Arrangement;
 import com.asofterspace.toolbox.gui.GuiUtils;
+import com.asofterspace.toolbox.Utils;
 import com.asofterspace.toolbox.utils.Callback;
 
 import java.awt.Color;
@@ -62,6 +64,9 @@ public class AugFileTab {
 	private AugFileCtrl augFileCtrl;
 
 	private Code highlighter;
+	private Code lineNumbers;
+
+	private int lastLineAmount = 0;
 
 	private GUI gui;
 
@@ -71,6 +76,7 @@ public class AugFileTab {
 
 	// graphical components
 	private JLabel nameLabel;
+	private JTextPane lineMemo;
 	private JTextPane fileContentMemo;
 
 
@@ -90,10 +96,27 @@ public class AugFileTab {
 					changed = true;
 					gui.regenerateAugFileList();
 				}
+
+				refreshLines();
 			}
 		};
 
 		visualPanel = createVisualPanel();
+	}
+
+	private void refreshLines() {
+
+		int lineAmount = Utils.countCharInString('\n', fileContentMemo.getText());
+
+		if (lineAmount != lastLineAmount) {
+			lastLineAmount = lineAmount;
+
+			StringBuilder lines = new StringBuilder();
+			for (int i = 1; i <= lineAmount + 1; i++) {
+				lines.append(i + "\n");
+			}
+			lineMemo.setText(lines.toString());
+		}
 	}
 
 	private JPanel createVisualPanel() {
@@ -105,19 +128,51 @@ public class AugFileTab {
 		nameLabel.setPreferredSize(new Dimension(0, nameLabel.getPreferredSize().height*2));
 		tab.add(nameLabel, new Arrangement(0, 0, 1.0, 0.0));
 
+		JPanel scrolledPanel = new JPanel();
+		scrolledPanel.setLayout(new GridBagLayout());
+
+		lineMemo = new JTextPane() {
+			private final static long serialVersionUID = 1L;
+
+			public boolean getScrollableTracksViewportWidth() {
+				// return getUI().getPreferredSize(this).width <= getParent().getSize().width;
+				return false;
+			}
+
+			public Dimension getPreferredSize() {
+				Dimension result = getUI().getPreferredSize(this);
+				result.width = result.width;
+				return result;
+			}
+		};
+
 		fileContentMemo = new JTextPane() {
 			private final static long serialVersionUID = 1L;
 
 			public boolean getScrollableTracksViewportWidth() {
-				return getUI().getPreferredSize(this).width <= getParent().getSize().width;
+				// return getUI().getPreferredSize(this).width <= getParent().getSize().width;
+				return false;
+			}
+
+			public Dimension getPreferredSize() {
+				Dimension result = getUI().getPreferredSize(this);
+				result.width = result.width + 25;
+				return result;
 			}
 		};
 
+		scrolledPanel.add(lineMemo, new Arrangement(0, 0, 0.0, 1.0));
+
+		lineNumbers = new LineNumbering(lineMemo, fileContentMemo);
+
 		fileContentMemo.setText(augFile.getContent());
+		scrolledPanel.add(fileContentMemo, new Arrangement(1, 0, 1.0, 1.0));
 
 		updateHighlighterConfig();
 
-		JScrollPane sourceCodeScroller = new JScrollPane(fileContentMemo);
+		refreshLines();
+
+		JScrollPane sourceCodeScroller = new JScrollPane(scrolledPanel);
 		sourceCodeScroller.setPreferredSize(new Dimension(1, 1));
 		tab.add(sourceCodeScroller, new Arrangement(0, 3, 1.0, 0.8));
 
@@ -128,7 +183,7 @@ public class AugFileTab {
 		// scroll to the top
 		fileContentMemo.setCaretPosition(0);
 
-	    return tab;
+		return tab;
 	}
 
 	public AugFile getAugFile() {
@@ -186,6 +241,7 @@ public class AugFileTab {
 
 	public void updateHighlighterConfig() {
 
+		// update code kind
 		if (highlighter != null) {
 			highlighter.discard();
 		}
@@ -203,19 +259,25 @@ public class AugFileTab {
 			default:
 				highlighter = new PlainText(fileContentMemo);
 		}
-		switch (gui.currentScheme) {
-			case GUI.LIGHT_SCHEME:
-				highlighter.setLightScheme();
-				break;
-			case GUI.DARK_SCHEME:
-				highlighter.setDarkScheme();
-				break;
-		}
 
 		highlighter.setOnChange(onChangeCallback);
 
+		// update color scheme
+		switch (gui.currentScheme) {
+			case GUI.LIGHT_SCHEME:
+				highlighter.setLightScheme();
+				lineNumbers.setLightScheme();
+				break;
+			case GUI.DARK_SCHEME:
+				highlighter.setDarkScheme();
+				lineNumbers.setDarkScheme();
+				break;
+		}
+
+		// update copy on enter behavior
 		highlighter.setCopyOnCtrlEnter(gui.copyOnEnter);
 
+		// update block tab behavior
 		highlighter.setTabEntireBlocks(gui.tabEntireBlocks);
 	}
 

@@ -34,7 +34,6 @@ public class Main {
 	 * select from here / to here
 	 * enable hex view
 	 * enable function overview
-	 * add line numbers
 	 * add compiler call, and report results
 	 * only allow opening the same file once, not several times
 	 * allow opening several files at once
