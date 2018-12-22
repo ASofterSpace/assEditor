@@ -74,6 +74,7 @@ public class GUI extends MainWindow {
 	private final static String CONFIG_KEY_CODE_KIND = "currentCodeKind";
 	private final static String CONFIG_KEY_SCHEME = "scheme";
 	private final static String CONFIG_KEY_REMOVE_TRAILING_WHITESPACE = "removeTrailingWhitespace";
+	private final static String CONFIG_KEY_COPY_ON_ENTER = "copyOnEnter";
 	final static String LIGHT_SCHEME = "light";
 	final static String DARK_SCHEME = "dark";
 
@@ -89,6 +90,7 @@ public class GUI extends MainWindow {
 	private JCheckBoxMenuItem setLightSchemeItem;
 	private JCheckBoxMenuItem setDarkSchemeItem;
 	private JCheckBoxMenuItem removeTrailingWhitespaceOnSaveItem;
+	private JCheckBoxMenuItem copyOnEnterItem;
 	private JMenuItem close;
 	private List<JCheckBoxMenuItem> codeKindItems;
 
@@ -99,9 +101,10 @@ public class GUI extends MainWindow {
 	private JPopupMenu fileListPopup;
 	private String[] strAugFiles;
 
-	private CodeKind currentCodeKind = null;
+	CodeKind currentCodeKind;
 	String currentScheme;
 	Boolean removeTrailingWhitespaceOnSave;
+	Boolean copyOnEnter;
 
 
 	public GUI(ConfigFile config) {
@@ -123,11 +126,16 @@ public class GUI extends MainWindow {
 			currentScheme = LIGHT_SCHEME;
 		}
 
-
 		removeTrailingWhitespaceOnSave = configuration.getBoolean(CONFIG_KEY_REMOVE_TRAILING_WHITESPACE);
 
 		if (removeTrailingWhitespaceOnSave == null) {
 			removeTrailingWhitespaceOnSave = true;
+		}
+
+		copyOnEnter = configuration.getBoolean(CONFIG_KEY_COPY_ON_ENTER);
+
+		if (copyOnEnter == null) {
+			copyOnEnter = true;
 		}
 	}
 
@@ -382,6 +390,16 @@ public class GUI extends MainWindow {
 		setRemoveTrailingWhitespaceOnSave(removeTrailingWhitespaceOnSave);
 		settings.add(removeTrailingWhitespaceOnSaveItem);
 
+		copyOnEnterItem = new JCheckBoxMenuItem("Copy Line on [Ctrl / Shift] + [Enter]");
+		copyOnEnterItem.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				setCopyOnEnter(!copyOnEnter);
+			}
+		});
+		setCopyOnEnter(copyOnEnter);
+		settings.add(copyOnEnterItem);
+
 		JMenu huh = new JMenu("?");
 		JMenuItem about = new JMenuItem("About");
 		about.addActionListener(new ActionListener() {
@@ -595,7 +613,7 @@ public class GUI extends MainWindow {
 				File fileToOpen = new File(augFilePicker.getSelectedFile());
 				AugFile newFile = augFileCtrl.loadAnotherFile(fileToOpen);
 
-				augFileTabs.add(new AugFileTab(mainPanelRight, newFile, this, augFileCtrl, currentCodeKind));
+				augFileTabs.add(new AugFileTab(mainPanelRight, newFile, this, augFileCtrl));
 
 				regenerateAugFileList();
 
@@ -696,7 +714,7 @@ public class GUI extends MainWindow {
 		configuration.set(CONFIG_KEY_CODE_KIND, currentCodeKindStr);
 
 		for (AugFileTab augFileTab : augFileTabs) {
-			augFileTab.setCodeKind(currentCodeKind);
+			augFileTab.updateHighlighterConfig();
 		}
 	}
 
@@ -746,6 +764,23 @@ public class GUI extends MainWindow {
 		configuration.set(CONFIG_KEY_REMOVE_TRAILING_WHITESPACE, removeTrailingWhitespaceOnSave);
 
 		removeTrailingWhitespaceOnSaveItem.setSelected(setTo);
+	}
+
+	private void setCopyOnEnter(Boolean setTo) {
+
+		if (setTo == null) {
+			setTo = true;
+		}
+
+		copyOnEnter = setTo;
+
+		configuration.set(CONFIG_KEY_COPY_ON_ENTER, copyOnEnter);
+
+		copyOnEnterItem.setSelected(setTo);
+		
+		for (AugFileTab augFileTab : augFileTabs) {
+			augFileTab.updateHighlighterConfig();
+		}
 	}
 
 	private void showSelectedTab() {
@@ -1050,7 +1085,7 @@ public class GUI extends MainWindow {
 			tmpCi.delete();
 
 			// add an file tab for the new file as currentlyShownTab
-			currentlyShownTab = new AugFileTab(mainPanelRight, augFilesAfter.iterator().next(), this, augFileCtrl, currentCodeKind);
+			currentlyShownTab = new AugFileTab(mainPanelRight, augFilesAfter.iterator().next(), this, augFileCtrl);
 
 			currentlyShownTab.setChanged(true);
 
@@ -1404,7 +1439,7 @@ public class GUI extends MainWindow {
 
 		List<AugFile> files = augFileCtrl.getFiles();
 		for (AugFile file : files) {
-			augFileTabs.add(new AugFileTab(mainPanelRight, file, this, augFileCtrl, currentCodeKind));
+			augFileTabs.add(new AugFileTab(mainPanelRight, file, this, augFileCtrl));
 		}
 
 		regenerateAugFileList();

@@ -61,8 +61,6 @@ public class AugFileTab {
 
 	private AugFileCtrl augFileCtrl;
 
-	private CodeKind codeKind;
-
 	private Code highlighter;
 
 	private GUI gui;
@@ -76,15 +74,13 @@ public class AugFileTab {
 	private JTextPane fileContentMemo;
 
 
-	public AugFileTab(JPanel parentPanel, AugFile augFile, final GUI gui, AugFileCtrl augFileCtrl, CodeKind codeKind) {
+	public AugFileTab(JPanel parentPanel, AugFile augFile, final GUI gui, AugFileCtrl augFileCtrl) {
 
 		this.parent = parentPanel;
 
 		this.augFile = augFile;
 
 		this.augFileCtrl = augFileCtrl;
-
-		this.codeKind = codeKind;
 
 		this.gui = gui;
 
@@ -119,7 +115,7 @@ public class AugFileTab {
 
 		fileContentMemo.setText(augFile.getContent());
 
-		setCodeKind(codeKind);
+		updateHighlighterConfig();
 
 		JScrollPane sourceCodeScroller = new JScrollPane(fileContentMemo);
 		sourceCodeScroller.setPreferredSize(new Dimension(1, 1));
@@ -188,15 +184,13 @@ public class AugFileTab {
 		visualPanel.setVisible(false);
 	}
 
-	public void setCodeKind(CodeKind newCodeKind) {
-
-		this.codeKind = newCodeKind;
+	public void updateHighlighterConfig() {
 
 		if (highlighter != null) {
 			highlighter.discard();
 		}
 
-		switch (codeKind) {
+		switch (gui.currentCodeKind) {
 			case JAVA:
 				highlighter = new JavaCode(fileContentMemo);
 				break;
@@ -219,6 +213,8 @@ public class AugFileTab {
 		}
 
 		highlighter.setOnChange(onChangeCallback);
+		
+		highlighter.setCopyOnCtrlEnter(gui.copyOnEnter);
 	}
 
 	public void setFileContent(String newContent) {

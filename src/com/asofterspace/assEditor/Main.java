@@ -14,8 +14,8 @@ import javax.swing.SwingUtilities;
 public class Main {
 
 	public final static String PROGRAM_TITLE = "A Softer Space Editor";
-	public final static String VERSION_NUMBER = "0.0.0.4(" + Utils.TOOLBOX_VERSION_NUMBER + ")";
-	public final static String VERSION_DATE = "18. December 2018 - 21. December 2018";
+	public final static String VERSION_NUMBER = "0.0.0.5(" + Utils.TOOLBOX_VERSION_NUMBER + ")";
+	public final static String VERSION_DATE = "18. December 2018 - 22. December 2018";
 
 
 	/**
@@ -25,7 +25,6 @@ public class Main {
 	 * converters inbuilt
 	 * enable stats at the bottom
 	 * click on name at the top to make it copyable (or even copy immediately)
-	 * select + tab: move selection
 	 * indent 1, 2, 4, 8, tab, 2 tab, unindent, force unindent
 	 * add highlighting for datex
 	 * increase / decrease font size
@@ -42,6 +41,8 @@ public class Main {
 	 * ask to save before closing if files are unsaved
 	 * search with Ctrl + F
 	 * replace (like with edit.exe, replace also including newlines etc.!)
+	 * [TAB] after selecting several
+	 * select source kind based on extension when opening file
 	 */
 	public static void main(String[] args) {
 
