@@ -13,14 +13,14 @@ import com.asofterspace.toolbox.io.File;
 public class AugFile {
 
 	private File file;
-	
+
 	protected AugFileCtrl parent;
 
 
 	public AugFile(AugFileCtrl parent, File file) {
 
 		this.file = file;
-		
+
 		this.parent = parent;
 	}
 
@@ -35,7 +35,7 @@ public class AugFile {
 	public String getContent() {
 		return file.getContent();
 	}
-	
+
 	public void setContent(String content) {
 		file.setContent(content);
 	}

@@ -62,17 +62,18 @@ import javax.swing.SwingUtilities;
 public class GUI extends MainWindow {
 
 	private AugFileCtrl augFileCtrl;
-	
+
 	private JPanel mainPanelRight;
 
 	private AugFileTab currentlyShownTab;
 
 	// on the left hand side, we add this string to indicate that the file has changed
 	private final static String CHANGE_INDICATOR = " *";
-	
+
 	private final static String CONFIG_KEY_LAST_DIRECTORY = "lastDirectory";
 	private final static String CONFIG_KEY_CODE_KIND = "currentCodeKind";
 	private final static String CONFIG_KEY_SCHEME = "scheme";
+	private final static String CONFIG_KEY_REMOVE_TRAILING_WHITESPACE = "removeTrailingWhitespace";
 	final static String LIGHT_SCHEME = "light";
 	final static String DARK_SCHEME = "dark";
 
@@ -87,6 +88,7 @@ public class GUI extends MainWindow {
 	private JMenuItem closeFilePopup;
 	private JCheckBoxMenuItem setLightSchemeItem;
 	private JCheckBoxMenuItem setDarkSchemeItem;
+	private JCheckBoxMenuItem removeTrailingWhitespaceOnSaveItem;
 	private JMenuItem close;
 	private List<JCheckBoxMenuItem> codeKindItems;
 
@@ -96,9 +98,10 @@ public class GUI extends MainWindow {
 	private JList<String> fileListComponent;
 	private JPopupMenu fileListPopup;
 	private String[] strAugFiles;
-	
+
 	private CodeKind currentCodeKind = null;
 	String currentScheme;
+	Boolean removeTrailingWhitespaceOnSave;
 
 
 	public GUI(ConfigFile config) {
@@ -108,16 +111,23 @@ public class GUI extends MainWindow {
 		strAugFiles = new String[0];
 
 		augFileTabs = new ArrayList<>();
-		
+
 		augFileCtrl = new AugFileCtrl(configuration);
-		
+
 		String currentCodeKindStr = configuration.getValue(CONFIG_KEY_CODE_KIND);
 		currentCodeKind = CodeKind.getFromString(currentCodeKindStr);
-		
+
 		currentScheme = configuration.getValue(CONFIG_KEY_SCHEME);
-		
+
 		if (currentScheme == null) {
 			currentScheme = LIGHT_SCHEME;
+		}
+
+
+		removeTrailingWhitespaceOnSave = configuration.getBoolean(CONFIG_KEY_REMOVE_TRAILING_WHITESPACE);
+
+		if (removeTrailingWhitespaceOnSave == null) {
+			removeTrailingWhitespaceOnSave = true;
 		}
 	}
 
@@ -142,9 +152,9 @@ public class GUI extends MainWindow {
 		reEnableDisableMenuItems();
 
 		reSelectSchemeItems();
-		
+
 		super.show();
-		
+
 		reloadAllAugFileTabs();
 	}
 
@@ -156,7 +166,7 @@ public class GUI extends MainWindow {
 
 		JMenu file = new JMenu("File");
 		menu.add(file);
-		
+
 		JMenuItem openFile = new JMenuItem("Open");
 		openFile.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, ActionEvent.CTRL_MASK));
 		openFile.addActionListener(new ActionListener() {
@@ -166,7 +176,7 @@ public class GUI extends MainWindow {
 			}
 		});
 		file.add(openFile);
-		
+
 		refreshFiles = new JMenuItem("Refresh All Files From Disk");
 		refreshFiles.addActionListener(new ActionListener() {
 			@Override
@@ -179,9 +189,9 @@ public class GUI extends MainWindow {
 			}
 		});
 		file.add(refreshFiles);
-		
+
 		file.addSeparator();
-		
+
 		saveFile = new JMenuItem("Save Current File");
 		saveFile.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, ActionEvent.CTRL_MASK));
 		saveFile.addActionListener(new ActionListener() {
@@ -191,7 +201,7 @@ public class GUI extends MainWindow {
 			}
 		});
 		file.add(saveFile);
-		
+
 		/*
 		JMenuItem openFile = new JMenuItem("Save Current File As...");
 		openFile.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, ActionEvent.CTRL_MASK));
@@ -203,7 +213,7 @@ public class GUI extends MainWindow {
 		});
 		file.add(openFile);
 		*/
-		
+
 		saveAllFiles = new JMenuItem("Save All Files");
 		saveAllFiles.addActionListener(new ActionListener() {
 			@Override
@@ -212,9 +222,9 @@ public class GUI extends MainWindow {
 			}
 		});
 		file.add(saveAllFiles);
-		
+
 		file.addSeparator();
-		
+
 		deleteFile = new JMenuItem("Delete Current File");
 		deleteFile.addActionListener(new ActionListener() {
 			@Override
@@ -223,9 +233,9 @@ public class GUI extends MainWindow {
 			}
 		});
 		file.add(deleteFile);
-		
+
 		file.addSeparator();
-		
+
 		closeFile = new JMenuItem("Close Current File");
 		closeFile.addActionListener(new ActionListener() {
 			@Override
@@ -234,7 +244,7 @@ public class GUI extends MainWindow {
 			}
 		});
 		file.add(closeFile);
-		
+
 		closeAllFiles = new JMenuItem("Close All Files");
 		closeAllFiles.addActionListener(new ActionListener() {
 			@Override
@@ -243,7 +253,7 @@ public class GUI extends MainWindow {
 			}
 		});
 		file.add(closeAllFiles);
-		
+
 		/*
 		addPerson = new JMenuItem("Add Person");
 		addPerson.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_U, ActionEvent.CTRL_MASK));
@@ -306,9 +316,13 @@ public class GUI extends MainWindow {
 			}
 		});
 		file.add(close);
-		
-		JMenu language = new JMenu("Code Language");
-		menu.add(language);
+
+		JMenu settings = new JMenu("Settings");
+		menu.add(settings);
+
+		JMenu languageCurrent = new JMenu("Code Language for Current File");
+		settings.add(languageCurrent);
+		/*
 		codeKindItems = new ArrayList<>();
 		for (CodeKind ck : CodeKind.values()) {
 			JCheckBoxMenuItem ckItem = new JCheckBoxMenuItem(ck.toString());
@@ -322,25 +336,51 @@ public class GUI extends MainWindow {
 			language.add(ckItem);
 			codeKindItems.add(ckItem);
 		}
-		
-		JMenu settings = new JMenu("Settings");
-		setLightSchemeItem = new JCheckBoxMenuItem("Light Scheme");
+		*/
+		JMenu language = new JMenu("Code Language for All Files");
+		settings.add(language);
+		codeKindItems = new ArrayList<>();
+		for (CodeKind ck : CodeKind.values()) {
+			JCheckBoxMenuItem ckItem = new JCheckBoxMenuItem(ck.toString());
+			ckItem.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					setOrUnsetCurrentCodeKind(ck);
+				}
+			});
+			ckItem.setSelected(ck.equals(currentCodeKind));
+			language.add(ckItem);
+			codeKindItems.add(ckItem);
+		}
+
+		JMenu scheme = new JMenu("Editor Color Scheme");
+		settings.add(scheme);
+		setLightSchemeItem = new JCheckBoxMenuItem("Light");
 		setLightSchemeItem.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				setScheme(LIGHT_SCHEME);
 			}
 		});
-		settings.add(setLightSchemeItem);
-		setDarkSchemeItem = new JCheckBoxMenuItem("Dark Scheme");
+		scheme.add(setLightSchemeItem);
+		setDarkSchemeItem = new JCheckBoxMenuItem("Dark");
 		setDarkSchemeItem.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				setScheme(DARK_SCHEME);
 			}
 		});
-		settings.add(setDarkSchemeItem);
-		menu.add(settings);
+		scheme.add(setDarkSchemeItem);
+
+		removeTrailingWhitespaceOnSaveItem = new JCheckBoxMenuItem("Remove Trailing Whitespace on Save");
+		removeTrailingWhitespaceOnSaveItem.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				setRemoveTrailingWhitespaceOnSave(!removeTrailingWhitespaceOnSave);
+			}
+		});
+		setRemoveTrailingWhitespaceOnSave(removeTrailingWhitespaceOnSave);
+		settings.add(removeTrailingWhitespaceOnSaveItem);
 
 		JMenu huh = new JMenu("?");
 		JMenuItem about = new JMenuItem("About");
@@ -374,7 +414,7 @@ public class GUI extends MainWindow {
 			}
 		});
 		fileListPopup.add(saveFilePopup);
-		
+
 		deleteFilePopup = new JMenuItem("Delete This File");
 		deleteFilePopup.addActionListener(new ActionListener() {
 			@Override
@@ -383,7 +423,7 @@ public class GUI extends MainWindow {
 			}
 		});
 		fileListPopup.add(deleteFilePopup);
-		
+
 		closeFilePopup = new JMenuItem("Close This File");
 		closeFilePopup.addActionListener(new ActionListener() {
 			@Override
@@ -392,7 +432,7 @@ public class GUI extends MainWindow {
 			}
 		});
 		fileListPopup.add(closeFilePopup);
-		
+
 		/*
 		addPersonPopup = new JMenuItem("Add Person");
 		addPersonPopup.addActionListener(new ActionListener() {
@@ -492,18 +532,18 @@ public class GUI extends MainWindow {
 		});
 
         fileListComponent.addKeyListener(new KeyListener() {
-		
+
 			@Override
 			public void keyTyped(KeyEvent e) {
 			}
-			
+
 			@Override
 			public void keyPressed(KeyEvent e) {
 			}
-			
+
 			@Override
 			public void keyReleased(KeyEvent e) {
-				switch (e.getKeyCode()) { 
+				switch (e.getKeyCode()) {
 					case KeyEvent.VK_UP:
 					case KeyEvent.VK_DOWN:
 						showSelectedTab();
@@ -511,7 +551,7 @@ public class GUI extends MainWindow {
 				}
 			}
 		});
-		
+
 		JScrollPane augFileListScroller = new JScrollPane(fileListComponent);
 		augFileListScroller.setPreferredSize(new Dimension(8, 8));
 		augFileListScroller.setBorder(BorderFactory.createEmptyBorder());
@@ -526,7 +566,7 @@ public class GUI extends MainWindow {
 
 	    return mainPanel;
 	}
-	
+
 	private void openFile() {
 
 		// TODO :: de-localize the JFileChooser (by default it seems localized, which is inconsistent when the rest of the program is in English...)
@@ -581,12 +621,30 @@ public class GUI extends MainWindow {
 		}
 	}
 
+	/*
+	private void saveAugFiles() {
+
+		// apply all changes, such that the current source code editor contents are actually stored in the CDM file objects
+		for (AugFileTab augFileTab : augFileTabs) {
+			augFileTab.saveIfChanged();
+		}
+
+		// remove all change indicators on the left-hand side
+		regenerateAugFileList();
+
+		// DO NOT save all opened files - instead, we called augFileTab.saveIfChanged, so we only save un-saved changes!
+		// augFileCtrl.save();
+
+		JOptionPane.showMessageDialog(mainFrame, "All changed files have been saved!", "AugFiles Saved", JOptionPane.INFORMATION_MESSAGE);
+	}
+	*/
+
 	private void deleteFile() {
 
 		augFileCtrl.removeFile(currentlyShownTab.getFile());
-		
+
 		currentlyShownTab.delete();
-		
+
 		augFileTabs.remove(currentlyShownTab);
 
 		regenerateAugFileList();
@@ -595,31 +653,31 @@ public class GUI extends MainWindow {
 	private void closeFile() {
 
 		augFileCtrl.removeFile(currentlyShownTab.getFile());
-			
+
 		currentlyShownTab.remove();
-		
+
 		augFileTabs.remove(currentlyShownTab);
 
 		regenerateAugFileList();
 	}
 
 	private void closeAllFiles() {
-	
+
 		augFileCtrl.removeAllFiles();
 
 		for (AugFileTab tab : augFileTabs) {
 			tab.remove();
 		}
-		
+
 		augFileTabs = new ArrayList<>();
-		
+
 		regenerateAugFileList();
 	}
 
 	private void setOrUnsetCurrentCodeKind(CodeKind ck) {
 
 		String currentCodeKindStr = null;
-		
+
 		if (ck.equals(currentCodeKind)) {
 			currentCodeKind = null;
 		} else {
@@ -629,40 +687,40 @@ public class GUI extends MainWindow {
 
 		for (JCheckBoxMenuItem codeKindItem : codeKindItems) {
 			codeKindItem.setSelected(false);
-			
+
 			if (codeKindItem.getText().equals(currentCodeKindStr)) {
 				codeKindItem.setSelected(true);
 			}
 		}
-		
+
 		configuration.set(CONFIG_KEY_CODE_KIND, currentCodeKindStr);
 
 		for (AugFileTab augFileTab : augFileTabs) {
 			augFileTab.setCodeKind(currentCodeKind);
 		}
 	}
-	
+
 	private void reSelectSchemeItems() {
-	
+
 		setLightSchemeItem.setSelected(false);
 		setDarkSchemeItem.setSelected(false);
-		
+
 		switch (currentScheme) {
-		
+
 			case LIGHT_SCHEME:
 				setLightSchemeItem.setSelected(true);
 				break;
-		
+
 			case DARK_SCHEME:
 				setDarkSchemeItem.setSelected(true);
 				break;
 		}
 	}
-	
+
 	private void setScheme(String scheme) {
-	
+
 		currentScheme = scheme;
-		
+
 		reSelectSchemeItems();
 
 		configuration.set(CONFIG_KEY_SCHEME, currentScheme);
@@ -675,6 +733,19 @@ public class GUI extends MainWindow {
 				Code.setDarkSchemeForAllEditors();
 				break;
 		}
+	}
+
+	private void setRemoveTrailingWhitespaceOnSave(Boolean setTo) {
+
+		if (setTo == null) {
+			setTo = true;
+		}
+
+		removeTrailingWhitespaceOnSave = setTo;
+
+		configuration.set(CONFIG_KEY_REMOVE_TRAILING_WHITESPACE, removeTrailingWhitespaceOnSave);
+
+		removeTrailingWhitespaceOnSaveItem.setSelected(setTo);
 	}
 
 	private void showSelectedTab() {
@@ -715,26 +786,6 @@ public class GUI extends MainWindow {
 
 		GroovyCode.setFontSize(currentFontSize);
 		*/
-	}
-
-	private void saveAugFiles() {
-
-		// TODO :: add validation step here, in which we validate that all augFiles are assigned to activities, and if they are not,
-		// then we ask the user explicitly whether we should really save the augFiles in the current state or not
-		// (for this, we can call augFileCtrl.checkValidity())
-
-		// apply all changes, such that the current source code editor contents are actually stored in the CDM file objects
-		for (AugFileTab augFileTab : augFileTabs) {
-			augFileTab.saveIfChanged();
-		}
-
-		// remove all change indicators on the left-hand side
-		regenerateAugFileList();
-		
-		// DO NOT save all opened files - instead, we called augFileTab.saveIfChanged, so we only save un-saved changes!
-		// augFileCtrl.save();
-
-		JOptionPane.showMessageDialog(mainFrame, "All changed files have been saved!", "AugFiles Saved", JOptionPane.INFORMATION_MESSAGE);
 	}
 
 	/*
@@ -803,11 +854,11 @@ public class GUI extends MainWindow {
 	private void openAddNewPersonDialog() {
 		openAddNewAugFileDialog(AugFileKind.PERSON);
 	}
-	
+
 	private void openAddNewCompanyDialog() {
 		openAddNewAugFileDialog(AugFileKind.COMPANY);
 	}
-	
+
 	private void openAddNewAugFileDialog(AugFileKind kind) {
 
 		// open a dialog in which the name of the new file can be entered
@@ -834,13 +885,13 @@ public class GUI extends MainWindow {
 			newAugFileName.setText("Some Company Ltd.");
 		}
 		addDialog.add(newAugFileName);
-		
+
 		// for a new user, allow selecting a company immediately - so that we know where to save that person!
 		JLabel explanationLabelCompany = new JLabel();
 		explanationLabelCompany.setText("Please enter the company that this person works for:");
 
 		List<Company> companies = new ArrayList<>(augFileCtrl.getCompanies());
-		
+
 		Collections.sort(companies, new Comparator<Company>() {
 			public int compare(Company a, Company b) {
 				return a.getName().toLowerCase().compareTo(b.getName().toLowerCase());
@@ -859,7 +910,7 @@ public class GUI extends MainWindow {
 			newCompany.setSelectedIndex(0);
 		}
 		newCompany.setEditable(false);
-		
+
 		if (AugFileKind.PERSON.equals(kind)) {
 			addDialog.add(explanationLabelCompany);
 			addDialog.add(newCompany);
@@ -874,13 +925,13 @@ public class GUI extends MainWindow {
 		JButton okButton = new JButton("OK");
 		okButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-			
+
 				Company belongsToCompany = null;
-				
+
 				if (AugFileKind.PERSON.equals(kind)) {
 					belongsToCompany = companies.get(newCompany.getSelectedIndex());
 				}
-			
+
 				if (addAugFile(kind, newAugFileName.getText().trim(), belongsToCompany)) {
 					addDialog.dispose();
 				}
@@ -908,11 +959,11 @@ public class GUI extends MainWindow {
 		GuiUtils.centerAndShowWindow(addDialog);
 	}
 	*/
-	
+
 	private String sanitizeName(String name) {
-		
+
 		StringBuilder result = new StringBuilder();
-		
+
 		for (int i = 0; i < name.length(); i++) {
 			char curChar = name.charAt(i);
 			if (Character.isLetter(curChar) || Character.isDigit(curChar)) {
@@ -922,7 +973,7 @@ public class GUI extends MainWindow {
 				}
 			}
 		}
-		
+
 		if (result.length() > 0) {
 			return result.toString();
 		}
@@ -932,10 +983,10 @@ public class GUI extends MainWindow {
 	/*
 	// TODO :: move main part of this to augFileCtrl!
 	private boolean addAugFile(AugFileKind kind, String newAugFileName, Company belongsToCompany) {
-	
+
 		String origName = sanitizeName(newAugFileName);
 		String newName = origName;
-		
+
 		Directory fileBaseDir = augFileCtrl.getLastLoadedDirectory();
 
 		if (AugFileKind.PERSON.equals(kind)) {
@@ -943,7 +994,7 @@ public class GUI extends MainWindow {
 		}
 
 		File newFileLocation = new File(AugFileBaseDir, newName + ".xml");
-		
+
 		int counter = 1;
 
 		// check that the new name is not already the file name of some other file!
@@ -960,11 +1011,11 @@ public class GUI extends MainWindow {
 			"  <kind>" + kind + "</kind>\n" +
 			"  <name>" + newAugFileName + "</name>\n" +
 			"  <details></details>\n";
-		
+
 		if (AugFileKind.COMPANY.equals(kind)) {
 			fileCiContent += "  <directoryName>" + newName + "</directoryName>\n";
 		}
-			
+
 		fileCiContent += "</file>";
 
 		File tmpCi = new File("tmpfile.tmp");
@@ -991,7 +1042,7 @@ public class GUI extends MainWindow {
 				JOptionPane.showMessageDialog(mainFrame, "Oops - while trying to create the new file, after creating it temporarily, it could not be found!", "Sorry", JOptionPane.ERROR_MESSAGE);
 				return true;
 			}
-			
+
 			newAugFileFile.getRoot();
 
 			newAugFileFile.setFilelocation(newFileLocation);
@@ -1274,7 +1325,7 @@ public class GUI extends MainWindow {
 		int i = 0;
 
 		for (String strAugFile : strAugFiles) {
-		
+
 			if (strAugFile.endsWith(CHANGE_INDICATOR)) {
 				strAugFile = strAugFile.substring(0, strAugFile.length() - CHANGE_INDICATOR.length());
 			}
@@ -1308,11 +1359,11 @@ public class GUI extends MainWindow {
 		deleteFilePopup.setEnabled(fileIsSelected);
 		closeFilePopup.setEnabled(fileIsSelected);
 	}
-	
+
 	private void refreshTitleBar() {
 
 		// TODO :: get current file name
-		
+
 		/*
 		Directory lastLoadedDir = augFileCtrl.getLastLoadedDirectory();
 
@@ -1322,7 +1373,7 @@ public class GUI extends MainWindow {
 			mainFrame.setTitle(Main.PROGRAM_TITLE + " - " + lastLoadedDir.getDirname());
 		}
 		*/
-		
+
 		mainFrame.setTitle(Main.PROGRAM_TITLE);
 	}
 
@@ -1341,7 +1392,7 @@ public class GUI extends MainWindow {
 	}
 
 	private void reloadAllAugFileTabs() {
-	
+
 		if (augFileTabs != null) {
 			for (AugFileTab augFileTab : augFileTabs) {
 				augFileTab.remove();

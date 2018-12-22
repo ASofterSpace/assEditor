@@ -17,7 +17,7 @@ public class Main {
 	public final static String VERSION_NUMBER = "0.0.0.4(" + Utils.TOOLBOX_VERSION_NUMBER + ")";
 	public final static String VERSION_DATE = "18. December 2018 - 21. December 2018";
 
-	
+
 	/**
 	 * TODO:
 	 * create new (empty) file
@@ -25,11 +25,8 @@ public class Main {
 	 * converters inbuilt
 	 * enable stats at the bottom
 	 * click on name at the top to make it copyable (or even copy immediately)
-	 * select + tab: move selection    
-	 * indent 1, 2, 4, 8, tab, 2 tab, unindent, force unindent    
-	 * checkbox: remove trailing whitespace on save   
-	 * improve javacode: ()[]<>;:.!= colorful, and 
-	 * new blubb - blubb colorful
+	 * select + tab: move selection
+	 * indent 1, 2, 4, 8, tab, 2 tab, unindent, force unindent
 	 * add highlighting for datex
 	 * increase / decrease font size
 	 * select all
@@ -40,9 +37,14 @@ public class Main {
 	 * enable function overview
 	 * add line numbers
 	 * add compiler call, and report results
+	 * only allow opening the same file once, not several times
+	 * allow opening several files at once
+	 * ask to save before closing if files are unsaved
+	 * search with Ctrl + F
+	 * replace (like with edit.exe, replace also including newlines etc.!)
 	 */
 	public static void main(String[] args) {
-	
+
 		// let the Utils know in what program it is being used
 		Utils.setProgramTitle(PROGRAM_TITLE);
 		Utils.setVersionNumber(VERSION_NUMBER);

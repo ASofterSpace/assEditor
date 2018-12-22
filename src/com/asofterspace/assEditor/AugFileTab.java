@@ -56,13 +56,13 @@ public class AugFileTab {
 	private JPanel parent;
 
 	private JPanel visualPanel;
-	
+
 	private AugFile augFile;
-	
+
 	private AugFileCtrl augFileCtrl;
-	
+
 	private CodeKind codeKind;
-	
+
 	private Code highlighter;
 
 	private GUI gui;
@@ -83,11 +83,11 @@ public class AugFileTab {
 		this.augFile = augFile;
 
 		this.augFileCtrl = augFileCtrl;
-		
+
 		this.codeKind = codeKind;
-		
+
 		this.gui = gui;
-		
+
 		this.onChangeCallback = new Callback() {
 			public void call() {
 				if (!changed) {
@@ -111,16 +111,16 @@ public class AugFileTab {
 
 		fileContentMemo = new JTextPane() {
 			private final static long serialVersionUID = 1L;
-			
+
 			public boolean getScrollableTracksViewportWidth() {
 				return getUI().getPreferredSize(this).width <= getParent().getSize().width;
 			}
 		};
-		
+
 		fileContentMemo.setText(augFile.getContent());
-		
+
 		setCodeKind(codeKind);
-		
+
 		JScrollPane sourceCodeScroller = new JScrollPane(fileContentMemo);
 		sourceCodeScroller.setPreferredSize(new Dimension(1, 1));
 		tab.add(sourceCodeScroller, new Arrangement(0, 3, 1.0, 0.8));
@@ -134,7 +134,7 @@ public class AugFileTab {
 
 	    return tab;
 	}
-	
+
 	public AugFile getAugFile() {
 		return augFile;
 	}
@@ -182,16 +182,16 @@ public class AugFileTab {
 
 		visualPanel.setVisible(true);
 	}
-	
+
 	public void hide() {
 
 		visualPanel.setVisible(false);
 	}
-	
+
 	public void setCodeKind(CodeKind newCodeKind) {
 
 		this.codeKind = newCodeKind;
-		
+
 		if (highlighter != null) {
 			highlighter.discard();
 		}
@@ -229,22 +229,72 @@ public class AugFileTab {
 		// scroll to the top
 		fileContentMemo.setCaretPosition(0);
 	}
-	
+
 	public AugFile getFile() {
 		return augFile;
 	}
-	
+
 	public void save() {
 
+		String contentText = fileContentMemo.getText();
+
+		if (gui.removeTrailingWhitespaceOnSave) {
+
+			int origCaretPos = fileContentMemo.getCaretPosition();
+
+			StringBuilder newContent = new StringBuilder();
+
+			int i = 0;
+			int start = 0;
+
+			// we always go until the last \n, so we append a \n here...
+			contentText += "\n";
+
+			for (; i < contentText.length(); i++) {
+
+				char curChar = contentText.charAt(i);
+
+				if (curChar == '\n') {
+					if (i > 0) {
+						int end = i-1; // we need to go one back, to go back from \n
+						while ((contentText.charAt(end) == ' ') || (contentText.charAt(end) == '\t')) {
+							end--;
+							if (end < origCaretPos) {
+								origCaretPos--;
+							}
+							if (end < 0) {
+								end = 0;
+								break;
+							}
+						}
+						if (end+1 > start) {
+							newContent.append(contentText.substring(start, end+1));
+						}
+					}
+					newContent.append('\n');
+					start = i+1;
+				}
+			}
+
+			// ... and remove the appended \n here again
+			newContent.setLength(newContent.length() - 1);
+
+			contentText = newContent.toString();
+
+			fileContentMemo.setText(contentText);
+
+			fileContentMemo.setCaretPosition(origCaretPos);
+		}
+
+		augFile.setContent(contentText);
+
 		changed = false;
-		
-		augFile.setContent(fileContentMemo.getText());
-		
+
 		augFile.save();
 
 		gui.regenerateAugFileList();
 	}
-	
+
 	public void saveIfChanged() {
 
 		if (changed) {
