@@ -50,9 +50,11 @@ public class AugFileCtrl {
 
 				AugFile curFile = loadAnotherFileWithoutSaving(fileToOpen);
 
-				curFile.setInitialCaretPos(jsonFile.getInteger(CONF_CARET_POS));
+				if (curFile != null) {
+					curFile.setInitialCaretPos(jsonFile.getInteger(CONF_CARET_POS));
 
-				curFile.setInitialSourceLanguage(jsonFile.getString(CONF_LANGUAGE));
+					curFile.setInitialSourceLanguage(jsonFile.getString(CONF_LANGUAGE));
+				}
 			}
 		}
 
@@ -103,7 +105,19 @@ public class AugFileCtrl {
 	}
 	*/
 
+	/**
+	 * Loads a file and returns the new AugFile instance
+	 * Will return null quite happily in case you are trying to open a file that was already opened!
+	 */
 	private AugFile loadAnotherFileWithoutSaving(File fileToLoad) {
+
+		// first of all check that the file has not already been loaded!
+		for (AugFile oldFile : files) {
+			if (fileToLoad.getFilename().equals(oldFile.getFilename())) {
+				// indeed! we found one that we already got!
+				return null;
+			}
+		}
 
 		AugFile result = new AugFile(this, fileToLoad);
 

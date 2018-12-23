@@ -14,8 +14,8 @@ import javax.swing.SwingUtilities;
 public class Main {
 
 	public final static String PROGRAM_TITLE = "A Softer Space Editor";
-	public final static String VERSION_NUMBER = "0.0.0.5(" + Utils.TOOLBOX_VERSION_NUMBER + ")";
-	public final static String VERSION_DATE = "18. December 2018 - 22. December 2018";
+	public final static String VERSION_NUMBER = "0.0.0.6(" + Utils.TOOLBOX_VERSION_NUMBER + ")";
+	public final static String VERSION_DATE = "18. December 2018 - 23. December 2018";
 
 
 	/**
@@ -35,7 +35,6 @@ public class Main {
 	 * enable hex view
 	 * enable function overview
 	 * add compiler call, and report results
-	 * only allow opening the same file once, not several times
 	 * ask to save before closing if files are unsaved
 	 * search with Ctrl + F
 	 * replace (like with edit.exe, replace also including newlines etc.!)

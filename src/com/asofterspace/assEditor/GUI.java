@@ -630,7 +630,9 @@ public class GUI extends MainWindow {
 
 					AugFile newFile = augFileCtrl.loadAnotherFile(fileToOpen);
 
-					augFileTabs.add(new AugFileTab(mainPanelRight, newFile, this, augFileCtrl));
+					if (newFile != null) {
+						augFileTabs.add(new AugFileTab(mainPanelRight, newFile, this, augFileCtrl));
+					}
 				}
 
 				regenerateAugFileList();
