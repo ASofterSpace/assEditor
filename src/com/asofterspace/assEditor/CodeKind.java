@@ -19,7 +19,7 @@ public enum CodeKind {
 	MARKDOWN("Markdown"),
 	PLAINTEXT("Plain Text"),
 	PHP("PHP"),
-	Python("Python");
+	PYTHON("Python");
 	
 	
 	String kindStr;

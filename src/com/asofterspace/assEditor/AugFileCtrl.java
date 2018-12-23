@@ -22,12 +22,18 @@ import java.util.Set;
  */
 public class AugFileCtrl {
 
+	private final static String CONF_FILENAME = "filename";
+	private final static String CONF_CARET_POS = "caretPos";
+	private final static String CONF_LANGUAGE = "language";
+
 	private ConfigFile configuration;
 
 	private List<AugFile> files;
 
+	private Thread saveConfigThread;
 
-	public AugFileCtrl (ConfigFile configuration) {
+
+	public AugFileCtrl(ConfigFile configuration) {
 
 		this.configuration = configuration;
 
@@ -39,10 +45,33 @@ public class AugFileCtrl {
 
 		if (jsonFiles != null) {
 			for (JSON jsonFile : jsonFiles) {
-				File fileToOpen = new File(jsonFile.asString());
-				loadAnotherFile(fileToOpen);
+
+				File fileToOpen = new File(jsonFile.getString(CONF_FILENAME));
+
+				AugFile curFile = loadAnotherFileWithoutSaving(fileToOpen);
+
+				curFile.setInitialCaretPos(jsonFile.getInteger(CONF_CARET_POS));
+
+				curFile.setInitialSourceLanguage(jsonFile.getString(CONF_LANGUAGE));
 			}
 		}
+
+		saveConfigThread = new Thread(new Runnable() {
+			@Override
+			public void run() {
+				while (true) {
+					saveConfigFileList();
+
+					try {
+						// save every five seconds
+						Thread.sleep(5000);
+					} catch (InterruptedException e) {
+						// Ooops!
+					}
+				}
+			}
+		});
+		saveConfigThread.start();
 	}
 
 	/*
@@ -74,13 +103,20 @@ public class AugFileCtrl {
 	}
 	*/
 
-	public AugFile loadAnotherFile(File fileToLoad) {
+	private AugFile loadAnotherFileWithoutSaving(File fileToLoad) {
 
 		AugFile result = new AugFile(this, fileToLoad);
 
 		files.add(result);
 
-		updateConfigFileList();
+		return result;
+	}
+
+	public AugFile loadAnotherFile(File fileToLoad) {
+
+		AugFile result = loadAnotherFileWithoutSaving(fileToLoad);
+
+		saveConfigFileList();
 
 		return result;
 	}
@@ -92,16 +128,16 @@ public class AugFileCtrl {
 	public void removeAllFiles() {
 		files = new ArrayList<>();
 
-		updateConfigFileList();
+		saveConfigFileList();
 	}
 
 	public void removeFile(AugFile fileToRemove) {
 		files.remove(fileToRemove);
 
-		updateConfigFileList();
+		saveConfigFileList();
 	}
 
-	public void updateConfigFileList() {
+	public void saveConfigFileList() {
 
 		// TODO :: ugly - fix me! (we are setting JSON via String, which works, but wäh... ^^)
 		JSON jsonConfig = configuration.getAllContents();
@@ -110,23 +146,24 @@ public class AugFileCtrl {
 		String sep = "";
 
 		for (AugFile augFile : files) {
-			fileListBuilder.append("\"" + augFile.getFilename() + "\"");
+			fileListBuilder.append("{\"");
+			fileListBuilder.append(CONF_FILENAME);
+			fileListBuilder.append("\": \"");
+			fileListBuilder.append(augFile.getFilename());
+			fileListBuilder.append("\", \"");
+			fileListBuilder.append(CONF_CARET_POS);
+			fileListBuilder.append("\": ");
+			fileListBuilder.append(augFile.getCaretPos());
+			fileListBuilder.append(", \"");
+			fileListBuilder.append(CONF_LANGUAGE);
+			fileListBuilder.append("\": \"");
+			fileListBuilder.append(augFile.getSourceLanguage());
+			fileListBuilder.append("\"}");
 			fileListBuilder.append(sep);
 			sep = ", ";
 		}
 
 		configuration.set("files", new JSON("[" + fileListBuilder.toString() + "]"));
-	/*
-
-		List<JSON> jsonFiles = jsonConfig.getArray("files");
-
-		if (jsonFiles != null) {
-			for (JSON jsonFile : jsonFiles) {
-				File fileToOpen = new File(jsonFile.asString());
-				loadAnotherFile(fileToOpen);
-			}
-		}
-		*/
 	}
 
 	/**

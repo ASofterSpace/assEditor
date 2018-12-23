@@ -72,6 +72,8 @@ public class AugFileTab {
 
 	private Callback onChangeCallback;
 
+	private CodeKind currentCodeKind;
+
 	private boolean changed = false;
 
 	// graphical components
@@ -85,6 +87,7 @@ public class AugFileTab {
 		this.parent = parentPanel;
 
 		this.augFile = augFile;
+		augFile.setTab(this);
 
 		this.augFileCtrl = augFileCtrl;
 
@@ -118,23 +121,34 @@ public class AugFileTab {
 		lineMemo = new CodeEditorLineMemo();
 		lineNumbers = new LineNumbering(lineMemo, fileContentMemo);
 
-		fileContentMemo.setText(augFile.getContent());
+		String content = augFile.getContent();
+		fileContentMemo.setText(content);
 
 		scrolledPanel.add(lineMemo, new Arrangement(0, 0, 0.0, 1.0));
 		scrolledPanel.add(fileContentMemo, new Arrangement(1, 0, 1.0, 1.0));
-
-		updateHighlighterConfig();
 
 		JScrollPane sourceCodeScroller = new JScrollPane(scrolledPanel);
 		sourceCodeScroller.setPreferredSize(new Dimension(1, 1));
 		tab.add(sourceCodeScroller, new Arrangement(0, 3, 1.0, 0.8));
 
-		parent.add(tab);
+		Integer origCaretPos = augFile.getInitialCaretPos();
+
+		if (origCaretPos == null) {
+			// scroll to the top
+			fileContentMemo.setCaretPosition(0);
+		} else {
+			// scroll to the last stored position
+			origCaretPos = Math.min(origCaretPos, content.length());
+			fileContentMemo.setCaretPosition(origCaretPos);
+		}
+
+		String origSourceLang = augFile.getInitialSourceLanguage();
+		CodeKind codeKind = CodeKind.getFromString(origSourceLang);
+		setCodeKindAndCreateHighlighter(codeKind);
 
 		tab.setVisible(false);
 
-		// scroll to the top
-		fileContentMemo.setCaretPosition(0);
+		parent.add(tab);
 
 		return tab;
 	}
@@ -192,30 +206,40 @@ public class AugFileTab {
 		visualPanel.setVisible(false);
 	}
 
-	public void updateHighlighterConfig() {
+	public void setCodeKindAndCreateHighlighter(CodeKind codeKind) {
 
-		// update code kind
 		if (highlighter != null) {
 			highlighter.discard();
 		}
 
-		switch (gui.currentCodeKind) {
-			case JAVA:
-				highlighter = new JavaCode(fileContentMemo);
-				break;
-			case GROOVY:
-				highlighter = new GroovyCode(fileContentMemo);
-				break;
-			case MARKDOWN:
-				highlighter = new MarkdownCode(fileContentMemo);
-				break;
-			default:
-				highlighter = new PlainText(fileContentMemo);
+		currentCodeKind = codeKind;
+
+		if (currentCodeKind == null) {
+			highlighter = new PlainText(fileContentMemo);
+		} else {
+			switch (currentCodeKind) {
+				case JAVA:
+					highlighter = new JavaCode(fileContentMemo);
+					break;
+				case GROOVY:
+					highlighter = new GroovyCode(fileContentMemo);
+					break;
+				case MARKDOWN:
+					highlighter = new MarkdownCode(fileContentMemo);
+					break;
+				default:
+					highlighter = new PlainText(fileContentMemo);
+			}
 		}
 
 		highlighter.setOnChange(onChangeCallback);
 
 		highlighter.setCodeEditorLineMemo(lineMemo);
+
+		updateHighlighterConfig();
+	}
+
+	public void updateHighlighterConfig() {
 
 		// update color scheme
 		switch (gui.currentScheme) {
@@ -247,6 +271,19 @@ public class AugFileTab {
 
 	public AugFile getFile() {
 		return augFile;
+	}
+
+	public Integer getCaretPos() {
+		return fileContentMemo.getCaretPosition();
+	}
+
+	public String getSourceLanguage() {
+
+		if (currentCodeKind == null) {
+			return CodeKind.PLAINTEXT.toString();
+		}
+
+		return currentCodeKind.toString();
 	}
 
 	public void save() {

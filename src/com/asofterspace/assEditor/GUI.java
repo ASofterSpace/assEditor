@@ -71,7 +71,6 @@ public class GUI extends MainWindow {
 	private final static String CHANGE_INDICATOR = " *";
 
 	private final static String CONFIG_KEY_LAST_DIRECTORY = "lastDirectory";
-	private final static String CONFIG_KEY_CODE_KIND = "currentCodeKind";
 	private final static String CONFIG_KEY_SCHEME = "scheme";
 	private final static String CONFIG_KEY_REMOVE_TRAILING_WHITESPACE = "removeTrailingWhitespace";
 	private final static String CONFIG_KEY_COPY_ON_ENTER = "copyOnEnter";
@@ -94,7 +93,8 @@ public class GUI extends MainWindow {
 	private JCheckBoxMenuItem copyOnEnterItem;
 	private JCheckBoxMenuItem tabEntireBlocksItem;
 	private JMenuItem close;
-	private List<JCheckBoxMenuItem> codeKindItems;
+	private List<JMenuItem> codeKindItems;
+	private List<JCheckBoxMenuItem> codeKindItemsCurrent;
 
 	private List<AugFileTab> augFileTabs;
 
@@ -103,7 +103,6 @@ public class GUI extends MainWindow {
 	private JPopupMenu fileListPopup;
 	private String[] strAugFiles;
 
-	CodeKind currentCodeKind;
 	String currentScheme;
 	Boolean removeTrailingWhitespaceOnSave;
 	Boolean copyOnEnter;
@@ -119,9 +118,6 @@ public class GUI extends MainWindow {
 		augFileTabs = new ArrayList<>();
 
 		augFileCtrl = new AugFileCtrl(configuration);
-
-		String currentCodeKindStr = configuration.getValue(CONFIG_KEY_CODE_KIND);
-		currentCodeKind = CodeKind.getFromString(currentCodeKindStr);
 
 		currentScheme = configuration.getValue(CONFIG_KEY_SCHEME);
 
@@ -339,8 +335,7 @@ public class GUI extends MainWindow {
 
 		JMenu languageCurrent = new JMenu("Code Language for Current File");
 		settings.add(languageCurrent);
-		/*
-		codeKindItems = new ArrayList<>();
+		codeKindItemsCurrent = new ArrayList<>();
 		for (CodeKind ck : CodeKind.values()) {
 			JCheckBoxMenuItem ckItem = new JCheckBoxMenuItem(ck.toString());
 			ckItem.addActionListener(new ActionListener() {
@@ -349,23 +344,21 @@ public class GUI extends MainWindow {
 					setOrUnsetCurrentCodeKind(ck);
 				}
 			});
-			ckItem.setSelected(ck.equals(currentCodeKind));
-			language.add(ckItem);
-			codeKindItems.add(ckItem);
+			ckItem.setSelected(false);
+			languageCurrent.add(ckItem);
+			codeKindItemsCurrent.add(ckItem);
 		}
-		*/
 		JMenu language = new JMenu("Code Language for All Files");
 		settings.add(language);
 		codeKindItems = new ArrayList<>();
 		for (CodeKind ck : CodeKind.values()) {
-			JCheckBoxMenuItem ckItem = new JCheckBoxMenuItem(ck.toString());
+			JMenuItem ckItem = new JMenuItem(ck.toString());
 			ckItem.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					setOrUnsetCurrentCodeKind(ck);
+					setOrUnsetAllCodeKinds(ck);
 				}
 			});
-			ckItem.setSelected(ck.equals(currentCodeKind));
 			language.add(ckItem);
 			codeKindItems.add(ckItem);
 		}
@@ -717,29 +710,32 @@ public class GUI extends MainWindow {
 			augFileTab.updateHighlighterConfig();
 		}
 	}
+	
+	private void reSelectCurrentCodeKindItem() {
 
-	private void setOrUnsetCurrentCodeKind(CodeKind ck) {
+		String currentCodeKindStr = currentlyShownTab.getSourceLanguage();
 
-		String currentCodeKindStr = null;
-
-		if (ck.equals(currentCodeKind)) {
-			currentCodeKind = null;
-		} else {
-			currentCodeKind = ck;
-			currentCodeKindStr = currentCodeKind.toString();
-		}
-
-		for (JCheckBoxMenuItem codeKindItem : codeKindItems) {
+		for (JCheckBoxMenuItem codeKindItem : codeKindItemsCurrent) {
 			codeKindItem.setSelected(false);
 
 			if (codeKindItem.getText().equals(currentCodeKindStr)) {
 				codeKindItem.setSelected(true);
 			}
 		}
+	}
 
-		configuration.set(CONFIG_KEY_CODE_KIND, currentCodeKindStr);
+	private void setOrUnsetCurrentCodeKind(CodeKind codeKind) {
 
-		updateHighlightersOnAllTabs();
+		currentlyShownTab.setCodeKindAndCreateHighlighter(codeKind);
+		
+		reSelectCurrentCodeKindItem();
+	}
+
+	private void setOrUnsetAllCodeKinds(CodeKind codeKind) {
+
+		for (AugFileTab augFileTab : augFileTabs) {
+			augFileTab.setCodeKindAndCreateHighlighter(codeKind);
+		}
 	}
 
 	private void reSelectSchemeItems() {
@@ -841,6 +837,7 @@ public class GUI extends MainWindow {
 			if (tab.isItem(name)) {
 				tab.show();
 				currentlyShownTab = tab;
+				reSelectCurrentCodeKindItem();
 			} else {
 				tab.hide();
 			}
