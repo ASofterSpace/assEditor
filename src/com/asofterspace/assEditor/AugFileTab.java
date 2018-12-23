@@ -7,6 +7,9 @@ package com.asofterspace.assEditor;
 import com.asofterspace.toolbox.codeeditor.Code;
 import com.asofterspace.toolbox.codeeditor.GroovyCode;
 import com.asofterspace.toolbox.codeeditor.JavaCode;
+import com.asofterspace.toolbox.codeeditor.JavaScriptCode;
+import com.asofterspace.toolbox.codeeditor.HtmlCode;
+import com.asofterspace.toolbox.codeeditor.PhpCode;
 import com.asofterspace.toolbox.codeeditor.LineNumbering;
 import com.asofterspace.toolbox.codeeditor.MarkdownCode;
 import com.asofterspace.toolbox.codeeditor.PlainText;
@@ -226,6 +229,15 @@ public class AugFileTab {
 					break;
 				case MARKDOWN:
 					highlighter = new MarkdownCode(fileContentMemo);
+					break;
+				case HTML:
+					highlighter = new HtmlCode(fileContentMemo);
+					break;
+				case PHP:
+					highlighter = new PhpCode(fileContentMemo);
+					break;
+				case JAVASCRIPT:
+					highlighter = new JavaScriptCode(fileContentMemo);
 					break;
 				default:
 					highlighter = new PlainText(fileContentMemo);

@@ -56,8 +56,16 @@ public class AugFile {
 			setInitialSourceLanguage(CodeKind.PHP);
 		}
 
+		if (filename.endsWith(".htm") || filename.endsWith(".html")) {
+			setInitialSourceLanguage(CodeKind.HTML);
+		}
+
 		if (filename.endsWith(".js")) {
 			setInitialSourceLanguage(CodeKind.JAVASCRIPT);
+		}
+
+		if (filename.endsWith(".css")) {
+			setInitialSourceLanguage(CodeKind.CSS);
 		}
 	}
 
