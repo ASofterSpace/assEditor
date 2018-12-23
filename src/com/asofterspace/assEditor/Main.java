@@ -24,7 +24,7 @@ public class Main {
 	 * automatic backups
 	 * converters inbuilt
 	 * enable stats at the bottom
-	 * click on name at the top to make it copyable (or even copy immediately)
+	 * click on filename at the top to make it copyable (or even copy immediately)
 	 * indent 1, 2, 4, 8, tab, 2 tab, unindent, force unindent
 	 * add highlighting for datex
 	 * increase / decrease font size

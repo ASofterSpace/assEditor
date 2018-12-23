@@ -14,6 +14,8 @@ import com.asofterspace.toolbox.configuration.ConfigFile;
 import com.asofterspace.toolbox.io.Directory;
 import com.asofterspace.toolbox.io.File;
 import com.asofterspace.toolbox.gui.Arrangement;
+import com.asofterspace.toolbox.gui.CodeEditor;
+import com.asofterspace.toolbox.gui.CodeEditorLineMemo;
 import com.asofterspace.toolbox.gui.GuiUtils;
 import com.asofterspace.toolbox.Utils;
 import com.asofterspace.toolbox.utils.Callback;
@@ -66,8 +68,6 @@ public class AugFileTab {
 	private Code highlighter;
 	private Code lineNumbers;
 
-	private int lastLineAmount = 0;
-
 	private GUI gui;
 
 	private Callback onChangeCallback;
@@ -96,27 +96,10 @@ public class AugFileTab {
 					changed = true;
 					gui.regenerateAugFileList();
 				}
-
-				refreshLines();
 			}
 		};
 
 		visualPanel = createVisualPanel();
-	}
-
-	private void refreshLines() {
-
-		int lineAmount = Utils.countCharInString('\n', fileContentMemo.getText());
-
-		if (lineAmount != lastLineAmount) {
-			lastLineAmount = lineAmount;
-
-			StringBuilder lines = new StringBuilder();
-			for (int i = 1; i <= lineAmount + 1; i++) {
-				lines.append(i + "\n");
-			}
-			lineMemo.setText(lines.toString());
-		}
 	}
 
 	private JPanel createVisualPanel() {
@@ -131,46 +114,16 @@ public class AugFileTab {
 		JPanel scrolledPanel = new JPanel();
 		scrolledPanel.setLayout(new GridBagLayout());
 
-		lineMemo = new JTextPane() {
-			private final static long serialVersionUID = 1L;
-
-			public boolean getScrollableTracksViewportWidth() {
-				// return getUI().getPreferredSize(this).width <= getParent().getSize().width;
-				return false;
-			}
-
-			public Dimension getPreferredSize() {
-				Dimension result = getUI().getPreferredSize(this);
-				result.width = result.width;
-				return result;
-			}
-		};
-
-		fileContentMemo = new JTextPane() {
-			private final static long serialVersionUID = 1L;
-
-			public boolean getScrollableTracksViewportWidth() {
-				// return getUI().getPreferredSize(this).width <= getParent().getSize().width;
-				return false;
-			}
-
-			public Dimension getPreferredSize() {
-				Dimension result = getUI().getPreferredSize(this);
-				result.width = result.width + 25;
-				return result;
-			}
-		};
-
-		scrolledPanel.add(lineMemo, new Arrangement(0, 0, 0.0, 1.0));
-
+		fileContentMemo = new CodeEditor();
+		lineMemo = new CodeEditorLineMemo();
 		lineNumbers = new LineNumbering(lineMemo, fileContentMemo);
 
 		fileContentMemo.setText(augFile.getContent());
+
+		scrolledPanel.add(lineMemo, new Arrangement(0, 0, 0.0, 1.0));
 		scrolledPanel.add(fileContentMemo, new Arrangement(1, 0, 1.0, 1.0));
 
 		updateHighlighterConfig();
-
-		refreshLines();
 
 		JScrollPane sourceCodeScroller = new JScrollPane(scrolledPanel);
 		sourceCodeScroller.setPreferredSize(new Dimension(1, 1));
@@ -261,6 +214,8 @@ public class AugFileTab {
 		}
 
 		highlighter.setOnChange(onChangeCallback);
+
+		highlighter.setCodeEditorLineMemo(lineMemo);
 
 		// update color scheme
 		switch (gui.currentScheme) {
