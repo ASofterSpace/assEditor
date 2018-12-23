@@ -36,7 +36,6 @@ public class Main {
 	 * enable function overview
 	 * add compiler call, and report results
 	 * only allow opening the same file once, not several times
-	 * allow opening several files at once
 	 * ask to save before closing if files are unsaved
 	 * search with Ctrl + F
 	 * replace (like with edit.exe, replace also including newlines etc.!)

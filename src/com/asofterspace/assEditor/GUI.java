@@ -590,7 +590,7 @@ public class GUI extends MainWindow {
 
 		mainPanel.add(gapPanel, new Arrangement(1, 0, 0.0, 0.0));
 
-	    mainPanel.add(mainPanelRight, new Arrangement(2, 0, 1.0, 1.0));
+		mainPanel.add(mainPanelRight, new Arrangement(2, 0, 1.0, 1.0));
 
 		parent.add(mainPanel, BorderLayout.CENTER);
 
@@ -611,8 +611,9 @@ public class GUI extends MainWindow {
 			augFilePicker = new JFileChooser();
 		}
 
-		augFilePicker.setDialogTitle("Open a CDM working directory");
+		augFilePicker.setDialogTitle("Open a Code File to Edit");
 		augFilePicker.setFileSelectionMode(JFileChooser.FILES_ONLY);
+		augFilePicker.setMultiSelectionEnabled(true);
 
 		int result = augFilePicker.showOpenDialog(mainFrame);
 
@@ -620,12 +621,17 @@ public class GUI extends MainWindow {
 
 			case JFileChooser.APPROVE_OPTION:
 
-				// load the CDM files
+				// load the files
 				configuration.set(CONFIG_KEY_LAST_DIRECTORY, augFilePicker.getCurrentDirectory().getAbsolutePath());
-				File fileToOpen = new File(augFilePicker.getSelectedFile());
-				AugFile newFile = augFileCtrl.loadAnotherFile(fileToOpen);
 
-				augFileTabs.add(new AugFileTab(mainPanelRight, newFile, this, augFileCtrl));
+				for (java.io.File curFile : augFilePicker.getSelectedFiles()) {
+
+					File fileToOpen = new File(curFile);
+
+					AugFile newFile = augFileCtrl.loadAnotherFile(fileToOpen);
+
+					augFileTabs.add(new AugFileTab(mainPanelRight, newFile, this, augFileCtrl));
+				}
 
 				regenerateAugFileList();
 
@@ -710,7 +716,7 @@ public class GUI extends MainWindow {
 			augFileTab.updateHighlighterConfig();
 		}
 	}
-	
+
 	private void reSelectCurrentCodeKindItem() {
 
 		String currentCodeKindStr = currentlyShownTab.getSourceLanguage();
@@ -727,7 +733,7 @@ public class GUI extends MainWindow {
 	private void setOrUnsetCurrentCodeKind(CodeKind codeKind) {
 
 		currentlyShownTab.setCodeKindAndCreateHighlighter(codeKind);
-		
+
 		reSelectCurrentCodeKindItem();
 	}
 
