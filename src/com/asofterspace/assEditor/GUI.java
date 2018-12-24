@@ -125,19 +125,19 @@ public class GUI extends MainWindow {
 			currentScheme = LIGHT_SCHEME;
 		}
 
-		removeTrailingWhitespaceOnSave = configuration.getBoolean(CONFIG_KEY_REMOVE_TRAILING_WHITESPACE);
+		removeTrailingWhitespaceOnSave = configuration.getBoolean(CONFIG_KEY_REMOVE_TRAILING_WHITESPACE, true);
 
 		if (removeTrailingWhitespaceOnSave == null) {
 			removeTrailingWhitespaceOnSave = true;
 		}
 
-		copyOnEnter = configuration.getBoolean(CONFIG_KEY_COPY_ON_ENTER);
+		copyOnEnter = configuration.getBoolean(CONFIG_KEY_COPY_ON_ENTER, true);
 
 		if (copyOnEnter == null) {
 			copyOnEnter = true;
 		}
 
-		tabEntireBlocks = configuration.getBoolean(CONFIG_KEY_TAB_ENTIRE_BLOCKS);
+		tabEntireBlocks = configuration.getBoolean(CONFIG_KEY_TAB_ENTIRE_BLOCKS, true);
 
 		if (tabEntireBlocks == null) {
 			tabEntireBlocks = true;
