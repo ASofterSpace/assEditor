@@ -180,6 +180,16 @@ public class GUI extends MainWindow {
 		JMenu file = new JMenu("File");
 		menu.add(file);
 
+		JMenuItem newFile = new JMenuItem("New File");
+		newFile.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, ActionEvent.CTRL_MASK));
+		newFile.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				newFile();
+			}
+		});
+		file.add(newFile);
+
 		JMenuItem openFile = new JMenuItem("Open");
 		openFile.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, ActionEvent.CTRL_MASK));
 		openFile.addActionListener(new ActionListener() {
@@ -329,6 +339,45 @@ public class GUI extends MainWindow {
 			}
 		});
 		file.add(close);
+
+
+		JMenu edit = new JMenu("Edit");
+		menu.add(edit);
+
+		JMenuItem selectToHere = new JMenuItem("Select from Start to Here");
+		selectToHere.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (currentlyShownTab != null) {
+					currentlyShownTab.selectToHere();
+				}
+			}
+		});
+		edit.add(selectToHere);
+
+		JMenuItem selectFromHere = new JMenuItem("Select from Here to End");
+		selectFromHere.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (currentlyShownTab != null) {
+					currentlyShownTab.selectFromHere();
+				}
+			}
+		});
+		edit.add(selectFromHere);
+
+		JMenuItem selectAll = new JMenuItem("Select All");
+		selectAll.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A, ActionEvent.CTRL_MASK));
+		selectAll.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (currentlyShownTab != null) {
+					currentlyShownTab.selectAll();
+				}
+			}
+		});
+		edit.add(selectAll);
+
 
 		JMenu settings = new JMenu("Settings");
 		menu.add(settings);
@@ -644,6 +693,23 @@ public class GUI extends MainWindow {
 			case JFileChooser.CANCEL_OPTION:
 				// cancel was pressed... do nothing for now
 				break;
+		}
+	}
+
+	private void newFile() {
+
+		File fileToOpen = new File("data/new.txt");
+
+		fileToOpen.create();
+
+		AugFile newFile = augFileCtrl.loadAnotherFile(fileToOpen);
+
+		if (newFile != null) {
+			augFileTabs.add(new AugFileTab(mainPanelRight, newFile, this, augFileCtrl));
+
+			regenerateAugFileList();
+
+			reEnableDisableMenuItems();
 		}
 	}
 

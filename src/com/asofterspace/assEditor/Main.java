@@ -14,13 +14,12 @@ import javax.swing.SwingUtilities;
 public class Main {
 
 	public final static String PROGRAM_TITLE = "A Softer Space Editor";
-	public final static String VERSION_NUMBER = "0.0.0.6(" + Utils.TOOLBOX_VERSION_NUMBER + ")";
-	public final static String VERSION_DATE = "18. December 2018 - 23. December 2018";
+	public final static String VERSION_NUMBER = "0.0.0.7(" + Utils.TOOLBOX_VERSION_NUMBER + ")";
+	public final static String VERSION_DATE = "18. December 2018 - 27. December 2018";
 
 
 	/**
 	 * TODO:
-	 * create new (empty) file
 	 * automatic backups
 	 * converters inbuilt
 	 * enable stats at the bottom
@@ -28,10 +27,8 @@ public class Main {
 	 * indent 1, 2, 4, 8, tab, 2 tab, unindent, force unindent
 	 * add highlighting for datex
 	 * increase / decrease font size
-	 * select all
 	 * cut, copy, paste
 	 * undo, redo
-	 * select from here / to here
 	 * enable hex view
 	 * enable function overview
 	 * add compiler call, and report results

@@ -298,6 +298,38 @@ public class AugFileTab {
 		return currentCodeKind.toString();
 	}
 
+	public void selectAll() {
+
+		int newSelStart = 0;
+		int newSelEnd = fileContentMemo.getText().length();
+
+		fileContentMemo.setCaretPosition(newSelStart);
+
+		fileContentMemo.setSelectionStart(newSelStart);
+
+		fileContentMemo.setSelectionEnd(newSelEnd);
+	}
+
+	public void selectFromHere() {
+
+		int newSelStart = fileContentMemo.getCaretPosition();
+		int newSelEnd = fileContentMemo.getText().length();
+
+		fileContentMemo.setCaretPosition(newSelStart);
+		fileContentMemo.setSelectionStart(newSelStart);
+		fileContentMemo.setSelectionEnd(newSelEnd);
+	}
+
+	public void selectToHere() {
+
+		int newSelStart = 0;
+		int newSelEnd = fileContentMemo.getCaretPosition();
+
+		fileContentMemo.setCaretPosition(newSelStart);
+		fileContentMemo.setSelectionStart(newSelStart);
+		fileContentMemo.setSelectionEnd(newSelEnd);
+	}
+
 	public void save() {
 
 		String contentText = fileContentMemo.getText();
