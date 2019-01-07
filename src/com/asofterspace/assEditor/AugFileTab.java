@@ -5,6 +5,7 @@
 package com.asofterspace.assEditor;
 
 import com.asofterspace.toolbox.codeeditor.Code;
+import com.asofterspace.toolbox.codeeditor.CSharpCode;
 import com.asofterspace.toolbox.codeeditor.GroovyCode;
 import com.asofterspace.toolbox.codeeditor.JavaCode;
 import com.asofterspace.toolbox.codeeditor.JavaScriptCode;
@@ -226,6 +227,9 @@ public class AugFileTab {
 					break;
 				case GROOVY:
 					highlighter = new GroovyCode(fileContentMemo);
+					break;
+				case CSHARP:
+					highlighter = new CSharpCode(fileContentMemo);
 					break;
 				case MARKDOWN:
 					highlighter = new MarkdownCode(fileContentMemo);

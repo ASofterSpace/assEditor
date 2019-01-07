@@ -44,6 +44,10 @@ public class AugFile {
 			setInitialSourceLanguage(CodeKind.GROOVY);
 		}
 
+		if (filename.endsWith(".cs")) {
+			setInitialSourceLanguage(CodeKind.CSHARP);
+		}
+
 		if (filename.endsWith(".md")) {
 			setInitialSourceLanguage(CodeKind.MARKDOWN);
 		}
