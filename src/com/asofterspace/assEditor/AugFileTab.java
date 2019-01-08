@@ -302,6 +302,32 @@ public class AugFileTab {
 		return currentCodeKind.toString();
 	}
 
+	public void applyGit() {
+
+		String[] codeLines = fileContentMemo.getText().split("\n");
+
+		StringBuilder sourceCode = new StringBuilder();
+
+		for (String line : codeLines) {
+
+			// ignore lines starting with - entirely (thus removing them)
+			if (line.startsWith("-")) {
+				continue;
+			}
+
+			// remove the + from lines starting with it
+			if (line.startsWith("+")) {
+				line = line.substring(1);
+			}
+
+			// treat all other lines (not starting with + or -) indifferently
+			sourceCode.append(line);
+			sourceCode.append("\n");
+		}
+
+		fileContentMemo.setText(sourceCode.toString());
+	}
+
 	public void selectAll() {
 
 		int newSelStart = 0;

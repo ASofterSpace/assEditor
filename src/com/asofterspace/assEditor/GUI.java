@@ -378,6 +378,19 @@ public class GUI extends MainWindow {
 		});
 		edit.add(selectAll);
 
+		edit.addSeparator();
+
+		JMenuItem applyGit = new JMenuItem("Apply Git Markers (+/- at the beginning of lines)");
+		applyGit.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (currentlyShownTab != null) {
+					currentlyShownTab.applyGit();
+				}
+			}
+		});
+		edit.add(applyGit);
+
 
 		JMenu settings = new JMenu("Settings");
 		menu.add(settings);
