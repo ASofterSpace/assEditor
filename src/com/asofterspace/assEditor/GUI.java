@@ -21,6 +21,8 @@ import java.awt.CardLayout;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
@@ -28,6 +30,7 @@ import java.awt.event.MouseListener;
 import java.awt.FlowLayout;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
+import java.awt.Point;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -75,6 +78,12 @@ public class GUI extends MainWindow {
 	private final static String CONFIG_KEY_REMOVE_TRAILING_WHITESPACE = "removeTrailingWhitespace";
 	private final static String CONFIG_KEY_COPY_ON_ENTER = "copyOnEnter";
 	private final static String CONFIG_KEY_TAB_ENTIRE_BLOCKS = "tabEntireBlocks";
+	private final static String CONFIG_KEY_BACKUP_NUM = "backupNum";
+	private final static String CONFIG_KEY_WIDTH = "mainFrameWidth";
+	private final static String CONFIG_KEY_HEIGHT = "mainFrameHeight";
+	private final static String CONFIG_KEY_LEFT = "mainFrameLeft";
+	private final static String CONFIG_KEY_TOP = "mainFrameTop";
+
 	final static String LIGHT_SCHEME = "light";
 	final static String DARK_SCHEME = "dark";
 
@@ -103,21 +112,23 @@ public class GUI extends MainWindow {
 	private JPopupMenu fileListPopup;
 	private String[] strAugFiles;
 
+	private Integer currentBackup;
+
 	String currentScheme;
 	Boolean removeTrailingWhitespaceOnSave;
 	Boolean copyOnEnter;
 	Boolean tabEntireBlocks;
 
 
-	public GUI(ConfigFile config) {
+	public GUI(AugFileCtrl augFileCtrl, ConfigFile config) {
 
-		configuration = config;
+		this.augFileCtrl = augFileCtrl;
 
-		strAugFiles = new String[0];
+		this.configuration = config;
 
-		augFileTabs = new ArrayList<>();
+ 		strAugFiles = new String[0];
 
-		augFileCtrl = new AugFileCtrl(configuration);
+ 		augFileTabs = new ArrayList<>();
 
 		currentScheme = configuration.getValue(CONFIG_KEY_SCHEME);
 
@@ -142,14 +153,44 @@ public class GUI extends MainWindow {
 		if (tabEntireBlocks == null) {
 			tabEntireBlocks = true;
 		}
+
+		currentBackup = configuration.getInteger(CONFIG_KEY_BACKUP_NUM, 0);
+
+		Thread backupThread = new Thread(new Runnable() {
+			@Override
+			public void run() {
+				while (true) {
+
+					if (currentlyShownTab != null) {
+						currentlyShownTab.backup(currentBackup);
+
+						currentBackup++;
+						// if we ever change the rollover limit here, also update the
+						// amount of leftpadding done in the currentlyShownTab.backup
+						// function!
+						if (currentBackup > 9999) {
+							currentBackup = 0;
+						}
+
+						configuration.set(CONFIG_KEY_BACKUP_NUM, currentBackup);
+					}
+
+					try {
+						// make backups once a minute
+						Thread.sleep(60*1000);
+					} catch (InterruptedException e) {
+						return;
+					}
+				}
+			}
+		});
+		backupThread.start();
 	}
 
 	@Override
 	public void run() {
 
 		super.create();
-
-		GuiUtils.maximizeWindow(mainFrame);
 
 		// Add content to the window
 		createMenu(mainFrame);
@@ -166,7 +207,47 @@ public class GUI extends MainWindow {
 
 		reSelectSchemeItems();
 
-		super.show();
+		// do not call super.show, as we are doing things a little bit
+		// differently around here (including restoring from previous
+		// position...)
+		// super.show();
+
+		Integer lastWidth = configuration.getInteger(CONFIG_KEY_WIDTH, -1);
+		Integer lastHeight = configuration.getInteger(CONFIG_KEY_HEIGHT, -1);
+		Integer lastLeft = configuration.getInteger(CONFIG_KEY_LEFT, -1);
+		Integer lastTop = configuration.getInteger(CONFIG_KEY_TOP, -1);
+
+		SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
+				// Stage everything to be shown
+				mainFrame.pack();
+
+				// Actually display the whole jazz
+				mainFrame.setVisible(true);
+
+				if ((lastWidth < 1) || (lastHeight < 1) || (lastLeft < 1) || (lastTop < 1)) {
+					GuiUtils.maximizeWindow(mainFrame);
+				} else {
+					mainFrame.setSize(lastWidth, lastHeight);
+
+					mainFrame.setPreferredSize(new Dimension(lastWidth, lastHeight));
+
+					mainFrame.setLocation(new Point(lastLeft, lastTop));
+				}
+
+				mainFrame.addComponentListener(new ComponentAdapter() {
+					public void componentResized(ComponentEvent componentEvent) {
+						configuration.set(CONFIG_KEY_WIDTH, mainFrame.getWidth());
+						configuration.set(CONFIG_KEY_HEIGHT, mainFrame.getHeight());
+					}
+
+					public void componentMoved(ComponentEvent componentEvent) {
+						configuration.set(CONFIG_KEY_LEFT, mainFrame.getLocation().x);
+						configuration.set(CONFIG_KEY_TOP, mainFrame.getLocation().y);
+					}
+				});
+			}
+		});
 
 		reloadAllAugFileTabs();
 	}
@@ -690,11 +771,12 @@ public class GUI extends MainWindow {
 
 					File fileToOpen = new File(curFile);
 
-					AugFile newFile = augFileCtrl.loadAnotherFile(fileToOpen);
+ 					AugFile newFile = augFileCtrl.loadAnotherFile(fileToOpen);
 
-					if (newFile != null) {
-						augFileTabs.add(new AugFileTab(mainPanelRight, newFile, this, augFileCtrl));
-					}
+ 					if (newFile != null) {
+						currentlyShownTab = new AugFileTab(mainPanelRight, newFile, this, augFileCtrl);
+						augFileTabs.add(currentlyShownTab);
+ 					}
 				}
 
 				regenerateAugFileList();
@@ -1426,7 +1508,7 @@ public class GUI extends MainWindow {
 	/**
 	 * Regenerate the file list on the left hand side based on the augFileTabs list,
 	 * and (if at least one file exists), select and open the current tab or, if it
-	 * is null, the first one
+	 * is null, the lastly added one
 	 */
 	public void regenerateAugFileList() {
 
@@ -1434,6 +1516,14 @@ public class GUI extends MainWindow {
 
 		for (AugFileTab curTab : augFileTabs) {
 			tabs.add(curTab);
+		}
+
+		// if there is no last shown tab...
+		if (currentlyShownTab == null) {
+			// ... show the lastly shown tab explicitly - this is fun, and the tabbed layout otherwise shows it anyway, so may as well...
+			if (tabs.size() > 0) {
+				currentlyShownTab = tabs.get(tabs.size() - 1);
+			}
 		}
 
 		Collections.sort(tabs, new Comparator<AugFileTab>() {
@@ -1455,14 +1545,6 @@ public class GUI extends MainWindow {
 		}
 
 		fileListComponent.setListData(strAugFiles);
-
-		// if there is no last shown tab...
-		if (currentlyShownTab == null) {
-			// ... show the first tab explicitly - this is fun, and the tabbed layout otherwise shows it anyway, so may as well...
-			if (tabs.size() > 0) {
-				currentlyShownTab = tabs.get(0);
-			}
-		}
 
 		// if there still is no last shown tab (e.g. we just deleted the very last one)...
 		if (currentlyShownTab == null) {

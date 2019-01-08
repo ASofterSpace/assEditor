@@ -41,3 +41,6 @@ src/com/asofterspace/toolbox
 
 # config files
 config
+
+# backups
+backup

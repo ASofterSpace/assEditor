@@ -7,6 +7,7 @@ package com.asofterspace.assEditor;
 import com.asofterspace.toolbox.configuration.ConfigFile;
 import com.asofterspace.toolbox.Utils;
 import com.asofterspace.toolbox.io.JSON;
+import com.asofterspace.toolbox.io.File;
 
 import javax.swing.SwingUtilities;
 
@@ -14,27 +15,30 @@ import javax.swing.SwingUtilities;
 public class Main {
 
 	public final static String PROGRAM_TITLE = "A Softer Space Editor";
-	public final static String VERSION_NUMBER = "0.0.0.7(" + Utils.TOOLBOX_VERSION_NUMBER + ")";
-	public final static String VERSION_DATE = "18. December 2018 - 27. December 2018";
+	public final static String VERSION_NUMBER = "0.0.0.8(" + Utils.TOOLBOX_VERSION_NUMBER + ")";
+	public final static String VERSION_DATE = "18. December 2018 - 7. January 2019";
 
 
 	/**
 	 * TODO:
-	 * automatic backups
 	 * converters inbuilt
 	 * enable stats at the bottom
 	 * click on filename at the top to make it copyable (or even copy immediately)
-	 * indent 1, 2, 4, 8, tab, 2 tab, unindent, force unindent
+	 * indent 1, 2, 4, 8, tab, 2 tab, unindent, force unindent by 1 or 2 characters
 	 * add highlighting for datex
 	 * increase / decrease font size
 	 * cut, copy, paste
 	 * undo, redo
 	 * enable hex view
 	 * enable function overview
-	 * add compiler call, and report results
-	 * ask to save before closing if files are unsaved
-	 * search with Ctrl + F
-	 * replace (like with edit.exe, replace also including newlines etc.!)
+	 * enable [Ctrl]+function name to jump to its declaration
+ 	 * add compiler call, and report results
+ 	 * ask to save before closing if files are unsaved
+ 	 * search with Ctrl + F
+ 	 * replace (like with edit.exe, replace also including newlines etc.!)
+	 * create a better opening dialog (e.g. one in which we can enter a path at the top)
+	 * increase scroll speed while scrolling through code files
+	 * add: set source language for all files to default (such that it asks for default every file and sets that)
 	 */
 	public static void main(String[] args) {
 
@@ -43,14 +47,24 @@ public class Main {
 		Utils.setVersionNumber(VERSION_NUMBER);
 		Utils.setVersionDate(VERSION_DATE);
 
-		ConfigFile config = new ConfigFile("settings");
+		// we get a config file based on the classpath, such that we know that this is always the
+		// same "install" location, without change even if we are called from somewhere else
+		ConfigFile config = new ConfigFile("settings", true);
 
-		// create a default config file, if necessary
-		if (config.getAllContents().isEmpty()) {
-			config.setAllContents(new JSON("{\"files\":[]}"));
+ 		// create a default config file, if necessary
+ 		if (config.getAllContents().isEmpty()) {
+ 			config.setAllContents(new JSON("{\"files\":[]}"));
+ 		}
+
+		AugFileCtrl augFileCtrl = new AugFileCtrl(config);
+
+		for (String arg : args) {
+			augFileCtrl.loadAnotherFileWithoutSaving(new File(arg));
 		}
 
-		SwingUtilities.invokeLater(new GUI(config));
+		augFileCtrl.saveConfigFileList();
+
+		SwingUtilities.invokeLater(new GUI(augFileCtrl, config));
 	}
 
 }

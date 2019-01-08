@@ -360,6 +360,17 @@ public class AugFileTab {
 		fileContentMemo.setSelectionEnd(newSelEnd);
 	}
 
+	public void backup(int backupNum) {
+
+		// set the backup file location relative to the class path to always
+		// get the same location, even when we are called from somewhere else
+		File backupFile = new File(System.getProperty("java.class.path") + "/../backup/" + Utils.leftPad0(backupNum, 4) + ".txt");
+
+		backupFile.setContent(augFile.getFilename() + "\n\n" + fileContentMemo.getText());
+
+		backupFile.create();
+	}
+
 	public void save() {
 
 		String contentText = fileContentMemo.getText();

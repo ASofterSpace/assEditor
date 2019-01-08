@@ -14,6 +14,8 @@ public class AugFile {
 
 	private File file;
 
+	private String filename;
+
 	private AugFileTab associatedTab;
 
 	protected AugFileCtrl parent;
@@ -32,45 +34,47 @@ public class AugFile {
 
 		this.parent = parent;
 
+		filename = file.getCanonicalFilename();
+
+		String lowfilename = filename.toLowerCase();
+
 		setInitialSourceLanguage(CodeKind.PLAINTEXT);
 
-		String filename = file.getFilename().toLowerCase();
+		if (lowfilename.endsWith(".java")) {
+ 			setInitialSourceLanguage(CodeKind.JAVA);
+ 		}
 
-		if (filename.endsWith(".java")) {
-			setInitialSourceLanguage(CodeKind.JAVA);
-		}
+		if (lowfilename.endsWith(".groovy")) {
+ 			setInitialSourceLanguage(CodeKind.GROOVY);
+ 		}
 
-		if (filename.endsWith(".groovy")) {
-			setInitialSourceLanguage(CodeKind.GROOVY);
-		}
+		if (lowfilename.endsWith(".cs")) {
+ 			setInitialSourceLanguage(CodeKind.CSHARP);
+ 		}
 
-		if (filename.endsWith(".cs")) {
-			setInitialSourceLanguage(CodeKind.CSHARP);
-		}
+		if (lowfilename.endsWith(".md")) {
+ 			setInitialSourceLanguage(CodeKind.MARKDOWN);
+ 		}
 
-		if (filename.endsWith(".md")) {
-			setInitialSourceLanguage(CodeKind.MARKDOWN);
-		}
+		if (lowfilename.endsWith(".pas")) {
+ 			setInitialSourceLanguage(CodeKind.DELPHI);
+ 		}
 
-		if (filename.endsWith(".pas")) {
-			setInitialSourceLanguage(CodeKind.DELPHI);
-		}
+		if (lowfilename.endsWith(".php")) {
+ 			setInitialSourceLanguage(CodeKind.PHP);
+ 		}
 
-		if (filename.endsWith(".php")) {
-			setInitialSourceLanguage(CodeKind.PHP);
-		}
+		if (lowfilename.endsWith(".htm") || lowfilename.endsWith(".html")) {
+ 			setInitialSourceLanguage(CodeKind.HTML);
+ 		}
 
-		if (filename.endsWith(".htm") || filename.endsWith(".html")) {
-			setInitialSourceLanguage(CodeKind.HTML);
-		}
+		if (lowfilename.endsWith(".js")) {
+ 			setInitialSourceLanguage(CodeKind.JAVASCRIPT);
+ 		}
 
-		if (filename.endsWith(".js")) {
-			setInitialSourceLanguage(CodeKind.JAVASCRIPT);
-		}
-
-		if (filename.endsWith(".css")) {
-			setInitialSourceLanguage(CodeKind.CSS);
-		}
+		if (lowfilename.endsWith(".css")) {
+ 			setInitialSourceLanguage(CodeKind.CSS);
+ 		}
 	}
 
 	public String getName() {
@@ -78,7 +82,7 @@ public class AugFile {
 	}
 
 	public String getFilename() {
-		return file.getFilename();
+		return filename;
 	}
 
 	public String getContent() {

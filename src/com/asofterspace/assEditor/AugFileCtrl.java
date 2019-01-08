@@ -61,16 +61,16 @@ public class AugFileCtrl {
 		saveConfigThread = new Thread(new Runnable() {
 			@Override
 			public void run() {
-				while (true) {
-					saveConfigFileList();
+ 				while (true) {
+ 					try {
+ 						// save every five seconds
+ 						Thread.sleep(5000);
+ 					} catch (InterruptedException e) {
+						return;
+ 					}
 
-					try {
-						// save every five seconds
-						Thread.sleep(5000);
-					} catch (InterruptedException e) {
-						// Ooops!
-					}
-				}
+					saveConfigFileList();
+ 				}
 			}
 		});
 		saveConfigThread.start();
@@ -109,19 +109,23 @@ public class AugFileCtrl {
 	 * Loads a file and returns the new AugFile instance
 	 * Will return null quite happily in case you are trying to open a file that was already opened!
 	 */
-	private AugFile loadAnotherFileWithoutSaving(File fileToLoad) {
+	public AugFile loadAnotherFileWithoutSaving(File fileToLoad) {
 
-		// first of all check that the file has not already been loaded!
-		for (AugFile oldFile : files) {
-			if (fileToLoad.getFilename().equals(oldFile.getFilename())) {
-				// indeed! we found one that we already got!
-				return null;
-			}
-		}
+		String newFilename = fileToLoad.getCanonicalFilename();
+
+ 		// first of all check that the file has not already been loaded!
+ 		for (AugFile oldFile : files) {
+			if (newFilename.equals(oldFile.getFilename())) {
+ 				// indeed! we found one that we already got!
+ 				return null;
+ 			}
+ 		}
 
 		AugFile result = new AugFile(this, fileToLoad);
 
-		files.add(result);
+		synchronized (files) {
+			files.add(result);
+		}
 
 		return result;
 	}
@@ -136,17 +140,28 @@ public class AugFileCtrl {
 	}
 
 	public List<AugFile> getFiles() {
-		return files;
+
+		List<AugFile> result;
+
+		synchronized (files) {
+			result = new ArrayList<>(files);
+		}
+
+		return result;
 	}
 
 	public void removeAllFiles() {
+
 		files = new ArrayList<>();
 
 		saveConfigFileList();
 	}
 
 	public void removeFile(AugFile fileToRemove) {
-		files.remove(fileToRemove);
+
+		synchronized (files) {
+			files.remove(fileToRemove);
+		}
 
 		saveConfigFileList();
 	}
@@ -159,23 +174,25 @@ public class AugFileCtrl {
 		StringBuilder fileListBuilder = new StringBuilder();
 		String sep = "";
 
-		for (AugFile augFile : files) {
-			fileListBuilder.append("{\"");
-			fileListBuilder.append(CONF_FILENAME);
-			fileListBuilder.append("\": \"");
-			fileListBuilder.append(augFile.getFilename());
-			fileListBuilder.append("\", \"");
-			fileListBuilder.append(CONF_CARET_POS);
-			fileListBuilder.append("\": ");
-			fileListBuilder.append(augFile.getCaretPos());
-			fileListBuilder.append(", \"");
-			fileListBuilder.append(CONF_LANGUAGE);
-			fileListBuilder.append("\": \"");
-			fileListBuilder.append(augFile.getSourceLanguage());
-			fileListBuilder.append("\"}");
-			fileListBuilder.append(sep);
-			sep = ", ";
-		}
+		synchronized (files) {
+			for (AugFile augFile : files) {
+				fileListBuilder.append("{\"");
+				fileListBuilder.append(CONF_FILENAME);
+				fileListBuilder.append("\": \"");
+				fileListBuilder.append(augFile.getFilename());
+				fileListBuilder.append("\", \"");
+				fileListBuilder.append(CONF_CARET_POS);
+				fileListBuilder.append("\": ");
+				fileListBuilder.append(augFile.getCaretPos());
+				fileListBuilder.append(", \"");
+				fileListBuilder.append(CONF_LANGUAGE);
+				fileListBuilder.append("\": \"");
+				fileListBuilder.append(augFile.getSourceLanguage());
+				fileListBuilder.append("\"}");
+				fileListBuilder.append(sep);
+				sep = ", ";
+			}
+ 		}
 
 		configuration.set("files", new JSON("[" + fileListBuilder.toString() + "]"));
 	}
@@ -185,8 +202,10 @@ public class AugFileCtrl {
 	 */
 	public void save() {
 
-		for (AugFile file : files) {
-			file.save();
+		synchronized (files) {
+			for (AugFile file : files) {
+				file.save();
+			}
 		}
 	}
 
