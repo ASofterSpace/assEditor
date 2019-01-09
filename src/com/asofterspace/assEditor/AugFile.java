@@ -36,6 +36,11 @@ public class AugFile {
 
 		filename = file.getCanonicalFilename();
 
+		resetInitialSourceLanguage();
+	}
+
+	public void resetInitialSourceLanguage() {
+
 		String lowfilename = filename.toLowerCase();
 
 		setInitialSourceLanguage(CodeKind.PLAINTEXT);

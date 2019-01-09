@@ -18,19 +18,21 @@ public enum CodeKind {
 	HTML("HTML"),
 	JAVA("Java"),
 	JAVASCRIPT("JavaScript"),
+	JSON("JSON"),
 	MARKDOWN("Markdown"),
 	PLAINTEXT("Plain Text"),
 	PHP("PHP"),
-	PYTHON("Python");
-	
-	
+	PYTHON("Python"),
+	XML("XML");
+
+
 	String kindStr;
-	
+
 
 	CodeKind (String kindStr) {
 		this.kindStr = kindStr;
 	}
-	
+
 	public static CodeKind getFromString(String kindStr) {
 		for (CodeKind ck : CodeKind.values()) {
 			if (ck.kindStr.equals(kindStr)) {
@@ -39,11 +41,11 @@ public enum CodeKind {
 		}
 		return null;
 	}
-	
+
 	public String toString() {
 		return kindStr;
 	}
-	
+
 	public String toLowerCase() {
 		return toString().toLowerCase();
 	}

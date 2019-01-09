@@ -38,7 +38,6 @@ public class Main {
  	 * replace (like with edit.exe, replace also including newlines etc.!)
 	 * create a better opening dialog (e.g. one in which we can enter a path at the top)
 	 * increase scroll speed while scrolling through code files
-	 * add: set source language for all files to default (such that it asks for default every file and sets that)
 	 */
 	public static void main(String[] args) {
 

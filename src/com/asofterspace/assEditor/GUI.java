@@ -491,6 +491,16 @@ public class GUI extends MainWindow {
 			languageCurrent.add(ckItem);
 			codeKindItemsCurrent.add(ckItem);
 		}
+		languageCurrent.addSeparator();
+		JMenuItem ckCurDefault = new JMenuItem("Default");
+		ckCurDefault.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				setOrUnsetCurrentCodeKind(null);
+			}
+		});
+		languageCurrent.add(ckCurDefault);
+
 		JMenu language = new JMenu("Code Language for All Files");
 		settings.add(language);
 		codeKindItems = new ArrayList<>();
@@ -505,6 +515,15 @@ public class GUI extends MainWindow {
 			language.add(ckItem);
 			codeKindItems.add(ckItem);
 		}
+		language.addSeparator();
+		JMenuItem ckDefault = new JMenuItem("Default");
+		ckDefault.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				setOrUnsetAllCodeKinds(null);
+			}
+		});
+		language.add(ckDefault);
 
 		JMenu scheme = new JMenu("Editor Color Scheme");
 		settings.add(scheme);
@@ -905,6 +924,8 @@ public class GUI extends MainWindow {
 		for (AugFileTab augFileTab : augFileTabs) {
 			augFileTab.setCodeKindAndCreateHighlighter(codeKind);
 		}
+
+		reSelectCurrentCodeKindItem();
 	}
 
 	private void reSelectSchemeItems() {

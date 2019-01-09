@@ -216,7 +216,11 @@ public class AugFileTab {
 			highlighter.discard();
 		}
 
-		currentCodeKind = codeKind;
+		if (codeKind == null) {
+			currentCodeKind = CodeKind.getFromString(augFile.getInitialSourceLanguage());
+		} else {
+			currentCodeKind = codeKind;
+		}
 
 		if (currentCodeKind == null) {
 			highlighter = new PlainText(fileContentMemo);
