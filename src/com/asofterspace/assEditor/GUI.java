@@ -8,6 +8,7 @@ import com.asofterspace.toolbox.codeeditor.Code;
 import com.asofterspace.toolbox.configuration.ConfigFile;
 import com.asofterspace.toolbox.io.Directory;
 import com.asofterspace.toolbox.io.File;
+import com.asofterspace.toolbox.io.SimpleFile;
 import com.asofterspace.toolbox.gui.Arrangement;
 import com.asofterspace.toolbox.gui.GuiUtils;
 import com.asofterspace.toolbox.gui.MainWindow;
@@ -67,6 +68,9 @@ public class GUI extends MainWindow {
 	private AugFileCtrl augFileCtrl;
 
 	private JPanel mainPanelRight;
+
+	private JPanel searchPanel;
+	private JTextField searchField;
 
 	private AugFileTab currentlyShownTab;
 
@@ -472,6 +476,18 @@ public class GUI extends MainWindow {
 		});
 		edit.add(applyGit);
 
+		edit.addSeparator();
+
+		JMenuItem search = new JMenuItem("Search");
+		search.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F, ActionEvent.CTRL_MASK));
+		search.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				showSearchBar();
+			}
+		});
+		edit.add(search);
+
 
 		JMenu settings = new JMenu("Settings");
 		menu.add(settings);
@@ -672,17 +688,21 @@ public class GUI extends MainWindow {
 
 	private JPanel createMainPanel(JFrame parent) {
 
-	    JPanel mainPanel = new JPanel();
-	    mainPanel.setPreferredSize(new Dimension(800, 500));
+		JPanel mainPanel = new JPanel();
+		mainPanel.setPreferredSize(new Dimension(800, 500));
 		GridBagLayout mainPanelLayout = new GridBagLayout();
 		mainPanel.setLayout(mainPanelLayout);
 
-	    mainPanelRight = new JPanel();
+		JPanel mainPanelRightOuter = new JPanel();
+		GridBagLayout mainPanelRightOuterLayout = new GridBagLayout();
+		mainPanelRightOuter.setLayout(mainPanelRightOuterLayout);
+
+		mainPanelRight = new JPanel();
 		mainPanelRight.setLayout(new CardLayout());
 		mainPanelRight.setPreferredSize(new Dimension(8, 8));
 
-	    JPanel gapPanel = new JPanel();
-	    gapPanel.setPreferredSize(new Dimension(8, 8));
+		JPanel gapPanel = new JPanel();
+		gapPanel.setPreferredSize(new Dimension(8, 8));
 
 		String[] fileList = new String[0];
 		fileListComponent = new JList<String>(fileList);
@@ -691,9 +711,9 @@ public class GUI extends MainWindow {
 		fileListComponent.addMouseListener(new MouseListener() {
 
 			@Override
-		    public void mouseClicked(MouseEvent e) {
+			public void mouseClicked(MouseEvent e) {
 				showSelectedTab();
-		    }
+			}
 
 			@Override
 			public void mousePressed(MouseEvent e) {
@@ -723,7 +743,7 @@ public class GUI extends MainWindow {
 			}
 		});
 
-        fileListComponent.addKeyListener(new KeyListener() {
+		fileListComponent.addKeyListener(new KeyListener() {
 
 			@Override
 			public void keyTyped(KeyEvent e) {
@@ -748,15 +768,52 @@ public class GUI extends MainWindow {
 		augFileListScroller.setPreferredSize(new Dimension(8, 8));
 		augFileListScroller.setBorder(BorderFactory.createEmptyBorder());
 
+		searchPanel = new JPanel();
+		searchPanel.setLayout(new GridBagLayout());
+		searchPanel.setVisible(false);
+
+		searchField = new JTextField();
+
+		searchField.getDocument().addDocumentListener(new DocumentListener() {
+			public void changedUpdate(DocumentEvent e) {
+				search();
+			}
+			public void removeUpdate(DocumentEvent e) {
+				search();
+			}
+			public void insertUpdate(DocumentEvent e) {
+				search();
+			}
+			private void search() {
+				// TODO
+
+				String searchFor = searchField.getText();
+				System.out.println("searching for: " + searchFor);
+			}
+		});
+
+		searchPanel.add(searchField, new Arrangement(0, 0, 1.0, 1.0));
+
+		mainPanelRightOuter.add(mainPanelRight, new Arrangement(0, 0, 1.0, 1.0));
+
+		mainPanelRightOuter.add(searchPanel, new Arrangement(0, 1, 1.0, 0.0));
+
 		mainPanel.add(augFileListScroller, new Arrangement(0, 0, 0.2, 1.0));
 
 		mainPanel.add(gapPanel, new Arrangement(1, 0, 0.0, 0.0));
 
-		mainPanel.add(mainPanelRight, new Arrangement(2, 0, 1.0, 1.0));
+		mainPanel.add(mainPanelRightOuter, new Arrangement(2, 0, 1.0, 1.0));
 
 		parent.add(mainPanel, BorderLayout.CENTER);
 
-	    return mainPanel;
+		return mainPanel;
+	}
+
+	private void showSearchBar() {
+
+		searchPanel.setVisible(true);
+
+		searchField.requestFocus();
 	}
 
 	private void openFile() {
@@ -812,7 +869,7 @@ public class GUI extends MainWindow {
 
 	private void newFile() {
 
-		File fileToOpen = new File("data/new.txt");
+		SimpleFile fileToOpen = new SimpleFile("data/new.txt");
 
 		fileToOpen.create();
 

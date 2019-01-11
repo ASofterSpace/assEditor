@@ -17,6 +17,7 @@ import com.asofterspace.toolbox.codeeditor.PlainText;
 import com.asofterspace.toolbox.configuration.ConfigFile;
 import com.asofterspace.toolbox.io.Directory;
 import com.asofterspace.toolbox.io.File;
+import com.asofterspace.toolbox.io.SimpleFile;
 import com.asofterspace.toolbox.gui.Arrangement;
 import com.asofterspace.toolbox.gui.CodeEditor;
 import com.asofterspace.toolbox.gui.CodeEditorLineMemo;
@@ -368,7 +369,7 @@ public class AugFileTab {
 
 		// set the backup file location relative to the class path to always
 		// get the same location, even when we are called from somewhere else
-		File backupFile = new File(System.getProperty("java.class.path") + "/../backup/" + Utils.leftPad0(backupNum, 4) + ".txt");
+		SimpleFile backupFile = new SimpleFile(System.getProperty("java.class.path") + "/../backup/" + Utils.leftPad0(backupNum, 4) + ".txt");
 
 		backupFile.setContent(augFile.getFilename() + "\n\n" + fileContentMemo.getText());
 

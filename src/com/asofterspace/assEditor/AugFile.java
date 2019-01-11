@@ -5,6 +5,7 @@
 package com.asofterspace.assEditor;
 
 import com.asofterspace.toolbox.io.File;
+import com.asofterspace.toolbox.io.SimpleFile;
 
 
 /**
@@ -12,7 +13,7 @@ import com.asofterspace.toolbox.io.File;
  */
 public class AugFile {
 
-	private File file;
+	private SimpleFile file;
 
 	private String filename;
 
@@ -29,6 +30,11 @@ public class AugFile {
 
 
 	public AugFile(AugFileCtrl parent, File file) {
+
+		this(parent, new SimpleFile(file));
+	}
+
+	public AugFile(AugFileCtrl parent, SimpleFile file) {
 
 		this.file = file;
 
