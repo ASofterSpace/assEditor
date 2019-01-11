@@ -36,8 +36,10 @@ public class Main {
  	 * ask to save before closing if files are unsaved
  	 * search with Ctrl + F
  	 * replace (like with edit.exe, replace also including newlines etc.!)
-	 * create a better opening dialog (e.g. one in which we can enter a path at the top)
+	 * create a better opening dialog (e.g. one in which we can enter a path at the top, and where we can
+	 *   automagically descend into Java-madness without having to click through src>main>java>com>ass>...)
 	 * increase scroll speed while scrolling through code files
+	 * do not base left-hand tabs on filename only (such that several Main.java can be opened at the same time)
 	 */
 	public static void main(String[] args) {
 
