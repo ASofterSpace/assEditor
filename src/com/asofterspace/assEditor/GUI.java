@@ -774,6 +774,7 @@ public class GUI extends MainWindow {
 
 		searchField = new JTextField();
 
+		// listen to text updates
 		searchField.getDocument().addDocumentListener(new DocumentListener() {
 			public void changedUpdate(DocumentEvent e) {
 				search();
@@ -785,10 +786,22 @@ public class GUI extends MainWindow {
 				search();
 			}
 			private void search() {
-				// TODO
-
 				String searchFor = searchField.getText();
-				System.out.println("searching for: " + searchFor);
+
+				if (currentlyShownTab != null) {
+					currentlyShownTab.search(searchFor);
+				}
+			}
+		});
+
+		// listen to the enter key being pressed (which does not create text updates)
+		searchField.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				String searchFor = searchField.getText();
+
+				if (currentlyShownTab != null) {
+					currentlyShownTab.search(searchFor);
+				}
 			}
 		});
 

@@ -15,8 +15,8 @@ import javax.swing.SwingUtilities;
 public class Main {
 
 	public final static String PROGRAM_TITLE = "A Softer Space Editor";
-	public final static String VERSION_NUMBER = "0.0.0.8(" + Utils.TOOLBOX_VERSION_NUMBER + ")";
-	public final static String VERSION_DATE = "18. December 2018 - 7. January 2019";
+	public final static String VERSION_NUMBER = "0.0.0.9(" + Utils.TOOLBOX_VERSION_NUMBER + ")";
+	public final static String VERSION_DATE = "18. December 2018 - 13. January 2019";
 
 
 	/**
@@ -34,7 +34,6 @@ public class Main {
 	 * enable [Ctrl]+function name to jump to its declaration
  	 * add compiler call, and report results
  	 * ask to save before closing if files are unsaved
- 	 * search with Ctrl + F
  	 * replace (like with edit.exe, replace also including newlines etc.!)
 	 * create a better opening dialog (e.g. one in which we can enter a path at the top, and where we can
 	 *   automagically descend into Java-madness without having to click through src>main>java>com>ass>...)

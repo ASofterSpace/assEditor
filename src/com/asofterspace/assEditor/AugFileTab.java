@@ -333,16 +333,19 @@ public class AugFileTab {
 		fileContentMemo.setText(sourceCode.toString());
 	}
 
+	private void setCaretPos(int newSelStart, int newSelEnd) {
+
+		fileContentMemo.setCaretPosition(newSelStart);
+		fileContentMemo.setSelectionStart(newSelStart);
+		fileContentMemo.setSelectionEnd(newSelEnd);
+	}
+
 	public void selectAll() {
 
 		int newSelStart = 0;
 		int newSelEnd = fileContentMemo.getText().length();
 
-		fileContentMemo.setCaretPosition(newSelStart);
-
-		fileContentMemo.setSelectionStart(newSelStart);
-
-		fileContentMemo.setSelectionEnd(newSelEnd);
+		setCaretPos(newSelStart, newSelEnd);
 	}
 
 	public void selectFromHere() {
@@ -350,9 +353,7 @@ public class AugFileTab {
 		int newSelStart = fileContentMemo.getCaretPosition();
 		int newSelEnd = fileContentMemo.getText().length();
 
-		fileContentMemo.setCaretPosition(newSelStart);
-		fileContentMemo.setSelectionStart(newSelStart);
-		fileContentMemo.setSelectionEnd(newSelEnd);
+		setCaretPos(newSelStart, newSelEnd);
 	}
 
 	public void selectToHere() {
@@ -360,9 +361,49 @@ public class AugFileTab {
 		int newSelStart = 0;
 		int newSelEnd = fileContentMemo.getCaretPosition();
 
-		fileContentMemo.setCaretPosition(newSelStart);
-		fileContentMemo.setSelectionStart(newSelStart);
-		fileContentMemo.setSelectionEnd(newSelEnd);
+		setCaretPos(newSelStart, newSelEnd);
+	}
+
+	private String lastSearched = null;
+
+	public void search(String searchFor) {
+
+		String text = fileContentMemo.getText();
+
+		int curpos = fileContentMemo.getCaretPosition();
+
+		// if we already searched for the exact same string before, but it was shorter (or
+		// longer, but definitely not the same), then continue searching at the same position,
+		// so that we are not jumping around needlessly while someone is entering their search
+		// query letter-by-letter
+		if (lastSearched != null) {
+			if (searchFor != null) {
+				if (lastSearched.length() < searchFor.length()) {
+					if (searchFor.startsWith(lastSearched)) {
+						curpos -= searchFor.length();
+					}
+				}
+				if (lastSearched.length() > searchFor.length()) {
+					if (lastSearched.startsWith(searchFor)) {
+						curpos -= lastSearched.length();
+					}
+				}
+			}
+		}
+
+		lastSearched = searchFor;
+
+		int nextpos = text.indexOf(searchFor, curpos);
+
+		if (nextpos < 0) {
+			nextpos = text.indexOf(searchFor);
+		}
+
+		if (nextpos >= 0) {
+			setCaretPos(nextpos, nextpos + searchFor.length());
+		}
+
+		highlighter.setSearchStr(searchFor);
 	}
 
 	public void backup(int backupNum) {
