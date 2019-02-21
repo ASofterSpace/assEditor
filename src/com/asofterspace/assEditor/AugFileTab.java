@@ -9,6 +9,7 @@ import com.asofterspace.toolbox.codeeditor.CSharpCode;
 import com.asofterspace.toolbox.codeeditor.GroovyCode;
 import com.asofterspace.toolbox.codeeditor.JavaCode;
 import com.asofterspace.toolbox.codeeditor.JavaScriptCode;
+import com.asofterspace.toolbox.codeeditor.JsonCode;
 import com.asofterspace.toolbox.codeeditor.HtmlCode;
 import com.asofterspace.toolbox.codeeditor.PhpCode;
 import com.asofterspace.toolbox.codeeditor.LineNumbering;
@@ -247,6 +248,9 @@ public class AugFileTab {
 					break;
 				case JAVASCRIPT:
 					highlighter = new JavaScriptCode(fileContentMemo);
+					break;
+				case JSON:
+					highlighter = new JsonCode(fileContentMemo);
 					break;
 				default:
 					highlighter = new PlainText(fileContentMemo);

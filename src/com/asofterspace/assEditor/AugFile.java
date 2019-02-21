@@ -83,6 +83,10 @@ public class AugFile {
  			setInitialSourceLanguage(CodeKind.JAVASCRIPT);
  		}
 
+		if (lowfilename.endsWith(".json")) {
+ 			setInitialSourceLanguage(CodeKind.JSON);
+ 		}
+
 		if (lowfilename.endsWith(".css")) {
  			setInitialSourceLanguage(CodeKind.CSS);
  		}
