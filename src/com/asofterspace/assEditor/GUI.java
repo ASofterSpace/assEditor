@@ -971,7 +971,7 @@ public class GUI extends MainWindow {
 
 	private void reSelectCurrentCodeKindItem() {
 
-		String currentCodeKindStr = currentlyShownTab.getSourceLanguage();
+		String currentCodeKindStr = currentlyShownTab.getSourceLanguage().toString();
 
 		for (JCheckBoxMenuItem codeKindItem : codeKindItemsCurrent) {
 			codeKindItem.setSelected(false);

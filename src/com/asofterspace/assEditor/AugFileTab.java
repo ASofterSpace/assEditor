@@ -78,14 +78,14 @@ public class AugFileTab {
 
 	private Callback onChangeCallback;
 
-	private CodeKind currentCodeKind;
-
 	private boolean changed = false;
 
 	// graphical components
 	private JLabel nameLabel;
 	private JTextPane lineMemo;
 	private JTextPane fileContentMemo;
+	private JTextPane functionMemo;
+	private JScrollPane sideScrollPane;
 
 
 	public AugFileTab(JPanel parentPanel, AugFile augFile, final GUI gui, AugFileCtrl augFileCtrl) {
@@ -109,6 +109,8 @@ public class AugFileTab {
 		};
 
 		visualPanel = createVisualPanel();
+
+		setCodeKindAndCreateHighlighter();
 	}
 
 	private JPanel createVisualPanel() {
@@ -135,7 +137,7 @@ public class AugFileTab {
 
 		JScrollPane sourceCodeScroller = new JScrollPane(scrolledPanel);
 		sourceCodeScroller.setPreferredSize(new Dimension(1, 1));
-		tab.add(sourceCodeScroller, new Arrangement(0, 3, 1.0, 0.8));
+		tab.add(sourceCodeScroller, new Arrangement(0, 1, 1.0, 0.8));
 
 		Integer origCaretPos = augFile.getInitialCaretPos();
 
@@ -148,9 +150,14 @@ public class AugFileTab {
 			fileContentMemo.setCaretPosition(origCaretPos);
 		}
 
-		String origSourceLang = augFile.getInitialSourceLanguage();
-		CodeKind codeKind = CodeKind.getFromString(origSourceLang);
-		setCodeKindAndCreateHighlighter(codeKind);
+
+		functionMemo = new CodeEditor();
+
+		sideScrollPane = new JScrollPane(functionMemo);
+		sideScrollPane.setPreferredSize(new Dimension(1, 1));
+
+		tab.add(sideScrollPane, new Arrangement(1, 1, 0.2, 1.0));
+
 
 		tab.setVisible(false);
 
@@ -214,22 +221,27 @@ public class AugFileTab {
 
 	public void setCodeKindAndCreateHighlighter(CodeKind codeKind) {
 
+		// tell the associated file about this...
+		augFile.setSourceLanguage(codeKind);
+
+		setCodeKindAndCreateHighlighter();
+	}
+
+	public void setCodeKindAndCreateHighlighter() {
+
+		// ... and get what the file made of it (e.g. transferring null to the initial default)
+		CodeKind codeKind = augFile.getSourceLanguage();
+
 		if (highlighter != null) {
 			highlighter.discard();
 		}
 
 		if (codeKind == null) {
-			currentCodeKind = CodeKind.getFromString(augFile.getInitialSourceLanguage());
-		} else {
-			currentCodeKind = codeKind;
-		}
-
-		if (currentCodeKind == null) {
 			highlighter = new PlainText(fileContentMemo);
 		} else {
-			switch (currentCodeKind) {
+			switch (codeKind) {
 				case JAVA:
-					highlighter = new JavaCode(fileContentMemo);
+					highlighter = new JavaCode(fileContentMemo, functionMemo);
 					break;
 				case GROOVY:
 					highlighter = new GroovyCode(fileContentMemo);
@@ -256,6 +268,8 @@ public class AugFileTab {
 					highlighter = new PlainText(fileContentMemo);
 			}
 		}
+
+		sideScrollPane.setVisible(highlighter.suppliesFunctions());
 
 		highlighter.setOnChange(onChangeCallback);
 
@@ -302,13 +316,9 @@ public class AugFileTab {
 		return fileContentMemo.getCaretPosition();
 	}
 
-	public String getSourceLanguage() {
+	public CodeKind getSourceLanguage() {
 
-		if (currentCodeKind == null) {
-			return CodeKind.PLAINTEXT.toString();
-		}
-
-		return currentCodeKind.toString();
+		return augFile.getSourceLanguage();
 	}
 
 	public void applyGit() {

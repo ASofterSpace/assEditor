@@ -53,7 +53,9 @@ public class AugFileCtrl {
 				if (curFile != null) {
 					curFile.setInitialCaretPos(jsonFile.getInteger(CONF_CARET_POS));
 
-					curFile.setInitialSourceLanguage(jsonFile.getString(CONF_LANGUAGE));
+					CodeKind sourceLang = CodeKind.getFromString(jsonFile.getString(CONF_LANGUAGE));
+
+					curFile.setSourceLanguage(sourceLang);
 				}
 			}
 		}
