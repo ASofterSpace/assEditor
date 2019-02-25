@@ -8,6 +8,7 @@ import com.asofterspace.toolbox.codeeditor.Code;
 import com.asofterspace.toolbox.configuration.ConfigFile;
 import com.asofterspace.toolbox.io.Directory;
 import com.asofterspace.toolbox.io.File;
+import com.asofterspace.toolbox.io.JSON;
 import com.asofterspace.toolbox.io.SimpleFile;
 import com.asofterspace.toolbox.gui.Arrangement;
 import com.asofterspace.toolbox.gui.GuiUtils;
@@ -108,6 +109,7 @@ public class GUI extends MainWindow {
 	private JMenuItem close;
 	private List<JMenuItem> codeKindItems;
 	private List<JCheckBoxMenuItem> codeKindItemsCurrent;
+	private List<JCheckBoxMenuItem> workspaces;
 
 	private List<AugFileTab> augFileTabs;
 
@@ -264,6 +266,30 @@ public class GUI extends MainWindow {
 
 		JMenu file = new JMenu("File");
 		menu.add(file);
+
+		JMenu switchWorkspace = new JMenu("Switch Workspace");
+		file.add(switchWorkspace);
+
+		workspaces = new ArrayList<>();
+		for (String workspaceName : augFileCtrl.getWorkspaces()) {
+			JCheckBoxMenuItem workspace = new JCheckBoxMenuItem(workspaceName);
+			workspace.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					uncheckWorkspaces();
+					workspace.setSelected(true);
+					augFileCtrl.switchToWorkspace(workspaceName);
+					reloadAllAugFileTabs();
+				}
+			});
+			if (workspaceName.equals(augFileCtrl.getWorkspaceName())) {
+				workspace.setSelected(true);
+			} else {
+				workspace.setSelected(false);
+			}
+			switchWorkspace.add(workspace);
+			workspaces.add(workspace);
+		}
 
 		JMenuItem newFile = new JMenuItem("New File");
 		newFile.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, ActionEvent.CTRL_MASK));
@@ -837,6 +863,12 @@ public class GUI extends MainWindow {
 		return mainPanel;
 	}
 
+	private void uncheckWorkspaces() {
+		for (JCheckBoxMenuItem workspace : workspaces) {
+			workspace.setSelected(false);
+		}
+	}
+
 	private void showSearchBar() {
 
 		searchPanel.setVisible(true);
@@ -850,7 +882,7 @@ public class GUI extends MainWindow {
 		// (while you're at it, make Öffnen into Save for the save dialog, but keep it as Open for the open dialog... ^^)
 		JFileChooser augFilePicker;
 
-		String lastDirectory = configuration.getValue(CONFIG_KEY_LAST_DIRECTORY);
+		String lastDirectory = getWorkspace().getString(CONFIG_KEY_LAST_DIRECTORY);
 
 		if ((lastDirectory != null) && !"".equals(lastDirectory)) {
 			augFilePicker = new JFileChooser(new java.io.File(lastDirectory));
@@ -869,7 +901,8 @@ public class GUI extends MainWindow {
 			case JFileChooser.APPROVE_OPTION:
 
 				// load the files
-				configuration.set(CONFIG_KEY_LAST_DIRECTORY, augFilePicker.getCurrentDirectory().getAbsolutePath());
+				getWorkspace().setString(CONFIG_KEY_LAST_DIRECTORY, augFilePicker.getCurrentDirectory().getAbsolutePath());
+				configuration.create();
 
 				for (java.io.File curFile : augFilePicker.getSelectedFiles()) {
 
@@ -1838,5 +1871,9 @@ public class GUI extends MainWindow {
 		GuiUtils.centerAndShowWindow(whatToDoDialog);
 	}
 	*/
+
+	private JSON getWorkspace() {
+		return augFileCtrl.getWorkspace();
+	}
 
 }

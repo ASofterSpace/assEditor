@@ -30,6 +30,8 @@ public class AugFileCtrl {
 
 	private List<AugFile> files;
 
+	private JSON activeWorkspace;
+
 	private Thread saveConfigThread;
 
 
@@ -37,28 +39,14 @@ public class AugFileCtrl {
 
 		this.configuration = configuration;
 
-		files = new ArrayList<>();
+		String activeWorkspaceName = configuration.getValue("activeWorkspace");
 
-		JSON jsonConfig = configuration.getAllContents();
+		switchToWorkspace(activeWorkspaceName);
 
-		List<JSON> jsonFiles = jsonConfig.getArray("files");
+		startConfigSavingThread();
+	}
 
-		if (jsonFiles != null) {
-			for (JSON jsonFile : jsonFiles) {
-
-				File fileToOpen = new File(jsonFile.getString(CONF_FILENAME));
-
-				AugFile curFile = loadAnotherFileWithoutSaving(fileToOpen);
-
-				if (curFile != null) {
-					curFile.setInitialCaretPos(jsonFile.getInteger(CONF_CARET_POS));
-
-					CodeKind sourceLang = CodeKind.getFromString(jsonFile.getString(CONF_LANGUAGE));
-
-					curFile.setSourceLanguage(sourceLang);
-				}
-			}
-		}
+	private void startConfigSavingThread() {
 
 		saveConfigThread = new Thread(new Runnable() {
 			@Override
@@ -76,6 +64,68 @@ public class AugFileCtrl {
 			}
 		});
 		saveConfigThread.start();
+	}
+
+	public String getWorkspaceName() {
+		return activeWorkspace.getString("name");
+	}
+
+	public JSON getWorkspace() {
+		return activeWorkspace;
+	}
+
+	public List<String> getWorkspaces() {
+
+		List<String> workspaces = new ArrayList<>();
+
+		List<JSON> jsonWorkspaces = configuration.getAllContents().getArray("workspaces");
+
+		for (JSON jsonWorkspace : jsonWorkspaces) {
+			workspaces.add(jsonWorkspace.getString("name"));
+		}
+
+		return workspaces;
+	}
+
+	public void switchToWorkspace(String workspace) {
+
+		List<JSON> jsonWorkspaces = configuration.getAllContents().getArray("workspaces");
+
+		for (JSON jsonWorkspace : jsonWorkspaces) {
+			if ((workspace == null) ||
+			     workspace.equals(jsonWorkspace.getString("name"))) {
+				switchToJsonWorkspace(jsonWorkspace);
+				return;
+			}
+		}
+	}
+
+	private void switchToJsonWorkspace(JSON workspace) {
+
+		activeWorkspace = workspace;
+
+		configuration.getAllContents().setString("activeWorkspace", workspace.getString("name"));
+
+		files = new ArrayList<>();
+
+		List<JSON> jsonFiles = workspace.getArray("files");
+
+		if (jsonFiles != null) {
+			for (JSON jsonFile : jsonFiles) {
+
+				File fileToOpen = new File(jsonFile.getString(CONF_FILENAME));
+
+				AugFile curFile = loadAnotherFileWithoutSaving(fileToOpen);
+
+				if (curFile != null) {
+					curFile.setInitialCaretPos(jsonFile.getInteger(CONF_CARET_POS));
+
+					CodeKind sourceLang = CodeKind.getFromString(jsonFile.getString(CONF_LANGUAGE));
+
+					curFile.setSourceLanguage(sourceLang);
+				}
+			}
+		}
 	}
 
 	/*
@@ -171,8 +221,6 @@ public class AugFileCtrl {
 	public void saveConfigFileList() {
 
 		// TODO :: ugly - fix me! (we are setting JSON via String, which works, but wäh... ^^)
-		JSON jsonConfig = configuration.getAllContents();
-
 		StringBuilder fileListBuilder = new StringBuilder();
 		String sep = "";
 
@@ -196,7 +244,9 @@ public class AugFileCtrl {
 			}
  		}
 
-		configuration.set("files", new JSON("[" + fileListBuilder.toString() + "]"));
+		activeWorkspace.set("files", new JSON("[" + fileListBuilder.toString() + "]"));
+
+		configuration.create();
 	}
 
 	/**

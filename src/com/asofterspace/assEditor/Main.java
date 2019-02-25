@@ -53,7 +53,7 @@ public class Main {
 
  		// create a default config file, if necessary
  		if (config.getAllContents().isEmpty()) {
- 			config.setAllContents(new JSON("{\"files\":[]}"));
+ 			config.setAllContents(new JSON("{\"workspaces\": [{\"name\": \"default\", \"files\": []}]}"));
  		}
 
 		AugFileCtrl augFileCtrl = new AugFileCtrl(config);
