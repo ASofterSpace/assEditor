@@ -30,20 +30,20 @@ Or under Linux:
 To start up the assEditor after it has been built, you can call under Windows:
 
 ```
-run.bat
+assEditor.bat
 ```
 
 Or under Linux:
 
 ```
-./run.sh
+./assEditor.sh
 ```
 
 ## Alias
 
 You can add an alias to bash under Linux to call this more easily, e.g.:
 
-alias ae='/absolute/path/to/assEditor/run.sh'
+alias ae='/absolute/path/to/assEditor/assEditor.sh'
 
 If you put this line into ~/.bashrc, it the alias ae will be available in every bash session.
 
