@@ -420,6 +420,17 @@ public class AugFileTab {
 		highlighter.setSearchStr(searchFor);
 	}
 
+	public void replaceAll(String searchFor, String replaceWith) {
+
+		String text = fileContentMemo.getText();
+
+		text = text.replace(searchFor, replaceWith);
+
+		fileContentMemo.setText(text);
+
+		highlighter.setSearchStr("");
+	}
+
 	public void backup(int backupNum) {
 
 		// set the backup file location relative to the class path to always

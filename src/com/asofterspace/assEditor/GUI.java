@@ -805,7 +805,22 @@ public class GUI extends MainWindow {
 			}
 		});
 
+		JTextField replaceField = new JTextField();
+
+		// listen to the enter key being pressed (which does not create text updates)
+		replaceField.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				String searchFor = searchField.getText();
+				String replaceWith = replaceField.getText();
+
+				if (currentlyShownTab != null) {
+					currentlyShownTab.replaceAll(searchFor, replaceWith);
+				}
+			}
+		});
+
 		searchPanel.add(searchField, new Arrangement(0, 0, 1.0, 1.0));
+		searchPanel.add(replaceField, new Arrangement(0, 1, 1.0, 1.0));
 
 		mainPanelRightOuter.add(mainPanelRight, new Arrangement(0, 0, 1.0, 1.0));
 
