@@ -760,7 +760,7 @@ public class GUI extends MainWindow {
 			}
 
 			private void showPopupAndSelectedTab(MouseEvent e) {
-			    if (e.isPopupTrigger()) {
+				if (e.isPopupTrigger()) {
 					fileListComponent.setSelectedIndex(fileListComponent.locationToIndex(e.getPoint()));
 					fileListPopup.show(fileListComponent, e.getX(), e.getY());
 				}
@@ -1665,11 +1665,14 @@ public class GUI extends MainWindow {
 			}
 		}
 
-		Collections.sort(tabs, new Comparator<AugFileTab>() {
-			public int compare(AugFileTab a, AugFileTab b) {
-				return a.getName().toLowerCase().compareTo(b.getName().toLowerCase());
-			}
-		});
+				Collections.sort(tabs, new Comparator<AugFileTab>() {
+						public int compare(AugFileTab a, AugFileTab b) {
+								// TODO :: make it configurable whether to sort by just the name or by
+								// the full name (including the path)!
+								// return a.getName().toLowerCase().compareTo(b.getName().toLowerCase());
+								return a.getFullName().toLowerCase().compareTo(b.getFullName().toLowerCase());
+						}
+				});
 
 		strAugFiles = new String[tabs.size()];
 
