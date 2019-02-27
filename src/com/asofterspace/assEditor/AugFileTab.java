@@ -29,6 +29,8 @@ import com.asofterspace.toolbox.utils.Callback;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Desktop;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -37,6 +39,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
+import java.awt.Toolkit;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -122,6 +125,15 @@ public class AugFileTab {
 		nameLabel.setPreferredSize(new Dimension(0, nameLabel.getPreferredSize().height*2));
 		tab.add(nameLabel, new Arrangement(0, 0, 1.0, 0.0));
 
+				nameLabel.addMouseListener(new MouseAdapter() {
+						@Override
+						public void mouseClicked(MouseEvent e) {
+								StringSelection selection = new StringSelection(nameLabel.getText());
+								Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+								clipboard.setContents(selection, selection);
+						}
+				});
+
 		JPanel scrolledPanel = new JPanel();
 		scrolledPanel.setLayout(new GridBagLayout());
 
@@ -192,6 +204,11 @@ public class AugFileTab {
 
 		return augFile.getName();
 	}
+
+		public String getFullName() {
+
+				return augFile.getFilename();
+		}
 
 	/*
 	public void setName(String newName) {
