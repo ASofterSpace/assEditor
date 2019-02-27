@@ -7,30 +7,30 @@ package com.asofterspace.assEditor;
 import com.asofterspace.toolbox.codeeditor.Code;
 import com.asofterspace.toolbox.codeeditor.CSharpCode;
 import com.asofterspace.toolbox.codeeditor.GroovyCode;
+import com.asofterspace.toolbox.codeeditor.HtmlCode;
 import com.asofterspace.toolbox.codeeditor.JavaCode;
 import com.asofterspace.toolbox.codeeditor.JavaScriptCode;
 import com.asofterspace.toolbox.codeeditor.JsonCode;
-import com.asofterspace.toolbox.codeeditor.HtmlCode;
-import com.asofterspace.toolbox.codeeditor.PhpCode;
 import com.asofterspace.toolbox.codeeditor.LineNumbering;
 import com.asofterspace.toolbox.codeeditor.MarkdownCode;
+import com.asofterspace.toolbox.codeeditor.PhpCode;
 import com.asofterspace.toolbox.codeeditor.PlainText;
 import com.asofterspace.toolbox.configuration.ConfigFile;
-import com.asofterspace.toolbox.io.Directory;
-import com.asofterspace.toolbox.io.File;
-import com.asofterspace.toolbox.io.SimpleFile;
 import com.asofterspace.toolbox.gui.Arrangement;
 import com.asofterspace.toolbox.gui.CodeEditor;
 import com.asofterspace.toolbox.gui.CodeEditorLineMemo;
 import com.asofterspace.toolbox.gui.GuiUtils;
-import com.asofterspace.toolbox.Utils;
+import com.asofterspace.toolbox.io.Directory;
+import com.asofterspace.toolbox.io.File;
+import com.asofterspace.toolbox.io.SimpleFile;
 import com.asofterspace.toolbox.utils.Callback;
+import com.asofterspace.toolbox.Utils;
 
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Desktop;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
+import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -46,8 +46,8 @@ import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Set;
 
-import javax.swing.BorderFactory;
 import javax.swing.border.CompoundBorder;
+import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -62,7 +62,6 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
 import javax.swing.JTree;
-
 
 public class AugFileTab {
 
@@ -125,14 +124,14 @@ public class AugFileTab {
 		nameLabel.setPreferredSize(new Dimension(0, nameLabel.getPreferredSize().height*2));
 		tab.add(nameLabel, new Arrangement(0, 0, 1.0, 0.0));
 
-				nameLabel.addMouseListener(new MouseAdapter() {
-						@Override
-						public void mouseClicked(MouseEvent e) {
-								StringSelection selection = new StringSelection(nameLabel.getText());
-								Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-								clipboard.setContents(selection, selection);
-						}
-				});
+		nameLabel.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				StringSelection selection = new StringSelection(nameLabel.getText());
+				Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+				clipboard.setContents(selection, selection);
+			}
+		});
 
 		JPanel scrolledPanel = new JPanel();
 		scrolledPanel.setLayout(new GridBagLayout());
@@ -518,6 +517,11 @@ public class AugFileTab {
 		augFile.save();
 
 		gui.regenerateAugFileList();
+	}
+
+	public void reorganizeImports() {
+
+		highlighter.reorganizeImports();
 	}
 
 	public void saveIfChanged() {

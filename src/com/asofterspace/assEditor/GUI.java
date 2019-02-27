@@ -502,6 +502,17 @@ public class GUI extends MainWindow {
 		});
 		edit.add(applyGit);
 
+		JMenuItem reorgImports = new JMenuItem("Reorganize Imports");
+		reorgImports.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (currentlyShownTab != null) {
+					currentlyShownTab.reorganizeImports();
+				}
+			}
+		});
+		edit.add(reorgImports);
+
 		edit.addSeparator();
 
 		JMenuItem search = new JMenuItem("Search");
@@ -1665,14 +1676,14 @@ public class GUI extends MainWindow {
 			}
 		}
 
-				Collections.sort(tabs, new Comparator<AugFileTab>() {
-						public int compare(AugFileTab a, AugFileTab b) {
-								// TODO :: make it configurable whether to sort by just the name or by
-								// the full name (including the path)!
-								// return a.getName().toLowerCase().compareTo(b.getName().toLowerCase());
-								return a.getFullName().toLowerCase().compareTo(b.getFullName().toLowerCase());
-						}
-				});
+		Collections.sort(tabs, new Comparator<AugFileTab>() {
+			public int compare(AugFileTab a, AugFileTab b) {
+				// TODO :: make it configurable whether to sort by just the name or by
+				// the full name (including the path)!
+				// return a.getName().toLowerCase().compareTo(b.getName().toLowerCase());
+				return a.getFullName().toLowerCase().compareTo(b.getFullName().toLowerCase());
+			}
+		});
 
 		strAugFiles = new String[tabs.size()];
 
