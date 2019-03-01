@@ -218,10 +218,10 @@ public class GUI extends MainWindow {
 		// position...)
 		// super.show();
 
-		Integer lastWidth = configuration.getInteger(CONFIG_KEY_WIDTH, -1);
-		Integer lastHeight = configuration.getInteger(CONFIG_KEY_HEIGHT, -1);
-		Integer lastLeft = configuration.getInteger(CONFIG_KEY_LEFT, -1);
-		Integer lastTop = configuration.getInteger(CONFIG_KEY_TOP, -1);
+		final Integer lastWidth = configuration.getInteger(CONFIG_KEY_WIDTH, -1);
+		final Integer lastHeight = configuration.getInteger(CONFIG_KEY_HEIGHT, -1);
+		final Integer lastLeft = configuration.getInteger(CONFIG_KEY_LEFT, -1);
+		final Integer lastTop = configuration.getInteger(CONFIG_KEY_TOP, -1);
 
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
@@ -271,8 +271,8 @@ public class GUI extends MainWindow {
 		file.add(switchWorkspace);
 
 		workspaces = new ArrayList<>();
-		for (String workspaceName : augFileCtrl.getWorkspaces()) {
-			JCheckBoxMenuItem workspace = new JCheckBoxMenuItem(workspaceName);
+		for (final String workspaceName : augFileCtrl.getWorkspaces()) {
+			final JCheckBoxMenuItem workspace = new JCheckBoxMenuItem(workspaceName);
 			workspace.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
@@ -532,7 +532,7 @@ public class GUI extends MainWindow {
 		JMenu languageCurrent = new JMenu("Code Language for Current File");
 		settings.add(languageCurrent);
 		codeKindItemsCurrent = new ArrayList<>();
-		for (CodeKind ck : CodeKind.values()) {
+		for (final CodeKind ck : CodeKind.values()) {
 			JCheckBoxMenuItem ckItem = new JCheckBoxMenuItem(ck.toString());
 			ckItem.addActionListener(new ActionListener() {
 				@Override
@@ -557,7 +557,7 @@ public class GUI extends MainWindow {
 		JMenu language = new JMenu("Code Language for All Files");
 		settings.add(language);
 		codeKindItems = new ArrayList<>();
-		for (CodeKind ck : CodeKind.values()) {
+		for (final CodeKind ck : CodeKind.values()) {
 			JMenuItem ckItem = new JMenuItem(ck.toString());
 			ckItem.addActionListener(new ActionListener() {
 				@Override
@@ -842,7 +842,7 @@ public class GUI extends MainWindow {
 			}
 		});
 
-		JTextField replaceField = new JTextField();
+		final JTextField replaceField = new JTextField();
 
 		// listen to the enter key being pressed (which does not create text updates)
 		replaceField.addActionListener(new ActionListener() {

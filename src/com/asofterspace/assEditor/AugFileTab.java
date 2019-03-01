@@ -220,7 +220,7 @@ public class AugFileTab {
 					}
 				}
 
-				int targetCaretPos = functions.get(pressedLine).getCaretPos();
+				final int targetCaretPos = functions.get(pressedLine).getCaretPos();
 				// jump to the end...
 				fileContentMemo.setCaretPosition(fileContentMemo.getText().length());
 				new Thread(new Runnable() {
