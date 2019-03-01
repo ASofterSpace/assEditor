@@ -16,7 +16,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-
 /**
  * This class controls the opened files, which by the act of opening have become augmented files
  */

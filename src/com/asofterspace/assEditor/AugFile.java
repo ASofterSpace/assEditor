@@ -7,7 +7,6 @@ package com.asofterspace.assEditor;
 import com.asofterspace.toolbox.io.File;
 import com.asofterspace.toolbox.io.SimpleFile;
 
-
 /**
  * This is an augmented file - a file that is augmented with metadata
  */

@@ -43,7 +43,8 @@ public class Main {
 	 * show "changemark *" at the top also
 	 * get public List<Bar> foo() { to report correctly on function memo (curly just Bar foo())
 	 * disable "reorganize imports" in the menu when the highlighter does not support it
-	 * make it configurable in the menu whether or not end of line whitespace should be removed
+	 * make it configurable in the menu whether or not end of line whitespace should be removed on every save
+	 * make it configurable in the menu whether or not reorganization of imports should be done on every save
 	 * add git diff as another file type (for .diff and .patch)
 	 */
 	public static void main(String[] args) {
