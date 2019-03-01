@@ -103,6 +103,10 @@ public class AugFile {
 			return CodeKind.SHELL;
 		}
 
+		if (lowfilename.endsWith(".py")) {
+			return CodeKind.PYTHON;
+		}
+
 		return CodeKind.PLAINTEXT;
 	}
 
