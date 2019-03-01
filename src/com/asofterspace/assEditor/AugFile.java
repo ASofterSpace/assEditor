@@ -84,6 +84,10 @@ public class AugFile {
  			return CodeKind.HTML;
  		}
 
+		if (lowfilename.endsWith(".xml")) {
+			return CodeKind.XML;
+		}
+
 		if (lowfilename.endsWith(".js")) {
 			return CodeKind.JAVASCRIPT;
 		}
@@ -94,6 +98,10 @@ public class AugFile {
 
 		if (lowfilename.endsWith(".css")) {
 			return CodeKind.CSS;
+		}
+
+		if (lowfilename.endsWith(".sh")) {
+			return CodeKind.SHELL;
 		}
 
 		return CodeKind.PLAINTEXT;

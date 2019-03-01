@@ -23,6 +23,7 @@ public enum CodeKind {
 	PLAINTEXT("Plain Text"),
 	PHP("PHP"),
 	PYTHON("Python"),
+	SHELL("Shell Script"),
 	XML("XML");
 
 
