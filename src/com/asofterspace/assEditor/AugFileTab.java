@@ -96,6 +96,10 @@ public class AugFileTab {
 	private JTextPane functionMemo;
 	private JScrollPane sideScrollPane;
 
+	// the original caret position - as global variable such that other functions
+	// can more easily modify it cleverly
+	private int origCaretPos;
+
 
 	public AugFileTab(JPanel parentPanel, AugFile augFile, final GUI gui, AugFileCtrl augFileCtrl) {
 
@@ -587,6 +591,8 @@ public class AugFileTab {
 
 		String contentText = fileContentMemo.getText();
 
+		origCaretPos = fileContentMemo.getCaretPosition();
+
 		if (gui.reorganizeImportsOnSave) {
 
 			contentText = highlighter.reorganizeImports(contentText);
@@ -594,62 +600,17 @@ public class AugFileTab {
 
 		if (gui.replaceWhitespacesWithTabsOnSave) {
 
-			// this replaces all
-			contentText = contentText.replace("	", "\t");
-
-			// even after replacing all, some might be left, so we replace again and again
-			while (contentText.contains(" \t")) {
-				contentText = contentText.replace(" \t", "\t");
-			}
+			contentText = replaceWhitespacesWithTabs(contentText);
 		}
 
 		if (gui.removeTrailingWhitespaceOnSave) {
 
-			int origCaretPos = fileContentMemo.getCaretPosition();
-
-			StringBuilder newContent = new StringBuilder();
-
-			int i = 0;
-			int start = 0;
-
-			// we always go until the last \n, so we append a \n here...
-			contentText += "\n";
-
-			for (; i < contentText.length(); i++) {
-
-				char curChar = contentText.charAt(i);
-
-				if (curChar == '\n') {
-					if (i > 0) {
-						int end = i-1; // we need to go one back, to go back from \n
-						while ((contentText.charAt(end) == ' ') || (contentText.charAt(end) == '\t')) {
-							end--;
-							if (end < origCaretPos) {
-								origCaretPos--;
-							}
-							if (end < 0) {
-								end = 0;
-								break;
-							}
-						}
-						if (end+1 > start) {
-							newContent.append(contentText.substring(start, end+1));
-						}
-					}
-					newContent.append('\n');
-					start = i+1;
-				}
-			}
-
-			// ... and remove the appended \n here again
-			newContent.setLength(newContent.length() - 1);
-
-			contentText = newContent.toString();
-
-			fileContentMemo.setText(contentText);
-
-			fileContentMemo.setCaretPosition(origCaretPos);
+			contentText = removeTrailingWhitespace(contentText);
 		}
+
+		fileContentMemo.setText(contentText);
+
+		fileContentMemo.setCaretPosition(origCaretPos);
 
 		augFile.setContent(contentText);
 
@@ -662,7 +623,94 @@ public class AugFileTab {
 
 	public void reorganizeImports() {
 
+		origCaretPos = fileContentMemo.getCaretPosition();
+
 		highlighter.reorganizeImports();
+
+		fileContentMemo.setCaretPosition(origCaretPos);
+	}
+
+	public void replaceWhitespacesWithTabs() {
+
+		String contentText = fileContentMemo.getText();
+
+		origCaretPos = fileContentMemo.getCaretPosition();
+
+		contentText = replaceWhitespacesWithTabs(contentText);
+
+		fileContentMemo.setText(contentText);
+
+		fileContentMemo.setCaretPosition(origCaretPos);
+	}
+
+	private String replaceWhitespacesWithTabs(String contentText) {
+
+		// this replaces all
+		// (with the four spaces in two, as otherwise we would
+		// replace ourselves in here... :D)
+		contentText = contentText.replace("  "+"  ", "\t");
+
+		// even after replacing all, some might be left, so we replace again and again
+		while (contentText.contains(" \t")) {
+			contentText = contentText.replace(" \t", "\t");
+		}
+
+		return contentText;
+	}
+
+	public void removeTrailingWhitespace() {
+
+		String contentText = fileContentMemo.getText();
+
+		origCaretPos = fileContentMemo.getCaretPosition();
+
+		contentText = removeTrailingWhitespace(contentText);
+
+		fileContentMemo.setText(contentText);
+
+		fileContentMemo.setCaretPosition(origCaretPos);
+	}
+
+	private String removeTrailingWhitespace(String contentText) {
+
+		StringBuilder newContent = new StringBuilder();
+
+		int i = 0;
+		int start = 0;
+
+		// we always go until the last \n, so we append a \n here...
+		contentText += "\n";
+
+		for (; i < contentText.length(); i++) {
+
+			char curChar = contentText.charAt(i);
+
+			if (curChar == '\n') {
+				if (i > 0) {
+					int end = i-1; // we need to go one back, to go back from \n
+					while ((contentText.charAt(end) == ' ') || (contentText.charAt(end) == '\t')) {
+						end--;
+						if (end < origCaretPos) {
+							origCaretPos--;
+						}
+						if (end < 0) {
+							end = 0;
+							break;
+						}
+					}
+					if (end+1 > start) {
+						newContent.append(contentText.substring(start, end+1));
+					}
+				}
+				newContent.append('\n');
+				start = i+1;
+			}
+		}
+
+		// ... and remove the appended \n here again
+		newContent.setLength(newContent.length() - 1);
+
+		return newContent.toString();
 	}
 
 	public void saveIfChanged() {

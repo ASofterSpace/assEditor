@@ -500,6 +500,28 @@ public class GUI extends MainWindow {
 		});
 		edit.add(applyGit);
 
+		JMenuItem removeTrailWhitespace = new JMenuItem("Remove Trailing Whitespace");
+		removeTrailWhitespace.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (currentlyShownTab != null) {
+					currentlyShownTab.removeTrailingWhitespace();
+				}
+			}
+		});
+		edit.add(removeTrailWhitespace);
+
+		JMenuItem repWhitespacesWithTabs = new JMenuItem("Replace Whitespaces with Tabs");
+		repWhitespacesWithTabs.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (currentlyShownTab != null) {
+					currentlyShownTab.replaceWhitespacesWithTabs();
+				}
+			}
+		});
+		edit.add(repWhitespacesWithTabs);
+
 		JMenuItem reorgImports = new JMenuItem("Reorganize Imports");
 		reorgImports.addActionListener(new ActionListener() {
 			@Override
