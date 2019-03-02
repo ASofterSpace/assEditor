@@ -7,6 +7,7 @@ package com.asofterspace.assEditor;
 import com.asofterspace.toolbox.io.File;
 import com.asofterspace.toolbox.io.SimpleFile;
 
+
 /**
  * This is an augmented file - a file that is augmented with metadata
  */
@@ -80,8 +81,8 @@ public class AugFile {
 		}
 
 		if (lowfilename.endsWith(".htm") || lowfilename.endsWith(".html")) {
- 			return CodeKind.HTML;
- 		}
+			return CodeKind.HTML;
+		}
 
 		if (lowfilename.endsWith(".xml")) {
 			return CodeKind.XML;

@@ -16,6 +16,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+
 /**
  * This class controls the opened files, which by the act of opening have become augmented files
  */
@@ -50,16 +51,16 @@ public class AugFileCtrl {
 		saveConfigThread = new Thread(new Runnable() {
 			@Override
 			public void run() {
- 				while (true) {
- 					try {
- 						// save every five seconds
- 						Thread.sleep(5000);
- 					} catch (InterruptedException e) {
+				while (true) {
+					try {
+						// save every five seconds
+						Thread.sleep(5000);
+					} catch (InterruptedException e) {
 						return;
- 					}
+					}
 
 					saveConfigFileList();
- 				}
+				}
 			}
 		});
 		saveConfigThread.start();
@@ -164,13 +165,13 @@ public class AugFileCtrl {
 
 		String newFilename = fileToLoad.getCanonicalFilename();
 
- 		// first of all check that the file has not already been loaded!
- 		for (AugFile oldFile : files) {
+		// first of all check that the file has not already been loaded!
+		for (AugFile oldFile : files) {
 			if (newFilename.equals(oldFile.getFilename())) {
- 				// indeed! we found one that we already got!
- 				return null;
- 			}
- 		}
+				// indeed! we found one that we already got!
+				return null;
+			}
+		}
 
 		AugFile result = new AugFile(this, fileToLoad);
 
@@ -241,7 +242,7 @@ public class AugFileCtrl {
 				fileListBuilder.append(sep);
 				sep = ", ";
 			}
- 		}
+		}
 
 		activeWorkspace.set("files", new JSON("[" + fileListBuilder.toString() + "]"));
 

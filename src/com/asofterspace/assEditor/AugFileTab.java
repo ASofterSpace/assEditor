@@ -69,6 +69,7 @@ import javax.swing.JTextField;
 import javax.swing.JTextPane;
 import javax.swing.JTree;
 
+
 public class AugFileTab {
 
 	private JPanel parent;
@@ -374,9 +375,9 @@ public class AugFileTab {
 				case CSS:
 					highlighter = new CssCode(fileContentMemo);
 					break;
- 				case HTML:
- 					highlighter = new HtmlCode(fileContentMemo);
- 					break;
+				case HTML:
+					highlighter = new HtmlCode(fileContentMemo);
+					break;
 				case XML:
 					highlighter = new XmlCode(fileContentMemo);
 					break;
@@ -585,6 +586,22 @@ public class AugFileTab {
 	public void save() {
 
 		String contentText = fileContentMemo.getText();
+
+		if (gui.reorganizeImportsOnSave) {
+
+			contentText = highlighter.reorganizeImports(contentText);
+		}
+
+		if (gui.replaceWhitespacesWithTabsOnSave) {
+
+			// this replaces all
+			contentText = contentText.replace("	", "\t");
+
+			// even after replacing all, some might be left, so we replace again and again
+			while (contentText.contains(" \t")) {
+				contentText = contentText.replace(" \t", "\t");
+			}
+		}
 
 		if (gui.removeTrailingWhitespaceOnSave) {
 

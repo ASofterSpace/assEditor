@@ -6,17 +6,17 @@ package com.asofterspace.assEditor;
 
 import com.asofterspace.toolbox.codeeditor.Code;
 import com.asofterspace.toolbox.configuration.ConfigFile;
-import com.asofterspace.toolbox.io.Directory;
-import com.asofterspace.toolbox.io.File;
-import com.asofterspace.toolbox.io.JSON;
-import com.asofterspace.toolbox.io.SimpleFile;
 import com.asofterspace.toolbox.gui.Arrangement;
 import com.asofterspace.toolbox.gui.GuiUtils;
 import com.asofterspace.toolbox.gui.MainWindow;
 import com.asofterspace.toolbox.gui.ProgressDialog;
-import com.asofterspace.toolbox.Utils;
+import com.asofterspace.toolbox.io.Directory;
+import com.asofterspace.toolbox.io.File;
+import com.asofterspace.toolbox.io.JSON;
+import com.asofterspace.toolbox.io.SimpleFile;
 import com.asofterspace.toolbox.utils.Callback;
 import com.asofterspace.toolbox.utils.ProgressIndicator;
+import com.asofterspace.toolbox.Utils;
 
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
@@ -80,7 +80,9 @@ public class GUI extends MainWindow {
 
 	private final static String CONFIG_KEY_LAST_DIRECTORY = "lastDirectory";
 	private final static String CONFIG_KEY_SCHEME = "scheme";
-	private final static String CONFIG_KEY_REMOVE_TRAILING_WHITESPACE = "removeTrailingWhitespace";
+	private final static String CONFIG_KEY_REMOVE_TRAILING_WHITESPACE_ON_SAVE = "onSaveRemoveTrailingWhitespace";
+	private final static String CONFIG_KEY_REPLACE_WHITESPACES_WITH_TABS_ON_SAVE = "onSaveReplaceWhitespacesWithTabs";
+	private final static String CONFIG_KEY_REORGANIZE_IMPORTS_ON_SAVE = "onSaveReorganizeImports";
 	private final static String CONFIG_KEY_COPY_ON_ENTER = "copyOnEnter";
 	private final static String CONFIG_KEY_TAB_ENTIRE_BLOCKS = "tabEntireBlocks";
 	private final static String CONFIG_KEY_BACKUP_NUM = "backupNum";
@@ -104,6 +106,8 @@ public class GUI extends MainWindow {
 	private JCheckBoxMenuItem setLightSchemeItem;
 	private JCheckBoxMenuItem setDarkSchemeItem;
 	private JCheckBoxMenuItem removeTrailingWhitespaceOnSaveItem;
+	private JCheckBoxMenuItem replaceWhitespacesWithTabsOnSaveItem;
+	private JCheckBoxMenuItem reorganizeImportsOnSaveItem;
 	private JCheckBoxMenuItem copyOnEnterItem;
 	private JCheckBoxMenuItem tabEntireBlocksItem;
 	private JMenuItem close;
@@ -122,6 +126,8 @@ public class GUI extends MainWindow {
 
 	String currentScheme;
 	Boolean removeTrailingWhitespaceOnSave;
+	Boolean replaceWhitespacesWithTabsOnSave;
+	Boolean reorganizeImportsOnSave;
 	Boolean copyOnEnter;
 	Boolean tabEntireBlocks;
 
@@ -132,33 +138,25 @@ public class GUI extends MainWindow {
 
 		this.configuration = config;
 
- 		strAugFiles = new String[0];
+		strAugFiles = new String[0];
 
- 		augFileTabs = new ArrayList<>();
+		augFileTabs = new ArrayList<>();
 
 		currentScheme = configuration.getValue(CONFIG_KEY_SCHEME);
 
 		if (currentScheme == null) {
-			currentScheme = LIGHT_SCHEME;
+			currentScheme = DARK_SCHEME;
 		}
 
-		removeTrailingWhitespaceOnSave = configuration.getBoolean(CONFIG_KEY_REMOVE_TRAILING_WHITESPACE, true);
+		removeTrailingWhitespaceOnSave = configuration.getBoolean(CONFIG_KEY_REMOVE_TRAILING_WHITESPACE_ON_SAVE, true);
 
-		if (removeTrailingWhitespaceOnSave == null) {
-			removeTrailingWhitespaceOnSave = true;
-		}
+		replaceWhitespacesWithTabsOnSave = configuration.getBoolean(CONFIG_KEY_REPLACE_WHITESPACES_WITH_TABS_ON_SAVE, true);
+
+		reorganizeImportsOnSave = configuration.getBoolean(CONFIG_KEY_REORGANIZE_IMPORTS_ON_SAVE, true);
 
 		copyOnEnter = configuration.getBoolean(CONFIG_KEY_COPY_ON_ENTER, true);
 
-		if (copyOnEnter == null) {
-			copyOnEnter = true;
-		}
-
 		tabEntireBlocks = configuration.getBoolean(CONFIG_KEY_TAB_ENTIRE_BLOCKS, true);
-
-		if (tabEntireBlocks == null) {
-			tabEntireBlocks = true;
-		}
 
 		currentBackup = configuration.getInteger(CONFIG_KEY_BACKUP_NUM, 0);
 
@@ -597,6 +595,8 @@ public class GUI extends MainWindow {
 		});
 		scheme.add(setDarkSchemeItem);
 
+		settings.addSeparator();
+
 		removeTrailingWhitespaceOnSaveItem = new JCheckBoxMenuItem("Remove Trailing Whitespace on Save");
 		removeTrailingWhitespaceOnSaveItem.addActionListener(new ActionListener() {
 			@Override
@@ -606,6 +606,28 @@ public class GUI extends MainWindow {
 		});
 		setRemoveTrailingWhitespaceOnSave(removeTrailingWhitespaceOnSave);
 		settings.add(removeTrailingWhitespaceOnSaveItem);
+
+		replaceWhitespacesWithTabsOnSaveItem = new JCheckBoxMenuItem("Replace Whitespaces with Tabs on Save");
+		replaceWhitespacesWithTabsOnSaveItem.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				setReplaceWhitespacesWithTabsOnSave(!replaceWhitespacesWithTabsOnSave);
+			}
+		});
+		setReplaceWhitespacesWithTabsOnSave(replaceWhitespacesWithTabsOnSave);
+		settings.add(replaceWhitespacesWithTabsOnSaveItem);
+
+		reorganizeImportsOnSaveItem = new JCheckBoxMenuItem("Reorganize Imports on Save");
+		reorganizeImportsOnSaveItem.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				setReorganizeImportsOnSave(!reorganizeImportsOnSave);
+			}
+		});
+		setReorganizeImportsOnSave(reorganizeImportsOnSave);
+		settings.add(reorganizeImportsOnSaveItem);
+
+		settings.addSeparator();
 
 		copyOnEnterItem = new JCheckBoxMenuItem("Copy Line on [Ctrl / Shift] + [Enter]");
 		copyOnEnterItem.addActionListener(new ActionListener() {
@@ -919,12 +941,12 @@ public class GUI extends MainWindow {
 
 					File fileToOpen = new File(curFile);
 
- 					AugFile newFile = augFileCtrl.loadAnotherFile(fileToOpen);
+					AugFile newFile = augFileCtrl.loadAnotherFile(fileToOpen);
 
- 					if (newFile != null) {
+					if (newFile != null) {
 						currentlyShownTab = new AugFileTab(mainPanelRight, newFile, this, augFileCtrl);
 						augFileTabs.add(currentlyShownTab);
- 					}
+					}
 				}
 
 				regenerateAugFileList();
@@ -1100,9 +1122,35 @@ public class GUI extends MainWindow {
 
 		removeTrailingWhitespaceOnSave = setTo;
 
-		configuration.set(CONFIG_KEY_REMOVE_TRAILING_WHITESPACE, removeTrailingWhitespaceOnSave);
+		configuration.set(CONFIG_KEY_REMOVE_TRAILING_WHITESPACE_ON_SAVE, removeTrailingWhitespaceOnSave);
 
 		removeTrailingWhitespaceOnSaveItem.setSelected(removeTrailingWhitespaceOnSave);
+	}
+
+	private void setReplaceWhitespacesWithTabsOnSave(Boolean setTo) {
+
+		if (setTo == null) {
+			setTo = true;
+		}
+
+		replaceWhitespacesWithTabsOnSave = setTo;
+
+		configuration.set(CONFIG_KEY_REPLACE_WHITESPACES_WITH_TABS_ON_SAVE, replaceWhitespacesWithTabsOnSave);
+
+		replaceWhitespacesWithTabsOnSaveItem.setSelected(replaceWhitespacesWithTabsOnSave);
+	}
+
+	private void setReorganizeImportsOnSave(Boolean setTo) {
+
+		if (setTo == null) {
+			setTo = true;
+		}
+
+		reorganizeImportsOnSave = setTo;
+
+		configuration.set(CONFIG_KEY_REORGANIZE_IMPORTS_ON_SAVE, reorganizeImportsOnSave);
+
+		reorganizeImportsOnSaveItem.setSelected(reorganizeImportsOnSave);
 	}
 
 	private void setCopyOnEnter(Boolean setTo) {

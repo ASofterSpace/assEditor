@@ -5,9 +5,9 @@
 package com.asofterspace.assEditor;
 
 import com.asofterspace.toolbox.configuration.ConfigFile;
-import com.asofterspace.toolbox.Utils;
-import com.asofterspace.toolbox.io.JSON;
 import com.asofterspace.toolbox.io.File;
+import com.asofterspace.toolbox.io.JSON;
+import com.asofterspace.toolbox.Utils;
 
 import javax.swing.SwingUtilities;
 
@@ -15,8 +15,8 @@ import javax.swing.SwingUtilities;
 public class Main {
 
 	public final static String PROGRAM_TITLE = "A Softer Space Editor";
-	public final static String VERSION_NUMBER = "0.0.1.1(" + Utils.TOOLBOX_VERSION_NUMBER + ")";
-	public final static String VERSION_DATE = "18. December 2018 - 28. February 2019";
+	public final static String VERSION_NUMBER = "0.0.1.2(" + Utils.TOOLBOX_VERSION_NUMBER + ")";
+	public final static String VERSION_DATE = "18. December 2018 - 2. March 2019";
 
 
 	/**
@@ -43,8 +43,6 @@ public class Main {
 	 * show "changemark *" at the top also
 	 * get public List<Bar> foo() { to report correctly on function memo (curly just Bar foo())
 	 * disable "reorganize imports" in the menu when the highlighter does not support it
-	 * make it configurable in the menu whether or not end of line whitespace should be removed on every save
-	 * make it configurable in the menu whether or not reorganization of imports should be done on every save
 	 * add git diff as another file type (for .diff and .patch)
 	 */
 	public static void main(String[] args) {
@@ -58,10 +56,10 @@ public class Main {
 		// same "install" location, without change even if we are called from somewhere else
 		ConfigFile config = new ConfigFile("settings", true);
 
- 		// create a default config file, if necessary
- 		if (config.getAllContents().isEmpty()) {
- 			config.setAllContents(new JSON("{\"workspaces\": [{\"name\": \"default\", \"files\": []}]}"));
- 		}
+		// create a default config file, if necessary
+		if (config.getAllContents().isEmpty()) {
+			config.setAllContents(new JSON("{\"workspaces\": [{\"name\": \"default\", \"files\": []}]}"));
+		}
 
 		AugFileCtrl augFileCtrl = new AugFileCtrl(config);
 
