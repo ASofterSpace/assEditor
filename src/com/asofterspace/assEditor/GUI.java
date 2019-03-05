@@ -229,7 +229,7 @@ public class GUI extends MainWindow {
 				// Actually display the whole jazz
 				mainFrame.setVisible(true);
 
-				if ((lastWidth < 1) || (lastHeight < 1) || (lastLeft < 1) || (lastTop < 1)) {
+				if ((lastWidth < 1) || (lastHeight < 1)) {
 					GuiUtils.maximizeWindow(mainFrame);
 				} else {
 					mainFrame.setSize(lastWidth, lastHeight);
