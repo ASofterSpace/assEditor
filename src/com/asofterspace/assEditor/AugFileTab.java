@@ -138,7 +138,7 @@ public class AugFileTab {
 		nameLabel.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				StringSelection selection = new StringSelection(nameLabel.getText());
+				StringSelection selection = new StringSelection(getFullName());
 				Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
 				clipboard.setContents(selection, selection);
 			}
@@ -310,10 +310,10 @@ public class AugFileTab {
 		return augFile.getName();
 	}
 
-		public String getFullName() {
+	public String getFullName() {
 
-				return augFile.getFilename();
-		}
+		return augFile.getFilename();
+	}
 
 	/*
 	public void setName(String newName) {
