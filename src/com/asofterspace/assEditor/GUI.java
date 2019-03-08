@@ -453,6 +453,32 @@ public class GUI extends MainWindow {
 		JMenu edit = new JMenu("Edit");
 		menu.add(edit);
 
+		JMenuItem undoItem = new JMenuItem("Undo");
+		undoItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Z, ActionEvent.CTRL_MASK));
+		undoItem.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (currentlyShownTab != null) {
+					currentlyShownTab.undo();
+				}
+			}
+		});
+		edit.add(undoItem);
+
+		JMenuItem redoItem = new JMenuItem("Redo");
+		redoItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Y, ActionEvent.CTRL_MASK));
+		redoItem.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (currentlyShownTab != null) {
+					currentlyShownTab.redo();
+				}
+			}
+		});
+		edit.add(redoItem);
+
+		edit.addSeparator();
+
 		JMenuItem selectToHere = new JMenuItem("Select from Start to Here");
 		selectToHere.addActionListener(new ActionListener() {
 			@Override

@@ -713,6 +713,16 @@ public class AugFileTab {
 		return newContent.toString();
 	}
 
+	public void undo() {
+
+		highlighter.undo();
+	}
+
+	public void redo() {
+
+		highlighter.redo();
+	}
+
 	public void saveIfChanged() {
 
 		if (changed) {

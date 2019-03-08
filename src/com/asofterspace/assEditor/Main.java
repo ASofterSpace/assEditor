@@ -44,6 +44,9 @@ public class Main {
 	 * get public List<Bar> foo() { to report correctly on function memo (curly just Bar foo())
 	 * disable "reorganize imports" in the menu when the highlighter does not support it
 	 * add git diff as another file type (for .diff and .patch)
+	 * add a popup to the AugFileTab's code editor (e.g. for undo + redo also there)
+	 * only show undo and redo enabled when undoing / redoing curly possible
+	 * when showing functions on the right, highlight whichever one we are curly inside
 	 */
 	public static void main(String[] args) {
 
