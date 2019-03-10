@@ -111,6 +111,8 @@ public class GUI extends MainWindow {
 	private JCheckBoxMenuItem reorganizeImportsOnSaveItem;
 	private JCheckBoxMenuItem copyOnEnterItem;
 	private JCheckBoxMenuItem tabEntireBlocksItem;
+	private JCheckBoxMenuItem usingUTF8WithBOM;
+	private JCheckBoxMenuItem usingUTF8WithoutBOM;
 	private JMenuItem close;
 	private List<JMenuItem> codeKindItems;
 	private List<JCheckBoxMenuItem> codeKindItemsCurrent;
@@ -573,6 +575,58 @@ public class GUI extends MainWindow {
 		edit.add(search);
 
 
+		JMenu encodings = new JMenu("Encodings");
+		menu.add(encodings);
+
+		usingUTF8WithoutBOM = new JCheckBoxMenuItem("Default UTF-8 (without BOM)");
+		usingUTF8WithoutBOM.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				currentlyShownTab.setUsingUTF8BOM(false);
+				setUsingUTF8WithBOM(false);
+			}
+		});
+		usingUTF8WithoutBOM.setSelected(false);
+		encodings.add(usingUTF8WithoutBOM);
+
+		usingUTF8WithBOM = new JCheckBoxMenuItem("UTF-8 with BOM");
+		usingUTF8WithBOM.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				currentlyShownTab.setUsingUTF8BOM(true);
+				setUsingUTF8WithBOM(true);
+			}
+		});
+		usingUTF8WithBOM.setSelected(false);
+		encodings.add(usingUTF8WithBOM);
+
+		encodings.addSeparator();
+
+		JMenuItem allUsingUTF8WithoutBOM = new JMenuItem("Set All Files to Default UTF-8 (without BOM)");
+		allUsingUTF8WithoutBOM.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				for (AugFileTab tab : augFileTabs) {
+					tab.setUsingUTF8BOM(false);
+				}
+				setUsingUTF8WithBOM(false);
+			}
+		});
+		encodings.add(allUsingUTF8WithoutBOM);
+
+		JMenuItem allUsingUTF8WithBOM = new JMenuItem("Set All Files to UTF-8 with BOM");
+		allUsingUTF8WithBOM.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				for (AugFileTab tab : augFileTabs) {
+					tab.setUsingUTF8BOM(true);
+				}
+				setUsingUTF8WithBOM(true);
+			}
+		});
+		encodings.add(allUsingUTF8WithBOM);
+
+
 		JMenu settings = new JMenu("Settings");
 		menu.add(settings);
 
@@ -993,7 +1047,7 @@ public class GUI extends MainWindow {
 					AugFile newFile = augFileCtrl.loadAnotherFile(fileToOpen);
 
 					if (newFile != null) {
-						currentlyShownTab = new AugFileTab(mainPanelRight, newFile, this, augFileCtrl);
+						setCurrentlyShownTab(new AugFileTab(mainPanelRight, newFile, this, augFileCtrl));
 						augFileTabs.add(currentlyShownTab);
 					}
 				}
@@ -1252,12 +1306,26 @@ public class GUI extends MainWindow {
 		for (AugFileTab tab : augFileTabs) {
 			if (tab.isItem(name)) {
 				tab.show();
-				currentlyShownTab = tab;
+				setCurrentlyShownTab(tab);
 				reSelectCurrentCodeLanguageItem();
 			} else {
 				tab.hide();
 			}
 		}
+	}
+
+	private void setCurrentlyShownTab(AugFileTab tab) {
+
+		currentlyShownTab = tab;
+
+		setUsingUTF8WithBOM(tab.isUsingUTF8BOM());
+
+	}
+
+	private void setUsingUTF8WithBOM(boolean useItOrNot) {
+
+		usingUTF8WithBOM.setSelected(useItOrNot);
+		usingUTF8WithoutBOM.setSelected(!useItOrNot);
 	}
 
 	private void configureGUI() {
@@ -1535,7 +1603,7 @@ public class GUI extends MainWindow {
 			tmpCi.delete();
 
 			// add an file tab for the new file as currentlyShownTab
-			currentlyShownTab = new AugFileTab(mainPanelRight, augFilesAfter.iterator().next(), this, augFileCtrl);
+			setCurrentlyShownTab(new AugFileTab(mainPanelRight, augFilesAfter.iterator().next(), this, augFileCtrl));
 
 			currentlyShownTab.setChanged(true);
 
@@ -1641,7 +1709,7 @@ public class GUI extends MainWindow {
 			if (tab.isItem(oldAugFileStr)) {
 				tab.setName(newAugFileStr);
 				tab.show();
-				currentlyShownTab = tab;
+				setCurrentlyShownTab(tab);
 			} else {
 				tab.hide();
 			}
@@ -1741,7 +1809,7 @@ public class GUI extends MainWindow {
 			}
 		}
 
-		currentlyShownTab = null;
+		setCurrentlyShownTab(null);
 
 		// remove file from the left hand side
 		regenerateAugFileList();
@@ -1769,7 +1837,7 @@ public class GUI extends MainWindow {
 		if (currentlyShownTab == null) {
 			// ... show the lastly shown tab explicitly - this is fun, and the tabbed layout otherwise shows it anyway, so may as well...
 			if (tabs.size() > 0) {
-				currentlyShownTab = tabs.get(tabs.size() - 1);
+				setCurrentlyShownTab(tabs.get(tabs.size() - 1));
 			}
 		}
 
@@ -1874,7 +1942,7 @@ public class GUI extends MainWindow {
 		strAugFiles = new String[0];
 		augFileTabs = new ArrayList<>();
 		fileListComponent.setListData(strAugFiles);
-		currentlyShownTab = null;
+		setCurrentlyShownTab(null);
 
 		mainPanelRight.repaint();
 	}

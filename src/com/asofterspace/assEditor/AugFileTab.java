@@ -659,6 +659,18 @@ public class AugFileTab {
 		return newContent.toString();
 	}
 
+	public boolean isUsingUTF8BOM() {
+		return augFile.isUsingUTF8BOM();
+	}
+
+	public void setUsingUTF8BOM(boolean usingUTF8BOM) {
+
+		augFile.setUsingUTF8BOM(usingUTF8BOM);
+
+		changed = true;
+		gui.regenerateAugFileList();
+	}
+
 	public void undo() {
 
 		highlighter.undo();

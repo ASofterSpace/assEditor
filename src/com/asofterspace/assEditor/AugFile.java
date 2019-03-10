@@ -83,6 +83,14 @@ public class AugFile {
 		return associatedTab.getCaretPos();
 	}
 
+	public boolean isUsingUTF8BOM() {
+		return file.isUsingUTF8BOM();
+	}
+
+	public void setUsingUTF8BOM(boolean useItOrNot) {
+		file.useUTF8BOM(useItOrNot);
+	}
+
 	public void setContent(String content) {
 		file.setContent(content);
 	}
