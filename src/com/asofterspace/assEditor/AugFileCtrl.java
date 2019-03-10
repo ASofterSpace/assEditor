@@ -4,6 +4,7 @@
  */
 package com.asofterspace.assEditor;
 
+import com.asofterspace.toolbox.codeeditor.utils.CodeLanguage;
 import com.asofterspace.toolbox.configuration.ConfigFile;
 import com.asofterspace.toolbox.io.Directory;
 import com.asofterspace.toolbox.io.File;
@@ -93,7 +94,7 @@ public class AugFileCtrl {
 
 		for (JSON jsonWorkspace : jsonWorkspaces) {
 			if ((workspace == null) ||
-			     workspace.equals(jsonWorkspace.getString("name"))) {
+				 workspace.equals(jsonWorkspace.getString("name"))) {
 				switchToJsonWorkspace(jsonWorkspace);
 				return;
 			}
@@ -120,7 +121,7 @@ public class AugFileCtrl {
 				if (curFile != null) {
 					curFile.setInitialCaretPos(jsonFile.getInteger(CONF_CARET_POS));
 
-					CodeKind sourceLang = CodeKind.getFromString(jsonFile.getString(CONF_LANGUAGE));
+					CodeLanguage sourceLang = CodeLanguage.getFromString(jsonFile.getString(CONF_LANGUAGE));
 
 					curFile.setSourceLanguage(sourceLang);
 				}

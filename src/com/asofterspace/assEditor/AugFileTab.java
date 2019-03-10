@@ -4,22 +4,11 @@
  */
 package com.asofterspace.assEditor;
 
-import com.asofterspace.toolbox.codeeditor.Code;
-import com.asofterspace.toolbox.codeeditor.CodeLocation;
-import com.asofterspace.toolbox.codeeditor.CSharpCode;
-import com.asofterspace.toolbox.codeeditor.CssCode;
-import com.asofterspace.toolbox.codeeditor.GroovyCode;
-import com.asofterspace.toolbox.codeeditor.HtmlCode;
-import com.asofterspace.toolbox.codeeditor.JavaCode;
-import com.asofterspace.toolbox.codeeditor.JavaScriptCode;
-import com.asofterspace.toolbox.codeeditor.JsonCode;
-import com.asofterspace.toolbox.codeeditor.LineNumbering;
-import com.asofterspace.toolbox.codeeditor.MarkdownCode;
-import com.asofterspace.toolbox.codeeditor.PhpCode;
-import com.asofterspace.toolbox.codeeditor.PlainText;
-import com.asofterspace.toolbox.codeeditor.PythonCode;
-import com.asofterspace.toolbox.codeeditor.ShellCode;
-import com.asofterspace.toolbox.codeeditor.XmlCode;
+import com.asofterspace.toolbox.codeeditor.base.Code;
+import com.asofterspace.toolbox.codeeditor.utils.CodeHighlighterFactory;
+import com.asofterspace.toolbox.codeeditor.utils.CodeLanguage;
+import com.asofterspace.toolbox.codeeditor.utils.CodeLocation;
+import com.asofterspace.toolbox.codeeditor.utils.LineNumbering;
 import com.asofterspace.toolbox.configuration.ConfigFile;
 import com.asofterspace.toolbox.gui.Arrangement;
 import com.asofterspace.toolbox.gui.CodeEditor;
@@ -123,7 +112,7 @@ public class AugFileTab {
 
 		visualPanel = createVisualPanel();
 
-		setCodeKindAndCreateHighlighter();
+		setCodeLanguageAndCreateHighlighter();
 	}
 
 	private JPanel createVisualPanel() {
@@ -343,67 +332,24 @@ public class AugFileTab {
 		visualPanel.setVisible(false);
 	}
 
-	public void setCodeKindAndCreateHighlighter(CodeKind codeKind) {
+	public void setCodeLanguageAndCreateHighlighter(CodeLanguage codeKind) {
 
 		// tell the associated file about this...
 		augFile.setSourceLanguage(codeKind);
 
-		setCodeKindAndCreateHighlighter();
+		setCodeLanguageAndCreateHighlighter();
 	}
 
-	public void setCodeKindAndCreateHighlighter() {
-
-		// ... and get what the file made of it (e.g. transferring null to the initial default)
-		CodeKind codeKind = augFile.getSourceLanguage();
+	public void setCodeLanguageAndCreateHighlighter() {
 
 		if (highlighter != null) {
 			highlighter.discard();
 		}
 
-		if (codeKind == null) {
-			highlighter = new PlainText(fileContentMemo);
-		} else {
-			switch (codeKind) {
-				case JAVA:
-					highlighter = new JavaCode(fileContentMemo);
-					break;
-				case GROOVY:
-					highlighter = new GroovyCode(fileContentMemo);
-					break;
-				case CSHARP:
-					highlighter = new CSharpCode(fileContentMemo);
-					break;
-				case MARKDOWN:
-					highlighter = new MarkdownCode(fileContentMemo);
-					break;
-				case CSS:
-					highlighter = new CssCode(fileContentMemo);
-					break;
-				case HTML:
-					highlighter = new HtmlCode(fileContentMemo);
-					break;
-				case XML:
-					highlighter = new XmlCode(fileContentMemo);
-					break;
-				case PHP:
-					highlighter = new PhpCode(fileContentMemo);
-					break;
-				case JAVASCRIPT:
-					highlighter = new JavaScriptCode(fileContentMemo);
-					break;
-				case JSON:
-					highlighter = new JsonCode(fileContentMemo);
-					break;
-				case PYTHON:
-					highlighter = new PythonCode(fileContentMemo);
-					break;
-				case SHELL:
-					highlighter = new ShellCode(fileContentMemo);
-					break;
-				default:
-					highlighter = new PlainText(fileContentMemo);
-			}
-		}
+		// ... and get what the file made of it (e.g. transferring null to the initial default)
+		CodeLanguage codeKind = augFile.getSourceLanguage();
+
+		highlighter = CodeHighlighterFactory.getHighlighterForLanguage(codeKind, fileContentMemo);
 
 		if (highlighter.suppliesFunctions()) {
 
@@ -461,7 +407,7 @@ public class AugFileTab {
 		return fileContentMemo.getCaretPosition();
 	}
 
-	public CodeKind getSourceLanguage() {
+	public CodeLanguage getSourceLanguage() {
 
 		return augFile.getSourceLanguage();
 	}

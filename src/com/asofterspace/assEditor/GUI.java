@@ -4,7 +4,8 @@
  */
 package com.asofterspace.assEditor;
 
-import com.asofterspace.toolbox.codeeditor.Code;
+import com.asofterspace.toolbox.codeeditor.base.Code;
+import com.asofterspace.toolbox.codeeditor.utils.CodeLanguage;
 import com.asofterspace.toolbox.configuration.ConfigFile;
 import com.asofterspace.toolbox.gui.Arrangement;
 import com.asofterspace.toolbox.gui.GuiUtils;
@@ -578,12 +579,12 @@ public class GUI extends MainWindow {
 		JMenu languageCurrent = new JMenu("Code Language for Current File");
 		settings.add(languageCurrent);
 		codeKindItemsCurrent = new ArrayList<>();
-		for (final CodeKind ck : CodeKind.values()) {
+		for (final CodeLanguage ck : CodeLanguage.values()) {
 			JCheckBoxMenuItem ckItem = new JCheckBoxMenuItem(ck.toString());
 			ckItem.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					setOrUnsetCurrentCodeKind(ck);
+					setOrUnsetCurrentCodeLanguage(ck);
 				}
 			});
 			ckItem.setSelected(false);
@@ -595,7 +596,7 @@ public class GUI extends MainWindow {
 		ckCurDefault.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				setOrUnsetCurrentCodeKind(null);
+				setOrUnsetCurrentCodeLanguage(null);
 			}
 		});
 		languageCurrent.add(ckCurDefault);
@@ -603,12 +604,12 @@ public class GUI extends MainWindow {
 		JMenu language = new JMenu("Code Language for All Files");
 		settings.add(language);
 		codeKindItems = new ArrayList<>();
-		for (final CodeKind ck : CodeKind.values()) {
+		for (final CodeLanguage ck : CodeLanguage.values()) {
 			JMenuItem ckItem = new JMenuItem(ck.toString());
 			ckItem.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					setOrUnsetAllCodeKinds(ck);
+					setOrUnsetAllCodeLanguages(ck);
 				}
 			});
 			language.add(ckItem);
@@ -619,7 +620,7 @@ public class GUI extends MainWindow {
 		ckDefault.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				setOrUnsetAllCodeKinds(null);
+				setOrUnsetAllCodeLanguages(null);
 			}
 		});
 		language.add(ckDefault);
@@ -1098,33 +1099,33 @@ public class GUI extends MainWindow {
 		}
 	}
 
-	private void reSelectCurrentCodeKindItem() {
+	private void reSelectCurrentCodeLanguageItem() {
 
-		String currentCodeKindStr = currentlyShownTab.getSourceLanguage().toString();
+		String currentCodeLanguageStr = currentlyShownTab.getSourceLanguage().toString();
 
 		for (JCheckBoxMenuItem codeKindItem : codeKindItemsCurrent) {
 			codeKindItem.setSelected(false);
 
-			if (codeKindItem.getText().equals(currentCodeKindStr)) {
+			if (codeKindItem.getText().equals(currentCodeLanguageStr)) {
 				codeKindItem.setSelected(true);
 			}
 		}
 	}
 
-	private void setOrUnsetCurrentCodeKind(CodeKind codeKind) {
+	private void setOrUnsetCurrentCodeLanguage(CodeLanguage codeKind) {
 
-		currentlyShownTab.setCodeKindAndCreateHighlighter(codeKind);
+		currentlyShownTab.setCodeLanguageAndCreateHighlighter(codeKind);
 
-		reSelectCurrentCodeKindItem();
+		reSelectCurrentCodeLanguageItem();
 	}
 
-	private void setOrUnsetAllCodeKinds(CodeKind codeKind) {
+	private void setOrUnsetAllCodeLanguages(CodeLanguage codeKind) {
 
 		for (AugFileTab augFileTab : augFileTabs) {
-			augFileTab.setCodeKindAndCreateHighlighter(codeKind);
+			augFileTab.setCodeLanguageAndCreateHighlighter(codeKind);
 		}
 
-		reSelectCurrentCodeKindItem();
+		reSelectCurrentCodeLanguageItem();
 	}
 
 	private void reSelectSchemeItems() {
@@ -1252,7 +1253,7 @@ public class GUI extends MainWindow {
 			if (tab.isItem(name)) {
 				tab.show();
 				currentlyShownTab = tab;
-				reSelectCurrentCodeKindItem();
+				reSelectCurrentCodeLanguageItem();
 			} else {
 				tab.hide();
 			}
