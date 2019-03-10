@@ -27,9 +27,7 @@ public class Main {
 	 * add highlighting for datex
 	 * increase / decrease font size
 	 * cut, copy, paste
-	 * undo, redo
 	 * enable hex view
-	 * enable function overview
 	 * enable [Ctrl]+function name to jump to its declaration
 	 * add compiler call, and report results
 	 * ask to save before closing if files are unsaved
@@ -41,7 +39,6 @@ public class Main {
 	 * do not base left-hand tabs on filename only (such that several Main.java can be opened at the same time)
 	 * not only call resizeNameLabel() in the AugFileTab.show(), but also in an onResize event!
 	 * show "changemark *" at the top also
-	 * get public List<Bar> foo() { to report correctly on function memo (curly just Bar foo())
 	 * disable "reorganize imports" in the menu when the highlighter does not support it
 	 * add git diff as another file type (for .diff and .patch)
 	 * add a popup to the AugFileTab's code editor (e.g. for undo + redo also there)
