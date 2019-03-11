@@ -127,6 +127,8 @@ public class AugFileCtrl {
 				}
 			}
 		}
+
+		configuration.create();
 	}
 
 	/*
