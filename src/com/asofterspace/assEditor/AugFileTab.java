@@ -20,7 +20,6 @@ import com.asofterspace.toolbox.io.SimpleFile;
 import com.asofterspace.toolbox.utils.Callback;
 import com.asofterspace.toolbox.Utils;
 
-import java.awt.Color;
 import java.awt.Component;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
@@ -166,7 +165,6 @@ public class AugFileTab {
 
 		sideScrollPane = new JScrollPane(functionMemo);
 		sideScrollPane.setPreferredSize(new Dimension(1, 1));
-		sideScrollPane.getViewport().setBackground(Color.white);
 
 		tab.add(sideScrollPane, new Arrangement(1, 1, 0.2, 1.0));
 
@@ -366,6 +364,8 @@ public class AugFileTab {
 
 		highlighter.setCodeEditorLineMemo(lineMemo);
 
+		highlighter.setFontSize(gui.getFontSize());
+
 		updateHighlighterConfig();
 	}
 
@@ -382,6 +382,9 @@ public class AugFileTab {
 				lineNumbers.setDarkScheme();
 				break;
 		}
+
+		// also set the scroll pane color, as the scroll pane might be visible when the text is very short
+		sideScrollPane.getViewport().setBackground(highlighter.getBackgroundColor());
 
 		// update copy on enter behavior
 		highlighter.setCopyOnCtrlEnter(gui.copyOnEnter);

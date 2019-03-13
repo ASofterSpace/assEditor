@@ -91,9 +91,12 @@ public class GUI extends MainWindow {
 	private final static String CONFIG_KEY_HEIGHT = "mainFrameHeight";
 	private final static String CONFIG_KEY_LEFT = "mainFrameLeft";
 	private final static String CONFIG_KEY_TOP = "mainFrameTop";
+	private final static String CONFIG_KEY_FONT_SIZE = "fontSize";
 
 	final static String LIGHT_SCHEME = "light";
 	final static String DARK_SCHEME = "dark";
+
+	private final static int DEFAULT_FONT_SIZE = 14;
 
 	private JMenuItem refreshFiles;
 	private JMenuItem saveFile;
@@ -126,6 +129,8 @@ public class GUI extends MainWindow {
 	private String[] strAugFiles;
 
 	private Integer currentBackup;
+
+	private int fontSize;
 
 	String currentScheme;
 	Boolean removeTrailingWhitespaceOnSave;
@@ -162,6 +167,8 @@ public class GUI extends MainWindow {
 		tabEntireBlocks = configuration.getBoolean(CONFIG_KEY_TAB_ENTIRE_BLOCKS, true);
 
 		currentBackup = configuration.getInteger(CONFIG_KEY_BACKUP_NUM, 0);
+
+		fontSize = configuration.getInteger(CONFIG_KEY_FONT_SIZE, DEFAULT_FONT_SIZE);
 
 		Thread backupThread = new Thread(new Runnable() {
 			@Override
@@ -697,6 +704,33 @@ public class GUI extends MainWindow {
 			}
 		});
 		scheme.add(setDarkSchemeItem);
+
+		JMenu fontSizeItem = new JMenu("Editor Font Size");
+		settings.add(fontSizeItem);
+		JMenuItem fontSizePlusItem = new JMenuItem("Increase");
+		fontSizePlusItem.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				setFontSize(getFontSize() + 1);
+			}
+		});
+		fontSizeItem.add(fontSizePlusItem);
+		JMenuItem fontSizeDefaultItem = new JMenuItem("Reset to Default");
+		fontSizeDefaultItem.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				setFontSize(DEFAULT_FONT_SIZE);
+			}
+		});
+		fontSizeItem.add(fontSizeDefaultItem);
+		JMenuItem fontSizeMinusItem = new JMenuItem("Decrease");
+		fontSizeMinusItem.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				setFontSize(getFontSize() - 1);
+			}
+		});
+		fontSizeItem.add(fontSizeMinusItem);
 
 		settings.addSeparator();
 
@@ -1299,6 +1333,19 @@ public class GUI extends MainWindow {
 		}
 
 		showTab(selectedItem);
+	}
+
+	public void setFontSize(int newSize) {
+
+		fontSize = newSize;
+
+		Code.setFontSizeForAllEditors(fontSize);
+
+		configuration.set(CONFIG_KEY_FONT_SIZE, fontSize);
+	}
+
+	public int getFontSize() {
+		return fontSize;
 	}
 
 	public void showTab(String name) {
