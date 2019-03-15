@@ -275,30 +275,6 @@ public class GUI extends MainWindow {
 		JMenu file = new JMenu("File");
 		menu.add(file);
 
-		JMenu switchWorkspace = new JMenu("Switch Workspace");
-		file.add(switchWorkspace);
-
-		workspaces = new ArrayList<>();
-		for (final String workspaceName : augFileCtrl.getWorkspaces()) {
-			final JCheckBoxMenuItem workspace = new JCheckBoxMenuItem(workspaceName);
-			workspace.addActionListener(new ActionListener() {
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					uncheckWorkspaces();
-					workspace.setSelected(true);
-					augFileCtrl.switchToWorkspace(workspaceName);
-					reloadAllAugFileTabs();
-				}
-			});
-			if (workspaceName.equals(augFileCtrl.getWorkspaceName())) {
-				workspace.setSelected(true);
-			} else {
-				workspace.setSelected(false);
-			}
-			switchWorkspace.add(workspace);
-			workspaces.add(workspace);
-		}
-
 		JMenuItem newFile = new JMenuItem("New File");
 		newFile.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, ActionEvent.CTRL_MASK));
 		newFile.addActionListener(new ActionListener() {
@@ -443,7 +419,7 @@ public class GUI extends MainWindow {
 		file.add(saveAugFiles);
 		*/
 		file.addSeparator();
-		close = new JMenuItem("Close");
+		close = new JMenuItem("Exit");
 		close.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F4, ActionEvent.ALT_MASK));
 		close.addActionListener(new ActionListener() {
 			@Override
@@ -458,6 +434,44 @@ public class GUI extends MainWindow {
 			}
 		});
 		file.add(close);
+
+
+		JMenu switchWorkspace = new JMenu("Workspace");
+		menu.add(switchWorkspace);
+
+		workspaces = new ArrayList<>();
+		for (final String workspaceName : augFileCtrl.getWorkspaces()) {
+			final JCheckBoxMenuItem workspace = new JCheckBoxMenuItem(workspaceName);
+			workspace.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					uncheckWorkspaces();
+					workspace.setSelected(true);
+					augFileCtrl.switchToWorkspace(workspaceName);
+					reloadAllAugFileTabs();
+				}
+			});
+			if (workspaceName.equals(augFileCtrl.getWorkspaceName())) {
+				workspace.setSelected(true);
+			} else {
+				workspace.setSelected(false);
+			}
+			switchWorkspace.add(workspace);
+			workspaces.add(workspace);
+		}
+
+		switchWorkspace.addSeparator();
+
+		JMenuItem editWorkspaces = new JMenuItem("Edit Workspaces");
+		editWorkspaces.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO :: create a modal in which existing workspaces can be deleted,
+				// TODO :: new ones can be added,
+				// TODO :: and existing ones can be moved up and down
+			}
+		});
+		switchWorkspace.add(editWorkspaces);
 
 
 		JMenu edit = new JMenu("Edit");
