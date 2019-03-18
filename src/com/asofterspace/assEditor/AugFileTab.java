@@ -572,11 +572,22 @@ public class AugFileTab {
 
 	public void reorganizeImports() {
 
-		origCaretPos = fileContentMemo.getCaretPosition();
-
 		highlighter.reorganizeImports();
+	}
 
-		fileContentMemo.setCaretPosition(origCaretPos);
+	public void sortDocumentAlphabetically() {
+
+		highlighter.sortDocumentAlphabetically();
+	}
+
+	public void sortSelectedLinesAlphabetically() {
+
+		highlighter.sortSelectedLinesAlphabetically();
+	}
+
+	public void sortSelectedStringsAlphabetically() {
+
+		highlighter.sortSelectedStringsAlphabetically();
 	}
 
 	public void replaceWhitespacesWithTabs() {

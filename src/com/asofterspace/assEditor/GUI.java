@@ -585,6 +585,41 @@ public class GUI extends MainWindow {
 
 		edit.addSeparator();
 
+		JMenuItem sortDocumentAlph = new JMenuItem("Sort Entire Document Alphabetically");
+		sortDocumentAlph.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (currentlyShownTab != null) {
+					currentlyShownTab.sortDocumentAlphabetically();
+				}
+			}
+		});
+		edit.add(sortDocumentAlph);
+
+		JMenuItem sortSelectedLinesAlph = new JMenuItem("Sort Selected Lines Alphabetically");
+		sortSelectedLinesAlph.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (currentlyShownTab != null) {
+					currentlyShownTab.sortSelectedLinesAlphabetically();
+				}
+			}
+		});
+		edit.add(sortSelectedLinesAlph);
+
+		JMenuItem sortSelectedStringsAlph = new JMenuItem("Sort Selected Strings (\"foo\", \"bar\") Alphabetically");
+		sortSelectedStringsAlph.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (currentlyShownTab != null) {
+					currentlyShownTab.sortSelectedStringsAlphabetically();
+				}
+			}
+		});
+		edit.add(sortSelectedStringsAlph);
+
+		edit.addSeparator();
+
 		JMenuItem search = new JMenuItem("Search");
 		search.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F, ActionEvent.CTRL_MASK));
 		search.addActionListener(new ActionListener() {
