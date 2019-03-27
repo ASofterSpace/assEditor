@@ -98,6 +98,7 @@ public class GUI extends MainWindow {
 
 	private final static int DEFAULT_FONT_SIZE = 14;
 
+	private JMenu switchWorkspace;
 	private JMenuItem refreshFiles;
 	private JMenuItem saveFile;
 	private JMenuItem saveAllFiles;
@@ -436,42 +437,10 @@ public class GUI extends MainWindow {
 		file.add(close);
 
 
-		JMenu switchWorkspace = new JMenu("Workspace");
+		switchWorkspace = new JMenu("Workspace");
 		menu.add(switchWorkspace);
 
-		workspaces = new ArrayList<>();
-		for (final String workspaceName : augFileCtrl.getWorkspaces()) {
-			final JCheckBoxMenuItem workspace = new JCheckBoxMenuItem(workspaceName);
-			workspace.addActionListener(new ActionListener() {
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					uncheckWorkspaces();
-					workspace.setSelected(true);
-					augFileCtrl.switchToWorkspace(workspaceName);
-					reloadAllAugFileTabs();
-				}
-			});
-			if (workspaceName.equals(augFileCtrl.getWorkspaceName())) {
-				workspace.setSelected(true);
-			} else {
-				workspace.setSelected(false);
-			}
-			switchWorkspace.add(workspace);
-			workspaces.add(workspace);
-		}
-
-		switchWorkspace.addSeparator();
-
-		JMenuItem editWorkspaces = new JMenuItem("Edit Workspaces");
-		editWorkspaces.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				// TODO :: create a modal in which existing workspaces can be deleted,
-				// TODO :: new ones can be added,
-				// TODO :: and existing ones can be moved up and down
-			}
-		});
-		switchWorkspace.add(editWorkspaces);
+		refreshWorkspaces();
 
 
 		JMenu edit = new JMenu("Edit");
@@ -1080,6 +1049,92 @@ public class GUI extends MainWindow {
 		parent.add(mainPanel, BorderLayout.CENTER);
 
 		return mainPanel;
+	}
+
+	private void refreshWorkspaces() {
+
+		switchWorkspace.removeAll();
+
+		workspaces = new ArrayList<>();
+		for (final String workspaceName : augFileCtrl.getWorkspaces()) {
+			final JCheckBoxMenuItem workspace = new JCheckBoxMenuItem(workspaceName);
+			workspace.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					uncheckWorkspaces();
+					workspace.setSelected(true);
+					augFileCtrl.switchToWorkspace(workspaceName);
+					reloadAllAugFileTabs();
+				}
+			});
+			if (workspaceName.equals(augFileCtrl.getWorkspaceName())) {
+				workspace.setSelected(true);
+			} else {
+				workspace.setSelected(false);
+			}
+			switchWorkspace.add(workspace);
+			workspaces.add(workspace);
+		}
+
+		switchWorkspace.addSeparator();
+
+		JMenuItem editWorkspaces = new JMenuItem("Edit Workspaces");
+		editWorkspaces.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO :: create a modal in which existing workspaces can be deleted,
+				// TODO :: and existing ones can be moved up and down
+
+				// Create the window
+				final JDialog editWorkitemsDialog = new JDialog(mainFrame, "Edit Workspaces", true);
+				GridLayout editWorkitemsDialogLayout = new GridLayout(3, 1);
+				editWorkitemsDialogLayout.setVgap(8);
+				editWorkitemsDialog.setLayout(editWorkitemsDialogLayout);
+				editWorkitemsDialog.getRootPane().setBorder(BorderFactory.createEmptyBorder(8, 8, 8, 8));
+
+				// Populate the window
+				JLabel explanationLabel = new JLabel();
+				explanationLabel.setText("Enter a new name here to add a new workspace:");
+				editWorkitemsDialog.add(explanationLabel);
+
+				final JTextField newWorkspaceName = new JTextField();
+				editWorkitemsDialog.add(newWorkspaceName);
+
+				JPanel buttonRow = new JPanel();
+				GridLayout buttonRowLayout = new GridLayout(1, 2);
+				buttonRowLayout.setHgap(8);
+				buttonRow.setLayout(buttonRowLayout);
+				editWorkitemsDialog.add(buttonRow);
+
+				JButton addButton = new JButton("Add this Workspace");
+				addButton.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+
+						augFileCtrl.addWorkspace(newWorkspaceName.getText());
+
+						refreshWorkspaces();
+					}
+				});
+				buttonRow.add(addButton);
+
+				JButton doneButton = new JButton("Done");
+				doneButton.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+						editWorkitemsDialog.dispose();
+					}
+				});
+				buttonRow.add(doneButton);
+
+				// Set the preferred size of the dialog
+				int width = 600;
+				int height = 120;
+				editWorkitemsDialog.setSize(width, height);
+				editWorkitemsDialog.setPreferredSize(new Dimension(width, height));
+
+				GuiUtils.centerAndShowWindow(editWorkitemsDialog);
+			}
+		});
+		switchWorkspace.add(editWorkspaces);
 	}
 
 	private void uncheckWorkspaces() {

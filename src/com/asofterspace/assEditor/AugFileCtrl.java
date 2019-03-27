@@ -88,6 +88,18 @@ public class AugFileCtrl {
 		return workspaces;
 	}
 
+	public void addWorkspace(String workspace) {
+
+		JSON jsonWorkspaces = configuration.getAllContents().get("workspaces");
+
+		JSON newWorkspace = new JSON("{files:[]}");
+		newWorkspace.setString("name", workspace);
+
+		jsonWorkspaces.append(newWorkspace);
+
+		configuration.create();
+	}
+
 	public void switchToWorkspace(String workspace) {
 
 		List<JSON> jsonWorkspaces = configuration.getAllContents().getArray("workspaces");
