@@ -12,6 +12,7 @@ rm -rf toolbox
 mkdir toolbox
 cd toolbox
 
+mkdir coders
 mkdir codeeditor
 cd codeeditor
 mkdir base
@@ -25,6 +26,7 @@ mkdir utils
 cd ../../../..
 
 cp ../Toolbox-Java/src/com/asofterspace/toolbox/*.java src/com/asofterspace/toolbox
+cp ../Toolbox-Java/src/com/asofterspace/toolbox/coders/*.* src/com/asofterspace/toolbox/coders
 cp ../Toolbox-Java/src/com/asofterspace/toolbox/codeeditor/*.* src/com/asofterspace/toolbox/codeeditor
 cp ../Toolbox-Java/src/com/asofterspace/toolbox/codeeditor/base/*.* src/com/asofterspace/toolbox/codeeditor/base
 cp ../Toolbox-Java/src/com/asofterspace/toolbox/codeeditor/utils/*.* src/com/asofterspace/toolbox/codeeditor/utils
