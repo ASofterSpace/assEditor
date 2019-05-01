@@ -559,6 +559,10 @@ public class AugFileTab {
 
 		fileContentMemo.setText(contentText);
 
+		if (origCaretPos > contentText.length()) {
+			origCaretPos = contentText.length();
+		}
+
 		fileContentMemo.setCaretPosition(origCaretPos);
 
 		augFile.setContent(contentText);
