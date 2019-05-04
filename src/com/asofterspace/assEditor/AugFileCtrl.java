@@ -245,15 +245,15 @@ public class AugFileCtrl {
 				fileListBuilder.append("{\"");
 				fileListBuilder.append(CONF_FILENAME);
 				fileListBuilder.append("\": \"");
-				fileListBuilder.append(augFile.getFilename());
+				fileListBuilder.append(JSON.escapeJSONstr(augFile.getFilename()));
 				fileListBuilder.append("\", \"");
 				fileListBuilder.append(CONF_CARET_POS);
 				fileListBuilder.append("\": ");
-				fileListBuilder.append(augFile.getCaretPos());
+				fileListBuilder.append(JSON.escapeJSONstr(augFile.getCaretPos()));
 				fileListBuilder.append(", \"");
 				fileListBuilder.append(CONF_LANGUAGE);
 				fileListBuilder.append("\": \"");
-				fileListBuilder.append(augFile.getSourceLanguage());
+				fileListBuilder.append(JSON.escapeJSONstr(augFile.getSourceLanguage()));
 				fileListBuilder.append("\"}");
 				fileListBuilder.append(sep);
 				sep = ", ";
