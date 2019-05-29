@@ -386,8 +386,10 @@ public class AugFileTab {
 		// also set the scroll pane color, as the scroll pane might be visible when the text is very short
 		sideScrollPane.getViewport().setBackground(highlighter.getBackgroundColor());
 
+		/*
 		// update copy on enter behavior
 		highlighter.setCopyOnCtrlEnter(gui.copyOnEnter);
+		*/
 
 		// update block tab behavior
 		highlighter.setTabEntireBlocks(gui.tabEntireBlocks);
@@ -549,7 +551,7 @@ public class AugFileTab {
 
 		if (gui.replaceWhitespacesWithTabsOnSave) {
 
-			contentText = replaceWhitespacesWithTabs(contentText);
+			contentText = replaceLeadingWhitespacesWithTabs(contentText);
 		}
 
 		if (gui.removeTrailingWhitespaceOnSave) {
@@ -594,32 +596,73 @@ public class AugFileTab {
 		highlighter.sortSelectedStringsAlphabetically();
 	}
 
-	public void replaceWhitespacesWithTabs() {
+	public void replaceLeadingWhitespacesWithTabs() {
 
 		String contentText = fileContentMemo.getText();
 
 		origCaretPos = fileContentMemo.getCaretPosition();
 
-		contentText = replaceWhitespacesWithTabs(contentText);
+		contentText = replaceLeadingWhitespacesWithTabs(contentText);
 
 		fileContentMemo.setText(contentText);
 
 		fileContentMemo.setCaretPosition(origCaretPos);
 	}
 
-	private String replaceWhitespacesWithTabs(String contentText) {
+	private String replaceLeadingWhitespacesWithTabs(String contentText) {
 
-		// this replaces all
-		// (with the four spaces in two, as otherwise we would
-		// replace ourselves in here... :D)
-		contentText = contentText.replace("  "+"  ", "\t");
+		StringBuilder result = new StringBuilder();
 
-		// even after replacing all, some might be left, so we replace again and again
-		while (contentText.contains(" \t")) {
-			contentText = contentText.replace(" \t", "\t");
+		boolean startOfLine = true;
+
+		int curcAmount = 0;
+
+		for (int i = 0; i < contentText.length(); i++) {
+
+			char c = contentText.charAt(i);
+
+			if ((c == '\n') || (c == '\r')) {
+				if (curcAmount > 0) {
+					for (int j = 0; j < curcAmount; j++) {
+						result.append(' ');
+					}
+					curcAmount = 0;
+				}
+				result.append(c);
+				startOfLine = true;
+				continue;
+			}
+
+			if (startOfLine) {
+				if (c == ' ') {
+					curcAmount++;
+
+					if (curcAmount > 3) {
+						curcAmount -= 4;
+						result.append('\t');
+					}
+					continue;
+				}
+
+				// in case of a tab, do not set startOfLine to false, as we want
+				// newline + tab + space + space to transform also!
+				if (c == '\t') {
+					result.append('\t');
+					continue;
+				}
+			}
+
+			if (curcAmount > 0) {
+				for (int j = 0; j < curcAmount; j++) {
+					result.append(' ');
+				}
+				curcAmount = 0;
+			}
+			result.append(c);
+			startOfLine = false;
 		}
 
-		return contentText;
+		return result.toString();
 	}
 
 	public void removeTrailingWhitespace() {

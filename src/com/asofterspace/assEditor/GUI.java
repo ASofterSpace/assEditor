@@ -530,12 +530,12 @@ public class GUI extends MainWindow {
 		});
 		edit.add(removeTrailWhitespace);
 
-		JMenuItem repWhitespacesWithTabs = new JMenuItem("Replace Whitespaces with Tabs");
+		JMenuItem repWhitespacesWithTabs = new JMenuItem("Replace Leading Whitespaces with Tabs");
 		repWhitespacesWithTabs.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (currentlyShownTab != null) {
-					currentlyShownTab.replaceWhitespacesWithTabs();
+					currentlyShownTab.replaceLeadingWhitespacesWithTabs();
 				}
 			}
 		});
@@ -762,7 +762,7 @@ public class GUI extends MainWindow {
 		setRemoveTrailingWhitespaceOnSave(removeTrailingWhitespaceOnSave);
 		settings.add(removeTrailingWhitespaceOnSaveItem);
 
-		replaceWhitespacesWithTabsOnSaveItem = new JCheckBoxMenuItem("Replace Whitespaces with Tabs on Save");
+		replaceWhitespacesWithTabsOnSaveItem = new JCheckBoxMenuItem("Replace Leading Whitespaces with Tabs on Save");
 		replaceWhitespacesWithTabsOnSaveItem.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
