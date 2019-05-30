@@ -508,6 +508,90 @@ public class GUI extends MainWindow {
 
 		edit.addSeparator();
 
+		JMenuItem duplicateCurrentLine = new JMenuItem("Duplicate Current Line");
+		duplicateCurrentLine.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, ActionEvent.SHIFT_MASK));
+		duplicateCurrentLine.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (currentlyShownTab != null) {
+					currentlyShownTab.duplicateCurrentLine();
+				}
+			}
+		});
+		edit.add(duplicateCurrentLine);
+
+		JMenuItem duplicateCurrentLineCtrl = new JMenuItem("Duplicate Current Line using [Ctrl] instead");
+		duplicateCurrentLineCtrl.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, ActionEvent.CTRL_MASK));
+		duplicateCurrentLineCtrl.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (currentlyShownTab != null) {
+					currentlyShownTab.duplicateCurrentLine();
+				}
+			}
+		});
+		edit.add(duplicateCurrentLineCtrl);
+
+		JMenuItem deleteCurrentLine = new JMenuItem("Delete Current Line");
+		deleteCurrentLine.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_D, ActionEvent.CTRL_MASK));
+		deleteCurrentLine.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (currentlyShownTab != null) {
+					currentlyShownTab.deleteCurrentLine();
+				}
+			}
+		});
+		edit.add(deleteCurrentLine);
+
+		JMenuItem lowCurSel = new JMenuItem("Lowcase Current Selection");
+		lowCurSel.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (currentlyShownTab != null) {
+					currentlyShownTab.lowCurSel();
+				}
+			}
+		});
+		edit.add(lowCurSel);
+
+		JMenuItem upCurSel = new JMenuItem("Upcase Current Selection");
+		upCurSel.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (currentlyShownTab != null) {
+					currentlyShownTab.upCurSel();
+				}
+			}
+		});
+		edit.add(upCurSel);
+
+		JMenuItem lowCurWord = new JMenuItem("Lowcase Current Word");
+		lowCurWord.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_L, ActionEvent.CTRL_MASK));
+		lowCurWord.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (currentlyShownTab != null) {
+					currentlyShownTab.lowCurWord();
+				}
+			}
+		});
+		edit.add(lowCurWord);
+
+		JMenuItem upCurWord = new JMenuItem("Upcase Current Word");
+		upCurWord.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_U, ActionEvent.CTRL_MASK));
+		upCurWord.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (currentlyShownTab != null) {
+					currentlyShownTab.upCurWord();
+				}
+			}
+		});
+		edit.add(upCurWord);
+
+		edit.addSeparator();
+
 		JMenuItem applyGit = new JMenuItem("Apply Git Markers (+/- at the beginning of lines)");
 		applyGit.addActionListener(new ActionListener() {
 			@Override
@@ -518,6 +602,17 @@ public class GUI extends MainWindow {
 			}
 		});
 		edit.add(applyGit);
+
+		JMenuItem writeLineNumbers = new JMenuItem("Write Line Numbers in Front of Each Line");
+		writeLineNumbers.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (currentlyShownTab != null) {
+					currentlyShownTab.writeLineNumbers();
+				}
+			}
+		});
+		edit.add(writeLineNumbers);
 
 		JMenuItem removeTrailWhitespace = new JMenuItem("Remove Trailing Whitespace");
 		removeTrailWhitespace.addActionListener(new ActionListener() {
@@ -784,6 +879,7 @@ public class GUI extends MainWindow {
 
 		settings.addSeparator();
 
+		/*
 		copyOnEnterItem = new JCheckBoxMenuItem("Copy Line on [Ctrl / Shift] + [Enter]");
 		copyOnEnterItem.addActionListener(new ActionListener() {
 			@Override
@@ -793,6 +889,7 @@ public class GUI extends MainWindow {
 		});
 		setCopyOnEnter(copyOnEnter);
 		settings.add(copyOnEnterItem);
+		*/
 
 		tabEntireBlocksItem = new JCheckBoxMenuItem("[Tab] Entire Blocks");
 		tabEntireBlocksItem.addActionListener(new ActionListener() {

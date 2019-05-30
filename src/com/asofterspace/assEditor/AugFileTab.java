@@ -443,6 +443,141 @@ public class AugFileTab {
 		fileContentMemo.setText(sourceCode.toString());
 	}
 
+	public void writeLineNumbers() {
+
+		String[] codeLines = fileContentMemo.getText().split("\n");
+
+		StringBuilder sourceCode = new StringBuilder();
+
+		int i = 0;
+
+		for (String line : codeLines) {
+			i++;
+			sourceCode.append(i);
+			sourceCode.append(": ");
+			sourceCode.append(line);
+			sourceCode.append("\n");
+		}
+
+		fileContentMemo.setText(sourceCode.toString());
+	}
+
+	public void duplicateCurrentLine() {
+
+		String sourceCode = fileContentMemo.getText();
+
+		int carPos = fileContentMemo.getCaretPosition();
+
+		int lineStart = Code.getLineStartFromPosition(carPos, sourceCode);
+		int lineEnd = Code.getLineEndFromPosition(carPos, sourceCode);
+
+		String insertStr = sourceCode.substring(lineStart, lineEnd);
+		if (!insertStr.startsWith("\n")) {
+			insertStr = "\n" + insertStr;
+		}
+
+		sourceCode = sourceCode.substring(0, lineEnd) + insertStr + sourceCode.substring(lineEnd);
+
+		fileContentMemo.setText(sourceCode);
+
+		fileContentMemo.setCaretPosition(carPos + insertStr.length());
+	}
+
+	public void deleteCurrentLine() {
+
+		String sourceCode = fileContentMemo.getText();
+
+		int carPos = fileContentMemo.getCaretPosition();
+
+		int lineStart = Code.getLineStartFromPosition(carPos, sourceCode);
+		int lineEnd = Code.getLineEndFromPosition(carPos, sourceCode);
+
+		// ignore trailing newline
+		if (lineStart > 0) {
+			lineStart--;
+		}
+
+		sourceCode = sourceCode.substring(0, lineStart) + sourceCode.substring(lineEnd);
+
+		fileContentMemo.setText(sourceCode);
+
+		if (carPos > sourceCode.length()) {
+			carPos = sourceCode.length();
+		}
+
+		fileContentMemo.setCaretPosition(carPos);
+	}
+
+	public void lowCurSel() {
+
+		String sourceCode = fileContentMemo.getText();
+
+		int carPos = fileContentMemo.getCaretPosition();
+		int selStart = fileContentMemo.getSelectionStart();
+		int selEnd = fileContentMemo.getSelectionEnd();
+
+		String lowStr = sourceCode.substring(selStart, selEnd);
+		lowStr = lowStr.toLowerCase();
+
+		sourceCode = sourceCode.substring(0, selStart) + lowStr + sourceCode.substring(selEnd);
+
+		fileContentMemo.setText(sourceCode);
+		fileContentMemo.setCaretPosition(carPos);
+	}
+
+	public void upCurSel() {
+
+		String sourceCode = fileContentMemo.getText();
+
+		int carPos = fileContentMemo.getCaretPosition();
+		int selStart = fileContentMemo.getSelectionStart();
+		int selEnd = fileContentMemo.getSelectionEnd();
+
+		String upStr = sourceCode.substring(selStart, selEnd);
+		upStr = upStr.toUpperCase();
+
+		sourceCode = sourceCode.substring(0, selStart) + upStr + sourceCode.substring(selEnd);
+
+		fileContentMemo.setText(sourceCode);
+		fileContentMemo.setCaretPosition(carPos);
+	}
+
+	public void lowCurWord() {
+
+		String sourceCode = fileContentMemo.getText();
+
+		int carPos = fileContentMemo.getCaretPosition();
+
+		int selStart = Code.getWordStartFromPosition(carPos, sourceCode);
+		int selEnd = Code.getWordEndFromPosition(carPos, sourceCode);
+
+		String lowStr = sourceCode.substring(selStart, selEnd);
+		lowStr = lowStr.toLowerCase();
+
+		sourceCode = sourceCode.substring(0, selStart) + lowStr + sourceCode.substring(selEnd);
+
+		fileContentMemo.setText(sourceCode);
+		fileContentMemo.setCaretPosition(carPos);
+	}
+
+	public void upCurWord() {
+
+		String sourceCode = fileContentMemo.getText();
+
+		int carPos = fileContentMemo.getCaretPosition();
+
+		int selStart = Code.getWordStartFromPosition(carPos, sourceCode);
+		int selEnd = Code.getWordEndFromPosition(carPos, sourceCode);
+
+		String upStr = sourceCode.substring(selStart, selEnd);
+		upStr = upStr.toUpperCase();
+
+		sourceCode = sourceCode.substring(0, selStart) + upStr + sourceCode.substring(selEnd);
+
+		fileContentMemo.setText(sourceCode);
+		fileContentMemo.setCaretPosition(carPos);
+	}
+
 	private void setCaretPos(int newSelStart, int newSelEnd) {
 
 		fileContentMemo.setCaretPosition(newSelStart);
