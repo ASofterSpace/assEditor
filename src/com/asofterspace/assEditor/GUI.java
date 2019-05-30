@@ -614,6 +614,17 @@ public class GUI extends MainWindow {
 		});
 		edit.add(writeLineNumbers);
 
+		JMenuItem removeLineNumbers = new JMenuItem("Remove Line Numbers from Front of Each Line");
+		removeLineNumbers.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (currentlyShownTab != null) {
+					currentlyShownTab.removeLineNumbers();
+				}
+			}
+		});
+		edit.add(removeLineNumbers);
+
 		JMenuItem removeTrailWhitespace = new JMenuItem("Remove Trailing Whitespace");
 		removeTrailWhitespace.addActionListener(new ActionListener() {
 			@Override

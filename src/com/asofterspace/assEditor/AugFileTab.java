@@ -87,6 +87,7 @@ public class AugFileTab {
 	// the original caret position - as global variable such that other functions
 	// can more easily modify it cleverly
 	private int origCaretPos;
+	private int newCaretPos;
 
 
 	public AugFileTab(JPanel parentPanel, AugFile augFile, final GUI gui, AugFileCtrl augFileCtrl) {
@@ -462,6 +463,36 @@ public class AugFileTab {
 		fileContentMemo.setText(sourceCode.toString());
 	}
 
+	public void removeLineNumbers() {
+
+		String[] codeLines = fileContentMemo.getText().split("\n");
+
+		StringBuilder sourceCode = new StringBuilder();
+
+		String sep = "";
+
+		for (String line : codeLines) {
+			int index = line.indexOf(": ");
+			if (index >= 0) {
+				boolean cutBeginning = true;
+				for (int i = 0; i < index; i++) {
+					if (!Character.isDigit(line.charAt(i))) {
+						cutBeginning = false;
+						break;
+					}
+				}
+				if (cutBeginning) {
+					line = line.substring(index + 2);
+				}
+			}
+			sourceCode.append(sep);
+			sep = "\n";
+			sourceCode.append(line);
+		}
+
+		fileContentMemo.setText(sourceCode.toString());
+	}
+
 	public void duplicateCurrentLine() {
 
 		String sourceCode = fileContentMemo.getText();
@@ -737,11 +768,13 @@ public class AugFileTab {
 
 		origCaretPos = fileContentMemo.getCaretPosition();
 
+		newCaretPos = origCaretPos;
+
 		contentText = replaceLeadingWhitespacesWithTabs(contentText);
 
 		fileContentMemo.setText(contentText);
 
-		fileContentMemo.setCaretPosition(origCaretPos);
+		fileContentMemo.setCaretPosition(newCaretPos);
 	}
 
 	private String replaceLeadingWhitespacesWithTabs(String contentText) {
@@ -775,6 +808,11 @@ public class AugFileTab {
 					if (curcAmount > 3) {
 						curcAmount -= 4;
 						result.append('\t');
+
+						if (i < origCaretPos) {
+							newCaretPos -= 3;
+						}
+
 					}
 					continue;
 				}
