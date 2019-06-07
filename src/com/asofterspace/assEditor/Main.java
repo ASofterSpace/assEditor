@@ -52,6 +52,18 @@ public class Main {
 		Utils.setVersionNumber(VERSION_NUMBER);
 		Utils.setVersionDate(VERSION_DATE);
 
+		if (args.length > 0) {
+			if (args[0].equals("--version")) {
+				System.out.println(Utils.getFullProgramIdentifierWithDate());
+				return;
+			}
+
+			if (args[0].equals("--version_for_zip")) {
+				System.out.println("version " + Utils.getVersionNumber());
+				return;
+			}
+		}
+
 		// we get a config file based on the classpath, such that we know that this is always the
 		// same "install" location, without change even if we are called from somewhere else
 		ConfigFile config = new ConfigFile("settings", true);
