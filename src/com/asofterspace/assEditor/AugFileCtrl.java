@@ -8,7 +8,7 @@ import com.asofterspace.toolbox.codeeditor.utils.CodeLanguage;
 import com.asofterspace.toolbox.configuration.ConfigFile;
 import com.asofterspace.toolbox.io.Directory;
 import com.asofterspace.toolbox.io.File;
-import com.asofterspace.toolbox.io.JSON;
+import com.asofterspace.toolbox.io.Record;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -31,7 +31,7 @@ public class AugFileCtrl {
 
 	private List<AugFile> files;
 
-	private JSON activeWorkspace;
+	private Record activeWorkspace;
 
 	private Thread saveConfigThread;
 
@@ -71,7 +71,7 @@ public class AugFileCtrl {
 		return activeWorkspace.getString("name");
 	}
 
-	public JSON getWorkspace() {
+	public Record getWorkspace() {
 		return activeWorkspace;
 	}
 
@@ -79,10 +79,10 @@ public class AugFileCtrl {
 
 		List<String> workspaces = new ArrayList<>();
 
-		List<JSON> jsonWorkspaces = configuration.getAllContents().getArray("workspaces");
+		List<Record> recWorkspaces = configuration.getAllContents().getArray("workspaces");
 
-		for (JSON jsonWorkspace : jsonWorkspaces) {
-			workspaces.add(jsonWorkspace.getString("name"));
+		for (Record recWorkspace : recWorkspaces) {
+			workspaces.add(recWorkspace.getString("name"));
 		}
 
 		return workspaces;
@@ -90,31 +90,36 @@ public class AugFileCtrl {
 
 	public void addWorkspace(String workspace) {
 
-		JSON jsonWorkspaces = configuration.getAllContents().get("workspaces");
+		Record recWorkspaces = configuration.getAllContents().get("workspaces");
 
-		JSON newWorkspace = new JSON("{\"files\":[]}");
+		Record newWorkspace = new Record();
+
+		Record fileRec = new Record();
+		fileRec.makeArray();
+
+		newWorkspace.set("files", fileRec);
 
 		newWorkspace.setString("name", workspace);
 
-		jsonWorkspaces.append(newWorkspace);
+		recWorkspaces.append(newWorkspace);
 
 		configuration.create();
 	}
 
 	public void switchToWorkspace(String workspace) {
 
-		List<JSON> jsonWorkspaces = configuration.getAllContents().getArray("workspaces");
+		List<Record> recWorkspaces = configuration.getAllContents().getArray("workspaces");
 
-		for (JSON jsonWorkspace : jsonWorkspaces) {
+		for (Record recWorkspace : recWorkspaces) {
 			if ((workspace == null) ||
-				 workspace.equals(jsonWorkspace.getString("name"))) {
-				switchToJsonWorkspace(jsonWorkspace);
+				 workspace.equals(recWorkspace.getString("name"))) {
+				switchToJsonWorkspace(recWorkspace);
 				return;
 			}
 		}
 	}
 
-	private void switchToJsonWorkspace(JSON workspace) {
+	private void switchToJsonWorkspace(Record workspace) {
 
 		activeWorkspace = workspace;
 
@@ -122,19 +127,19 @@ public class AugFileCtrl {
 
 		files = new ArrayList<>();
 
-		List<JSON> jsonFiles = workspace.getArray("files");
+		List<Record> recFiles = workspace.getArray("files");
 
-		if (jsonFiles != null) {
-			for (JSON jsonFile : jsonFiles) {
+		if (recFiles != null) {
+			for (Record recFile : recFiles) {
 
-				File fileToOpen = new File(jsonFile.getString(CONF_FILENAME));
+				File fileToOpen = new File(recFile.getString(CONF_FILENAME));
 
 				AugFile curFile = loadAnotherFileWithoutSaving(fileToOpen);
 
 				if (curFile != null) {
-					curFile.setInitialCaretPos(jsonFile.getInteger(CONF_CARET_POS));
+					curFile.setInitialCaretPos(recFile.getInteger(CONF_CARET_POS));
 
-					CodeLanguage sourceLang = CodeLanguage.getFromString(jsonFile.getString(CONF_LANGUAGE));
+					CodeLanguage sourceLang = CodeLanguage.getFromString(recFile.getString(CONF_LANGUAGE));
 
 					curFile.setSourceLanguage(sourceLang);
 				}
@@ -236,31 +241,25 @@ public class AugFileCtrl {
 
 	public void saveConfigFileList() {
 
-		// TODO :: ugly - fix me! (we are setting JSON via String, which works, but wäh... ^^)
 		StringBuilder fileListBuilder = new StringBuilder();
-		String sep = "";
+
+		Record filesRec = new Record();
 
 		synchronized (files) {
+
 			for (AugFile augFile : files) {
-				fileListBuilder.append("{\"");
-				fileListBuilder.append(CONF_FILENAME);
-				fileListBuilder.append("\": \"");
-				fileListBuilder.append(JSON.escapeJSONstr(augFile.getFilename()));
-				fileListBuilder.append("\", \"");
-				fileListBuilder.append(CONF_CARET_POS);
-				fileListBuilder.append("\": ");
-				fileListBuilder.append(JSON.escapeJSONstr(augFile.getCaretPos()));
-				fileListBuilder.append(", \"");
-				fileListBuilder.append(CONF_LANGUAGE);
-				fileListBuilder.append("\": \"");
-				fileListBuilder.append(JSON.escapeJSONstr(augFile.getSourceLanguage()));
-				fileListBuilder.append("\"}");
-				fileListBuilder.append(sep);
-				sep = ", ";
+
+				Record curRec = new Record();
+
+				curRec.setString(CONF_FILENAME, augFile.getFilename());
+				curRec.setString(CONF_CARET_POS, augFile.getCaretPos());
+				curRec.setString(CONF_LANGUAGE, augFile.getSourceLanguage());
+
+				filesRec.append(curRec);
 			}
 		}
 
-		activeWorkspace.set("files", new JSON("[" + fileListBuilder.toString() + "]"));
+		activeWorkspace.set("files", filesRec);
 
 		configuration.create();
 	}

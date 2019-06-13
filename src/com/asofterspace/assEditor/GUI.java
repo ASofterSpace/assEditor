@@ -13,7 +13,7 @@ import com.asofterspace.toolbox.gui.MainWindow;
 import com.asofterspace.toolbox.gui.ProgressDialog;
 import com.asofterspace.toolbox.io.Directory;
 import com.asofterspace.toolbox.io.File;
-import com.asofterspace.toolbox.io.JSON;
+import com.asofterspace.toolbox.io.Record;
 import com.asofterspace.toolbox.io.SimpleFile;
 import com.asofterspace.toolbox.utils.Callback;
 import com.asofterspace.toolbox.utils.ProgressIndicator;
@@ -2310,7 +2310,7 @@ public class GUI extends MainWindow {
 	}
 	*/
 
-	private JSON getWorkspace() {
+	private Record getWorkspace() {
 		return augFileCtrl.getWorkspace();
 	}
 
