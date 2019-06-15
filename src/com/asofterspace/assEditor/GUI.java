@@ -1248,7 +1248,7 @@ public class GUI extends MainWindow {
 
 				// Set the preferred size of the dialog
 				int width = 600;
-				int height = 200;
+				int height = 150;
 				editWorkitemsDialog.setSize(width, height);
 				editWorkitemsDialog.setPreferredSize(new Dimension(width, height));
 
