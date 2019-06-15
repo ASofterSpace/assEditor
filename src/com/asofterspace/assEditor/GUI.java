@@ -60,6 +60,7 @@ import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
@@ -121,6 +122,9 @@ public class GUI extends MainWindow {
 	private List<JMenuItem> codeKindItems;
 	private List<JCheckBoxMenuItem> codeKindItemsCurrent;
 	private List<JCheckBoxMenuItem> workspaces;
+
+	private JDialog searchInWorkspaceDialog;
+	private JTextArea searchInWorkspaceOutputMemo;
 
 	private List<AugFileTab> augFileTabs;
 
@@ -705,6 +709,15 @@ public class GUI extends MainWindow {
 		});
 		edit.add(search);
 
+		JMenuItem searchInWorkspace = new JMenuItem("Search in Workspace");
+		searchInWorkspace.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				showSearchWindow();
+			}
+		});
+		edit.add(searchInWorkspace);
+
 
 		JMenu encodings = new JMenu("Encodings");
 		menu.add(encodings);
@@ -1235,7 +1248,7 @@ public class GUI extends MainWindow {
 
 				// Set the preferred size of the dialog
 				int width = 600;
-				int height = 120;
+				int height = 200;
 				editWorkitemsDialog.setSize(width, height);
 				editWorkitemsDialog.setPreferredSize(new Dimension(width, height));
 
@@ -1256,6 +1269,75 @@ public class GUI extends MainWindow {
 		searchPanel.setVisible(true);
 
 		searchField.requestFocus();
+	}
+
+	private void createSearchWindow() {
+
+		// Create the window
+		searchInWorkspaceDialog = new JDialog(mainFrame, "Search in Workspace", false);
+		GridBagLayout searchInWorkspaceDialogLayout = new GridBagLayout();
+		searchInWorkspaceDialog.setLayout(searchInWorkspaceDialogLayout);
+		searchInWorkspaceDialog.getRootPane().setBorder(BorderFactory.createEmptyBorder(8, 8, 8, 8));
+
+		// Populate the window
+		JLabel explanationLabel = new JLabel();
+		explanationLabel.setText("Enter the text you are searching for:");
+		searchInWorkspaceDialog.add(explanationLabel, new Arrangement(0, 0, 1.0, 0.0));
+
+		final JTextField searchField = new JTextField();
+		searchInWorkspaceDialog.add(searchField, new Arrangement(0, 1, 1.0, 0.0));
+
+		searchInWorkspaceOutputMemo = new JTextArea();
+		JScrollPane outputMemoScroller = new JScrollPane(searchInWorkspaceOutputMemo);
+		searchInWorkspaceDialog.add(outputMemoScroller, new Arrangement(0, 2, 1.0, 1.0));
+
+		JPanel buttonRow = new JPanel();
+		GridLayout buttonRowLayout = new GridLayout(1, 2);
+		buttonRowLayout.setHgap(8);
+		buttonRow.setLayout(buttonRowLayout);
+		searchInWorkspaceDialog.add(buttonRow, new Arrangement(0, 3, 1.0, 0.0));
+
+		JButton searchButton = new JButton("Search");
+		searchButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				searchInWorkspaceFor(searchField.getText());
+			}
+		});
+		buttonRow.add(searchButton);
+
+		JButton doneButton = new JButton("Done");
+		doneButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				searchInWorkspaceDialog.dispose();
+			}
+		});
+		buttonRow.add(doneButton);
+
+		// Set the preferred size of the dialog
+		int width = 600;
+		int height = 500;
+		searchInWorkspaceDialog.setSize(width, height);
+		searchInWorkspaceDialog.setPreferredSize(new Dimension(width, height));
+	}
+
+	private void searchInWorkspaceFor(String searchFor) {
+
+		StringBuilder result = new StringBuilder();
+
+		for (AugFileTab curTab : augFileTabs) {
+			curTab.searchAndAddResultTo(searchFor, result);
+		}
+
+		searchInWorkspaceOutputMemo.setText(result.toString());
+	}
+
+	private void showSearchWindow() {
+
+		if (searchInWorkspaceDialog == null) {
+			createSearchWindow();
+		}
+
+		GuiUtils.centerAndShowWindow(searchInWorkspaceDialog);
 	}
 
 	private void openFile() {

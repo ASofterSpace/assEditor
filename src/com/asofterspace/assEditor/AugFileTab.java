@@ -682,6 +682,45 @@ public class AugFileTab {
 		highlighter.setSearchStr(searchFor);
 	}
 
+	public void searchAndAddResultTo(String searchFor, StringBuilder result) {
+
+		String text = fileContentMemo.getText();
+
+		int nextpos = text.indexOf(searchFor);
+
+		if (nextpos < 0) {
+			return;
+		}
+
+		result.append(getFullName());
+		result.append(":\n\n");
+
+		while (nextpos >= 0) {
+
+			// TODO :: actually notice if something here is overlapping with the previous find!
+
+			int line = Code.getLineNumberFromPosition(nextpos, text);
+
+			result.append(line - 1);
+			result.append(": ");
+			result.append(Code.getLineFromNumber(line - 1, text));
+			result.append("\n");
+			result.append(line);
+			result.append(": ");
+			result.append(Code.getLineFromNumber(line, text));
+			result.append("\n");
+			result.append(line + 1);
+			result.append(": ");
+			result.append(Code.getLineFromNumber(line + 1, text));
+			result.append("\n");
+			result.append("\n");
+
+			nextpos = text.indexOf(searchFor, nextpos + 1);
+		}
+
+		result.append("\n");
+	}
+
 	public void replaceAll(String searchFor, String replaceWith) {
 
 		String text = fileContentMemo.getText();
