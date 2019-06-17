@@ -1287,15 +1287,22 @@ public class GUI extends MainWindow {
 		final JTextField searchField = new JTextField();
 		searchInWorkspaceDialog.add(searchField, new Arrangement(0, 1, 1.0, 0.0));
 
+		JLabel explanationReplaceLabel = new JLabel();
+		explanationReplaceLabel.setText("Enter here the replacement text in case you want to replace anything:");
+		searchInWorkspaceDialog.add(explanationReplaceLabel, new Arrangement(0, 2, 1.0, 0.0));
+
+		final JTextField replaceField = new JTextField();
+		searchInWorkspaceDialog.add(replaceField, new Arrangement(0, 3, 1.0, 0.0));
+
 		searchInWorkspaceOutputMemo = new JTextArea();
 		JScrollPane outputMemoScroller = new JScrollPane(searchInWorkspaceOutputMemo);
-		searchInWorkspaceDialog.add(outputMemoScroller, new Arrangement(0, 2, 1.0, 1.0));
+		searchInWorkspaceDialog.add(outputMemoScroller, new Arrangement(0, 4, 1.0, 1.0));
 
 		JPanel buttonRow = new JPanel();
-		GridLayout buttonRowLayout = new GridLayout(1, 2);
+		GridLayout buttonRowLayout = new GridLayout(1, 3);
 		buttonRowLayout.setHgap(8);
 		buttonRow.setLayout(buttonRowLayout);
-		searchInWorkspaceDialog.add(buttonRow, new Arrangement(0, 3, 1.0, 0.0));
+		searchInWorkspaceDialog.add(buttonRow, new Arrangement(0, 5, 1.0, 0.0));
 
 		JButton searchButton = new JButton("Search");
 		searchButton.addActionListener(new ActionListener() {
@@ -1304,6 +1311,14 @@ public class GUI extends MainWindow {
 			}
 		});
 		buttonRow.add(searchButton);
+
+		JButton replaceButton = new JButton("Replace");
+		replaceButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				searchInWorkspaceAndReplaceWith(searchField.getText(), replaceField.getText());
+			}
+		});
+		buttonRow.add(replaceButton);
 
 		JButton doneButton = new JButton("Done");
 		doneButton.addActionListener(new ActionListener() {
@@ -1314,8 +1329,8 @@ public class GUI extends MainWindow {
 		buttonRow.add(doneButton);
 
 		// Set the preferred size of the dialog
-		int width = 600;
-		int height = 500;
+		int width = 1200;
+		int height = 800;
 		searchInWorkspaceDialog.setSize(width, height);
 		searchInWorkspaceDialog.setPreferredSize(new Dimension(width, height));
 	}
@@ -1329,6 +1344,16 @@ public class GUI extends MainWindow {
 		}
 
 		searchInWorkspaceOutputMemo.setText(result.toString());
+	}
+
+	private void searchInWorkspaceAndReplaceWith(String searchFor, String replaceWith) {
+
+		for (AugFileTab curTab : augFileTabs) {
+			curTab.replaceAll(searchFor, replaceWith);
+			curTab.saveIfChanged();
+		}
+
+		searchInWorkspaceOutputMemo.setText("All occurrences of " + searchFor + " replaced with " + replaceWith + "!");
 	}
 
 	private void showSearchWindow() {
