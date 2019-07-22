@@ -125,6 +125,7 @@ public class GUI extends MainWindow {
 
 	private JDialog searchInWorkspaceDialog;
 	private JTextArea searchInWorkspaceOutputMemo;
+	private JLabel searchInWorkspaceOutputLabel;
 
 	private List<AugFileTab> augFileTabs;
 
@@ -1298,11 +1299,14 @@ public class GUI extends MainWindow {
 		JScrollPane outputMemoScroller = new JScrollPane(searchInWorkspaceOutputMemo);
 		searchInWorkspaceDialog.add(outputMemoScroller, new Arrangement(0, 4, 1.0, 1.0));
 
+		searchInWorkspaceOutputLabel = new JLabel();
+		searchInWorkspaceDialog.add(searchInWorkspaceOutputLabel, new Arrangement(0, 5, 1.0, 0.0));
+
 		JPanel buttonRow = new JPanel();
 		GridLayout buttonRowLayout = new GridLayout(1, 3);
 		buttonRowLayout.setHgap(8);
 		buttonRow.setLayout(buttonRowLayout);
-		searchInWorkspaceDialog.add(buttonRow, new Arrangement(0, 5, 1.0, 0.0));
+		searchInWorkspaceDialog.add(buttonRow, new Arrangement(0, 6, 1.0, 0.0));
 
 		JButton searchButton = new JButton("Search");
 		searchButton.addActionListener(new ActionListener() {
@@ -1339,11 +1343,27 @@ public class GUI extends MainWindow {
 
 		StringBuilder result = new StringBuilder();
 
+		int matches = 0;
+		int infiles = 0;
+
 		for (AugFileTab curTab : augFileTabs) {
-			curTab.searchAndAddResultTo(searchFor, result);
+			int curMatches = curTab.searchAndAddResultTo(searchFor, result);
+
+			if (curMatches > 0) {
+				matches += curMatches;
+				infiles++;
+			}
 		}
 
 		searchInWorkspaceOutputMemo.setText(result.toString());
+
+		searchInWorkspaceOutputLabel.setText(
+			"Found " +
+			Utils.thingOrThings(matches, "match", "matches") +
+			" in " +
+			Utils.thingOrThings(infiles, "file") +
+			"."
+		);
 	}
 
 	private void searchInWorkspaceAndReplaceWith(String searchFor, String replaceWith) {

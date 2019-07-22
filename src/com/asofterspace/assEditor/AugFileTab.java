@@ -682,43 +682,73 @@ public class AugFileTab {
 		highlighter.setSearchStr(searchFor);
 	}
 
-	public void searchAndAddResultTo(String searchFor, StringBuilder result) {
+	/**
+	 * Searches for text within this tab and adds the resulting matches to the result builder
+	 * Also outputs the amount of matches as returned int
+	 */
+	public int searchAndAddResultTo(String searchFor, StringBuilder result) {
+
+		int matchAmount = 0;
 
 		String text = fileContentMemo.getText();
 
 		int nextpos = text.indexOf(searchFor);
 
 		if (nextpos < 0) {
-			return;
+			return matchAmount;
 		}
 
 		result.append(getFullName());
 		result.append(":\n\n");
 
-		while (nextpos >= 0) {
+		int oldfrom = -1;
+		int oldto = -1;
 
-			// TODO :: actually notice if something here is overlapping with the previous find!
+		while (nextpos >= 0) {
 
 			int line = Code.getLineNumberFromPosition(nextpos, text);
 
-			result.append(line - 1);
-			result.append(": ");
-			result.append(Code.getLineFromNumber(line - 1, text));
-			result.append("\n");
-			result.append(line);
-			result.append(": ");
-			result.append(Code.getLineFromNumber(line, text));
-			result.append("\n");
-			result.append(line + 1);
-			result.append(": ");
-			result.append(Code.getLineFromNumber(line + 1, text));
-			result.append("\n");
-			result.append("\n");
+			int newfrom = line - 1;
+			int newto = line + 1;
+
+			if (newfrom <= oldto) {
+				// let's group matches
+				oldto = newto;
+			} else {
+				addCodeToResultFromLineToLine(oldfrom, oldto, text, result);
+				oldfrom = newfrom;
+				oldto = newto;
+			}
 
 			nextpos = text.indexOf(searchFor, nextpos + 1);
+
+			matchAmount++;
 		}
 
+		addCodeToResultFromLineToLine(oldfrom, oldto, text, result);
+
 		result.append("\n");
+
+		return matchAmount;
+	}
+
+	private void addCodeToResultFromLineToLine(int from, int to, String text, StringBuilder result) {
+
+		if (from < 0) {
+			from = 0;
+		}
+
+		for (int i = from; i < to + 1; i++) {
+			result.append(i);
+			result.append(": ");
+			result.append(Code.getLineFromNumber(i, text));
+			result.append("\n");
+		}
+
+		// if we actually appended something, then append a newline in the end
+		if (to >= 0) {
+			result.append("\n");
+		}
 	}
 
 	public void replaceAll(String searchFor, String replaceWith) {
