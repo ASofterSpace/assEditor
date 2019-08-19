@@ -902,6 +902,18 @@ public class GUI extends MainWindow {
 		setReorganizeImportsOnSave(reorganizeImportsOnSave);
 		settings.add(reorganizeImportsOnSaveItem);
 
+		JMenuItem toggleAllSwitchesInGroup = new JMenuItem("Toggle All Switches In Group");
+		toggleAllSwitchesInGroup.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				boolean toggleTo = !removeTrailingWhitespaceOnSave;
+				setRemoveTrailingWhitespaceOnSave(toggleTo);
+				setReplaceWhitespacesWithTabsOnSave(toggleTo);
+				setReorganizeImportsOnSave(toggleTo);
+			}
+		});
+		settings.add(toggleAllSwitchesInGroup);
+
 		settings.addSeparator();
 
 		/*
