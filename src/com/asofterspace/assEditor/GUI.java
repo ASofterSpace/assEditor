@@ -28,6 +28,7 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.FlowLayout;
@@ -62,8 +63,10 @@ import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.JTree;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
+import javax.swing.tree.TreePath;
 
 
 public class GUI extends MainWindow {
@@ -93,6 +96,7 @@ public class GUI extends MainWindow {
 	private final static String CONFIG_KEY_LEFT = "mainFrameLeft";
 	private final static String CONFIG_KEY_TOP = "mainFrameTop";
 	private final static String CONFIG_KEY_FONT_SIZE = "fontSize";
+	private final static String CONFIG_KEY_SHOW_FILES_IN_TREE = "showFilesInTree";
 
 	final static String LIGHT_SCHEME = "light";
 	final static String DARK_SCHEME = "dark";
@@ -131,8 +135,12 @@ public class GUI extends MainWindow {
 
 	private ConfigFile configuration;
 	private JList<String> fileListComponent;
+	private JTree fileTreeComponent;
 	private JPopupMenu fileListPopup;
 	private String[] strAugFiles;
+	private FileTreeModel fileTreeModel;
+	private JScrollPane augFileListScroller;
+	private JScrollPane augFileTreeScroller;
 
 	private Integer currentBackup;
 
@@ -144,6 +152,7 @@ public class GUI extends MainWindow {
 	Boolean reorganizeImportsOnSave;
 	Boolean copyOnEnter;
 	Boolean tabEntireBlocks;
+	Boolean showFilesInTree;
 
 
 	public GUI(AugFileCtrl augFileCtrl, ConfigFile config) {
@@ -153,6 +162,7 @@ public class GUI extends MainWindow {
 		this.configuration = config;
 
 		strAugFiles = new String[0];
+		fileTreeModel = new FileTreeModel();
 
 		augFileTabs = new ArrayList<>();
 
@@ -175,6 +185,8 @@ public class GUI extends MainWindow {
 		currentBackup = configuration.getInteger(CONFIG_KEY_BACKUP_NUM, 0);
 
 		fontSize = configuration.getInteger(CONFIG_KEY_FONT_SIZE, DEFAULT_FONT_SIZE);
+
+		showFilesInTree = configuration.getBoolean(CONFIG_KEY_SHOW_FILES_IN_TREE, true);
 
 		Thread backupThread = new Thread(new Runnable() {
 			@Override
@@ -870,6 +882,22 @@ public class GUI extends MainWindow {
 		});
 		fontSizeItem.add(fontSizeMinusItem);
 
+		JCheckBoxMenuItem showFilesInTreeItem = new JCheckBoxMenuItem("Show Files as Tree");
+		showFilesInTreeItem.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				showFilesInTree = !showFilesInTree;
+
+				showFilesInTreeItem.setSelected(showFilesInTree);
+
+				updateShowFilesInTree();
+
+				configuration.set(CONFIG_KEY_SHOW_FILES_IN_TREE, showFilesInTree);
+			}
+		});
+		showFilesInTreeItem.setSelected(showFilesInTree);
+		settings.add(showFilesInTreeItem);
+
 		settings.addSeparator();
 
 		removeTrailingWhitespaceOnSaveItem = new JCheckBoxMenuItem("Remove Trailing Whitespace on Save");
@@ -1054,6 +1082,7 @@ public class GUI extends MainWindow {
 
 		String[] fileList = new String[0];
 		fileListComponent = new JList<String>(fileList);
+		fileTreeComponent = new JTree(fileTreeModel);
 		augFileTabs = new ArrayList<>();
 
 		fileListComponent.addMouseListener(new MouseListener() {
@@ -1112,9 +1141,25 @@ public class GUI extends MainWindow {
 			}
 		});
 
-		JScrollPane augFileListScroller = new JScrollPane(fileListComponent);
+		fileTreeComponent.addMouseListener(new MouseAdapter() {
+			public void mouseClicked(MouseEvent e) {
+				TreePath path = fileTreeComponent.getPathForLocation(e.getX(), e.getY());
+				FileTreeNode node = fileTreeModel.getChild(path);
+				if ((node != null) && (node instanceof FileTreeFile)) {
+					showTab(node.toString());
+				}
+			}
+		});
+
+		augFileListScroller = new JScrollPane(fileListComponent);
 		augFileListScroller.setPreferredSize(new Dimension(8, 8));
 		augFileListScroller.setBorder(BorderFactory.createEmptyBorder());
+
+		augFileTreeScroller = new JScrollPane(fileTreeComponent);
+		augFileTreeScroller.setPreferredSize(new Dimension(8, 8));
+		augFileTreeScroller.setBorder(BorderFactory.createEmptyBorder());
+
+		updateShowFilesInTree();
 
 		searchPanel = new JPanel();
 		searchPanel.setLayout(new GridBagLayout());
@@ -1175,10 +1220,11 @@ public class GUI extends MainWindow {
 		mainPanelRightOuter.add(searchPanel, new Arrangement(0, 1, 1.0, 0.0));
 
 		mainPanel.add(augFileListScroller, new Arrangement(0, 0, 0.2, 1.0));
+		mainPanel.add(augFileTreeScroller, new Arrangement(1, 0, 0.2, 1.0));
 
-		mainPanel.add(gapPanel, new Arrangement(1, 0, 0.0, 0.0));
+		mainPanel.add(gapPanel, new Arrangement(2, 0, 0.0, 0.0));
 
-		mainPanel.add(mainPanelRightOuter, new Arrangement(2, 0, 1.0, 1.0));
+		mainPanel.add(mainPanelRightOuter, new Arrangement(3, 0, 1.0, 1.0));
 
 		parent.add(mainPanel, BorderLayout.CENTER);
 
@@ -1536,6 +1582,19 @@ public class GUI extends MainWindow {
 		for (AugFileTab augFileTab : augFileTabs) {
 			augFileTab.updateHighlighterConfig();
 		}
+	}
+
+	private void updateShowFilesInTree() {
+
+		if (showFilesInTree == null) {
+			showFilesInTree = true;
+		}
+
+		augFileListScroller.setVisible(!showFilesInTree);
+
+		augFileTreeScroller.setVisible(showFilesInTree);
+
+		mainFrame.pack();
 	}
 
 	private void reSelectCurrentCodeLanguageItem() {
@@ -2237,6 +2296,14 @@ public class GUI extends MainWindow {
 			if (tabs.size() > 0) {
 				setCurrentlyShownTab(tabs.get(tabs.size() - 1));
 			}
+		}
+
+		// regenerate the file tree
+		fileTreeModel.regenerate(tabs);
+
+		// fully expand the file tree
+		for (int i = 0; i < fileTreeComponent.getRowCount(); i++) {
+			fileTreeComponent.expandRow(i);
 		}
 
 		Collections.sort(tabs, new Comparator<AugFileTab>() {
