@@ -1143,6 +1143,10 @@ public class GUI extends MainWindow {
 
 		fileTreeComponent.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent e) {
+				if (e.isPopupTrigger() || (e.getButton() == 3)) {
+					fileListPopup.show(fileTreeComponent, e.getX(), e.getY());
+				}
+
 				TreePath path = fileTreeComponent.getPathForLocation(e.getX(), e.getY());
 				FileTreeNode node = fileTreeModel.getChild(path);
 				if ((node != null) && (node instanceof FileTreeFile)) {
