@@ -52,6 +52,12 @@ public class FileTreeModel implements TreeModel {
 			root.addFile(pathArr);
 		}
 
+		// if no root has been found at all, create a fake one such that there are no exceptions
+		if (root == null) {
+			String[] emptyRootPath = {"(none loaded)"};
+			root = new FileTreeFolder(emptyRootPath);
+		}
+
 		// tell the listener!
 		for (TreeModelListener listener : listeners) {
 			Object[] rootPath = {root};
