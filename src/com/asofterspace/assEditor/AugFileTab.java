@@ -609,6 +609,16 @@ public class AugFileTab {
 		fileContentMemo.setCaretPosition(carPos);
 	}
 
+	public void indentSelection(String indentWithWhat) {
+
+		highlighter.indentSelection(indentWithWhat);
+	}
+
+	public void unindentSelection(int levelAmount, boolean forceUnindent) {
+
+		highlighter.unindentSelection(levelAmount, forceUnindent);
+	}
+
 	private void setCaretPos(int newSelStart, int newSelEnd) {
 
 		fileContentMemo.setCaretPosition(newSelStart);

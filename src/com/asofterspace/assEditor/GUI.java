@@ -607,6 +607,144 @@ public class GUI extends MainWindow {
 		});
 		edit.add(upCurWord);
 
+		JMenu indentSelection = new JMenu("Indent Current Selection");
+		edit.add(indentSelection);
+
+		JMenuItem indentByTab = new JMenuItem("By Tab");
+		indentByTab.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (currentlyShownTab != null) {
+					currentlyShownTab.indentSelection("\t");
+				}
+			}
+		});
+		indentSelection.add(indentByTab);
+
+		JMenuItem indentByTwoTabs = new JMenuItem("By 2 Tabs");
+		indentByTwoTabs.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (currentlyShownTab != null) {
+					currentlyShownTab.indentSelection("\t\t");
+				}
+			}
+		});
+		indentSelection.add(indentByTwoTabs);
+
+		JMenuItem indentByFourTabs = new JMenuItem("By 4 Tabs");
+		indentByFourTabs.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (currentlyShownTab != null) {
+					currentlyShownTab.indentSelection("\t\t\t\t");
+				}
+			}
+		});
+		indentSelection.add(indentByFourTabs);
+
+		JMenuItem indentBySpace = new JMenuItem("By Space");
+		indentBySpace.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (currentlyShownTab != null) {
+					currentlyShownTab.indentSelection(" ");
+				}
+			}
+		});
+		indentSelection.add(indentBySpace);
+
+		JMenuItem indentByTwoSpaces = new JMenuItem("By 2 Spaces");
+		indentByTwoSpaces.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (currentlyShownTab != null) {
+					currentlyShownTab.indentSelection("  ");
+				}
+			}
+		});
+		indentSelection.add(indentByTwoSpaces);
+
+		JMenuItem indentByFourSpaces = new JMenuItem("By 4 Spaces");
+		indentByFourSpaces.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (currentlyShownTab != null) {
+					currentlyShownTab.indentSelection("    ");
+				}
+			}
+		});
+		indentSelection.add(indentByFourSpaces);
+
+		JMenu unindentSelection = new JMenu("Unindent Current Selection");
+		edit.add(unindentSelection);
+
+		JMenuItem unindentOneLevel = new JMenuItem("One Level");
+		unindentOneLevel.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (currentlyShownTab != null) {
+					currentlyShownTab.unindentSelection(1, false);
+				}
+			}
+		});
+		unindentSelection.add(unindentOneLevel);
+
+		JMenuItem unindentTwoLevels = new JMenuItem("2 Levels");
+		unindentTwoLevels.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (currentlyShownTab != null) {
+					currentlyShownTab.unindentSelection(2, false);
+				}
+			}
+		});
+		unindentSelection.add(unindentTwoLevels);
+
+		JMenuItem unindentFourLevels = new JMenuItem("4 Levels");
+		unindentFourLevels.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (currentlyShownTab != null) {
+					currentlyShownTab.unindentSelection(4, false);
+				}
+			}
+		});
+		unindentSelection.add(unindentFourLevels);
+
+		JMenuItem forceUnindentOneLevel = new JMenuItem("Force Unindent One Level");
+		forceUnindentOneLevel.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (currentlyShownTab != null) {
+					currentlyShownTab.unindentSelection(1, true);
+				}
+			}
+		});
+		unindentSelection.add(forceUnindentOneLevel);
+
+		JMenuItem forceUnindentTwoLevels = new JMenuItem("Force Unindent 2 Levels");
+		forceUnindentTwoLevels.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (currentlyShownTab != null) {
+					currentlyShownTab.unindentSelection(2, true);
+				}
+			}
+		});
+		unindentSelection.add(forceUnindentTwoLevels);
+
+		JMenuItem forceUnindentFourLevels = new JMenuItem("Force Unindent 4 Levels");
+		forceUnindentFourLevels.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (currentlyShownTab != null) {
+					currentlyShownTab.unindentSelection(4, true);
+				}
+			}
+		});
+		unindentSelection.add(forceUnindentFourLevels);
+
 		edit.addSeparator();
 
 		JMenuItem applyGit = new JMenuItem("Apply Git Markers (+/- at the beginning of lines)");
