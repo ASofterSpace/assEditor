@@ -18,8 +18,6 @@ public class FileTreeFolder extends FileTreeNode {
 
 	private List<FileTreeNode> children;
 
-	private FileTreeFolder parent;
-
 
 	/**
 	 * Create this as root folder, without a parent
@@ -103,6 +101,7 @@ public class FileTreeFolder extends FileTreeNode {
 
 	public void appendChild(FileTreeNode child) {
 		children.add(child);
+		child.setParent(this);
 
 		// sort children of folders alphabetically...
 		Collections.sort(children, new Comparator<FileTreeNode>() {
@@ -193,14 +192,14 @@ public class FileTreeFolder extends FileTreeNode {
 		return cur;
 	}
 
-	public void addFile(String[] path) {
+	public void addFile(String[] path, AugFileTab tab) {
 
 		// find the parent folder
 		String[] folderPath = Arrays.copyOf(path, path.length - 1);
 		FileTreeFolder parentFolder = findFolder(folderPath);
 
 		// create the file node
-		FileTreeFile curFile = new FileTreeFile(path[path.length - 1]);
+		FileTreeFile curFile = new FileTreeFile(path[path.length - 1], tab);
 
 		// add the file to its parent
 		parentFolder.appendChild(curFile);
@@ -225,6 +224,7 @@ public class FileTreeFolder extends FileTreeNode {
 		return null;
 	}
 
+	@Override
 	public String toString() {
 
 		StringBuilder result = new StringBuilder();

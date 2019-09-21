@@ -49,7 +49,7 @@ public class FileTreeModel implements TreeModel {
 				root = root.rebaseRoot(folderPathArr);
 			}
 
-			root.addFile(pathArr);
+			root.addFile(pathArr, tab);
 		}
 
 		// if no root has been found at all, create a fake one such that there are no exceptions
@@ -148,6 +148,45 @@ public class FileTreeModel implements TreeModel {
 	@Override
 	public void valueForPathChanged(TreePath path, Object newValue) {
 		// TODO
+	}
+
+	public FileTreeFile getNode(AugFileTab tab) {
+		return getNodeFromParent(tab, root);
+	}
+
+	private FileTreeFile getNodeFromParent(AugFileTab tab, FileTreeFolder parent) {
+		List<FileTreeNode> children = parent.getChildren();
+
+		for (FileTreeNode child : children) {
+			if (child instanceof FileTreeFile) {
+				FileTreeFile childFile = (FileTreeFile) child;
+				if (tab.equals(childFile.getTab())) {
+					return childFile;
+				}
+			} else {
+				if (child instanceof FileTreeFolder) {
+					FileTreeFile result = getNodeFromParent(tab, (FileTreeFolder) child);
+					if (result != null) {
+						return result;
+					}
+				}
+			}
+		}
+		return null;
+	}
+
+	public FileTreeNode[] getPathToRoot(AugFileTab tab) {
+		FileTreeNode node = getNode(tab);
+		ArrayList<FileTreeNode> resultList = new ArrayList<>();
+		while (node != null) {
+			resultList.add(node);
+			node = node.getParent();
+		}
+		FileTreeNode[] result = new FileTreeNode[resultList.size()];
+		for (int i = 0; i < resultList.size(); i++) {
+			result[i] = resultList.get(resultList.size() - (i + 1));
+		}
+		return result;
 	}
 
 }

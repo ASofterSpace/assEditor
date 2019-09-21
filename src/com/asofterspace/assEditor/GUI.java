@@ -137,6 +137,7 @@ public class GUI extends MainWindow {
 	private JList<String> fileListComponent;
 	private JTree fileTreeComponent;
 	private JPopupMenu fileListPopup;
+	private List<AugFileTab> tabs;
 	private String[] strAugFiles;
 	private FileTreeModel fileTreeModel;
 	private JScrollPane augFileListScroller;
@@ -1737,6 +1738,11 @@ public class GUI extends MainWindow {
 		augFileTreeScroller.setVisible(showFilesInTree);
 
 		mainFrame.pack();
+
+		if (currentlyShownTab != null) {
+			highlightTabInLeftList(currentlyShownTab);
+			highlightTabInLeftTree(currentlyShownTab);
+		}
 	}
 
 	private void reSelectCurrentCodeLanguageItem() {
@@ -2426,7 +2432,7 @@ public class GUI extends MainWindow {
 	 */
 	public void regenerateAugFileList() {
 
-		List<AugFileTab> tabs = new ArrayList<>();
+		tabs = new ArrayList<>();
 
 		for (AugFileTab curTab : augFileTabs) {
 			tabs.add(curTab);
@@ -2480,25 +2486,36 @@ public class GUI extends MainWindow {
 		// show the last shown tab
 		showTab(currentlyShownTab.getName());
 
-		highlightTabInLeftList(currentlyShownTab.getName());
+		highlightTabInLeftList(currentlyShownTab);
+		highlightTabInLeftTree(currentlyShownTab);
 	}
 
-	public void highlightTabInLeftList(String name) {
+	public void highlightTabInLeftList(AugFileTab tab) {
 
 		int i = 0;
 
-		for (String strAugFile : strAugFiles) {
+		for (AugFileTab augFileTab : tabs) {
 
-			if (strAugFile.endsWith(CHANGE_INDICATOR)) {
-				strAugFile = strAugFile.substring(0, strAugFile.length() - CHANGE_INDICATOR.length());
-			}
-
-			if (name.equals(strAugFile)) {
+			if (tab.equals(augFileTab)) {
 				fileListComponent.setSelectedIndex(i);
 				break;
 			}
 			i++;
 		}
+	}
+
+	public void highlightTabInLeftTree(AugFileTab tab) {
+		SwingUtilities.invokeLater(new Runnable() {
+			@Override
+			public void run() {
+				System.out.println("run:");
+				Object[] paths = fileTreeModel.getPathToRoot(tab);
+				for (Object path : paths) {
+					System.out.println(path);
+				}
+				fileTreeComponent.setSelectionPath(new TreePath(fileTreeModel.getPathToRoot(tab)));
+			}
+		});
 	}
 
 	/**

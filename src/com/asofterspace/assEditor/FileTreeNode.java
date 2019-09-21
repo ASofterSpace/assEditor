@@ -5,9 +5,11 @@
 package com.asofterspace.assEditor;
 
 
-public class FileTreeNode {
+public abstract class FileTreeNode {
 
 	String name;
+
+	FileTreeFolder parent;
 
 
 	public FileTreeNode(String name) {
@@ -16,6 +18,24 @@ public class FileTreeNode {
 
 	public String toString() {
 		return name;
+	}
+
+	public FileTreeFolder getParent() {
+		// jump over squish nodes
+		if (parent != null) {
+			if (parent.getSquishNode() != null) {
+				if (parent.getParent() == null) {
+					return parent;
+				} else {
+					return parent.getParent();
+				}
+			}
+		}
+		return parent;
+	}
+
+	public void setParent(FileTreeFolder parent) {
+		this.parent = parent;
 	}
 
 }

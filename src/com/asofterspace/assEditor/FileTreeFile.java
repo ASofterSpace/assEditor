@@ -7,8 +7,17 @@ package com.asofterspace.assEditor;
 
 public class FileTreeFile extends FileTreeNode {
 
-	public FileTreeFile(String name) {
+	private AugFileTab tab;
+
+
+	public FileTreeFile(String name, AugFileTab tab) {
 		super(name);
+
+		this.tab = tab;
+	}
+
+	public AugFileTab getTab() {
+		return tab;
 	}
 
 }

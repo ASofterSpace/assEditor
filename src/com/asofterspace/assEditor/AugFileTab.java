@@ -1013,4 +1013,29 @@ public class AugFileTab {
 		remove();
 	}
 
+	@Override
+	public boolean equals(Object other) {
+		if (other == null) {
+			return false;
+		}
+		if (other instanceof AugFileTab) {
+			AugFileTab otherTab = (AugFileTab) other;
+			if (otherTab.getFullName() != null) {
+				if (otherTab.getFullName().equals(this.getFullName())) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	@Override
+	public int hashCode() {
+		String fullName = this.getFullName();
+		if (fullName == null) {
+			return 0;
+		}
+		return fullName.hashCode();
+	}
+
 }
