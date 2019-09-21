@@ -195,6 +195,7 @@ public class FileTreeFolder extends FileTreeNode {
 	public void addFile(String[] path, AugFileTab tab) {
 
 		// find the parent folder
+		// (not just the parent of this FileTreeFolder, but the one from the path!)
 		String[] folderPath = Arrays.copyOf(path, path.length - 1);
 		FileTreeFolder parentFolder = findFolder(folderPath);
 

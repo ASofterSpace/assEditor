@@ -137,7 +137,6 @@ public class GUI extends MainWindow {
 	private JList<String> fileListComponent;
 	private JTree fileTreeComponent;
 	private JPopupMenu fileListPopup;
-	private List<AugFileTab> tabs;
 	private String[] strAugFiles;
 	private FileTreeModel fileTreeModel;
 	private JScrollPane augFileListScroller;
@@ -1289,7 +1288,8 @@ public class GUI extends MainWindow {
 				TreePath path = fileTreeComponent.getPathForLocation(e.getX(), e.getY());
 				FileTreeNode node = fileTreeModel.getChild(path);
 				if ((node != null) && (node instanceof FileTreeFile)) {
-					showTab(node.toString());
+					FileTreeFile file = (FileTreeFile) node;
+					showTab(file.getTab());
 				}
 			}
 		});
@@ -1880,17 +1880,21 @@ public class GUI extends MainWindow {
 
 	private void showSelectedTab() {
 
-		String selectedItem = fileListComponent.getSelectedValue();
+		Integer selectedItem = fileListComponent.getSelectedIndex();
 
 		if (selectedItem == null) {
 			return;
 		}
 
-		if (selectedItem.endsWith(CHANGE_INDICATOR)) {
-			selectedItem = selectedItem.substring(0, selectedItem.length() - CHANGE_INDICATOR.length());
-		}
+		int i = 0;
 
-		showTab(selectedItem);
+		for (AugFileTab tab : augFileTabs) {
+			if (i == selectedItem) {
+				showTab(tab);
+				return;
+			}
+			i++;
+		}
 	}
 
 	public void setFontSize(int newSize) {
@@ -1906,17 +1910,15 @@ public class GUI extends MainWindow {
 		return fontSize;
 	}
 
-	public void showTab(String name) {
+	public void showTab(AugFileTab tabToShow) {
 
 		for (AugFileTab tab : augFileTabs) {
-			if (tab.isItem(name)) {
-				tab.show();
-				setCurrentlyShownTab(tab);
-				reSelectCurrentCodeLanguageItem();
-			} else {
-				tab.hide();
-			}
+			tab.hide();
 		}
+
+		tabToShow.show();
+		setCurrentlyShownTab(tabToShow);
+		reSelectCurrentCodeLanguageItem();
 	}
 
 	private void setCurrentlyShownTab(AugFileTab tab) {
@@ -2432,29 +2434,23 @@ public class GUI extends MainWindow {
 	 */
 	public void regenerateAugFileList() {
 
-		tabs = new ArrayList<>();
-
-		for (AugFileTab curTab : augFileTabs) {
-			tabs.add(curTab);
-		}
-
 		// if there is no last shown tab...
 		if (currentlyShownTab == null) {
-			// ... show the lastly shown tab explicitly - this is fun, and the tabbed layout otherwise shows it anyway, so may as well...
-			if (tabs.size() > 0) {
-				setCurrentlyShownTab(tabs.get(tabs.size() - 1));
+			// ... show some random tab explicitly - this is fun, and the tabbed layout otherwise shows it anyway, so may as well...
+			if (augFileTabs.size() > 0) {
+				setCurrentlyShownTab(augFileTabs.get(0));
 			}
 		}
 
 		// regenerate the file tree
-		fileTreeModel.regenerate(tabs);
+		fileTreeModel.regenerate(augFileTabs);
 
 		// fully expand the file tree
 		for (int i = 0; i < fileTreeComponent.getRowCount(); i++) {
 			fileTreeComponent.expandRow(i);
 		}
 
-		Collections.sort(tabs, new Comparator<AugFileTab>() {
+		Collections.sort(augFileTabs, new Comparator<AugFileTab>() {
 			public int compare(AugFileTab a, AugFileTab b) {
 				// TODO :: make it configurable whether to sort by just the name or by
 				// the full name (including the path)!
@@ -2463,11 +2459,11 @@ public class GUI extends MainWindow {
 			}
 		});
 
-		strAugFiles = new String[tabs.size()];
+		strAugFiles = new String[augFileTabs.size()];
 
 		int i = 0;
 
-		for (AugFileTab augFileTab : tabs) {
+		for (AugFileTab augFileTab : augFileTabs) {
 			strAugFiles[i] = augFileTab.getName();
 			if (augFileTab.hasBeenChanged()) {
 				strAugFiles[i] += CHANGE_INDICATOR;
@@ -2484,7 +2480,7 @@ public class GUI extends MainWindow {
 		}
 
 		// show the last shown tab
-		showTab(currentlyShownTab.getName());
+		showTab(currentlyShownTab);
 
 		highlightTabInLeftList(currentlyShownTab);
 		highlightTabInLeftTree(currentlyShownTab);
@@ -2494,7 +2490,7 @@ public class GUI extends MainWindow {
 
 		int i = 0;
 
-		for (AugFileTab augFileTab : tabs) {
+		for (AugFileTab augFileTab : augFileTabs) {
 
 			if (tab.equals(augFileTab)) {
 				fileListComponent.setSelectedIndex(i);
@@ -2508,12 +2504,10 @@ public class GUI extends MainWindow {
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
 			public void run() {
-				System.out.println("run:");
 				Object[] paths = fileTreeModel.getPathToRoot(tab);
-				for (Object path : paths) {
-					System.out.println(path);
+				if (paths.length > 0) {
+					fileTreeComponent.setSelectionPath(new TreePath(fileTreeModel.getPathToRoot(tab)));
 				}
-				fileTreeComponent.setSelectionPath(new TreePath(fileTreeModel.getPathToRoot(tab)));
 			}
 		});
 	}

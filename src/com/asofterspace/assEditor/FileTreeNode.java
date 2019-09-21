@@ -23,10 +23,8 @@ public abstract class FileTreeNode {
 	public FileTreeFolder getParent() {
 		// jump over squish nodes
 		if (parent != null) {
-			if (parent.getSquishNode() != null) {
-				if (parent.getParent() == null) {
-					return parent;
-				} else {
+			if (parent.parent != null) {
+				if (parent.parent.getSquishNode() != null) {
 					return parent.getParent();
 				}
 			}
