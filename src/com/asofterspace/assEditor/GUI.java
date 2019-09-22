@@ -1621,16 +1621,34 @@ public class GUI extends MainWindow {
 				getWorkspace().setString(CONFIG_KEY_LAST_DIRECTORY, augFilePicker.getCurrentDirectory().getAbsolutePath());
 				configuration.create();
 
+				AugFileTab latestTab = null;
+
 				for (java.io.File curFile : augFilePicker.getSelectedFiles()) {
 
 					File fileToOpen = new File(curFile);
 
 					AugFile newFile = augFileCtrl.loadAnotherFile(fileToOpen);
 
-					if (newFile != null) {
-						setCurrentlyShownTab(new AugFileTab(mainPanelRight, newFile, this, augFileCtrl));
+					// if the file was already opened before...
+					if (newFile == null) {
+						// ... then load this existing tab!
+						String newFilename = fileToOpen.getCanonicalFilename();
+						for (AugFileTab tab : augFileTabs) {
+							if (newFilename.equals(tab.getFullName())) {
+								latestTab = tab;
+								break;
+							}
+						}
+					} else {
+						// ... if not, add a tab for it
+						latestTab = new AugFileTab(mainPanelRight, newFile, this, augFileCtrl);
 						augFileTabs.add(currentlyShownTab);
 					}
+				}
+
+				// show the latest tab that we added!
+				if (latestTab != null) {
+					setCurrentlyShownTab(latestTab);
 				}
 
 				regenerateAugFileList();
