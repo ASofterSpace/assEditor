@@ -1590,9 +1590,16 @@ public class GUI extends MainWindow {
 
 		// TODO :: de-localize the JFileChooser (by default it seems localized, which is inconsistent when the rest of the program is in English...)
 		// (while you're at it, make Öffnen into Save for the save dialog, but keep it as Open for the open dialog... ^^)
+		// TODO :: actually, write our own file choose which also allows opening recursively all files in selected folders
 		JFileChooser augFilePicker;
 
+		// if we find nothing better, use the last-used directory
 		String lastDirectory = getWorkspace().getString(CONFIG_KEY_LAST_DIRECTORY);
+
+		// if we can though, use the directory of the currently selected tab :)
+		if (currentlyShownTab != null) {
+			lastDirectory = currentlyShownTab.getDirectoryName();
+		}
 
 		if ((lastDirectory != null) && !"".equals(lastDirectory)) {
 			augFilePicker = new JFileChooser(new java.io.File(lastDirectory));

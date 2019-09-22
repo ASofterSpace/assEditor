@@ -5,6 +5,7 @@
 package com.asofterspace.assEditor;
 
 import com.asofterspace.toolbox.codeeditor.utils.CodeLanguage;
+import com.asofterspace.toolbox.io.Directory;
 import com.asofterspace.toolbox.io.File;
 import com.asofterspace.toolbox.io.SimpleFile;
 
@@ -64,6 +65,10 @@ public class AugFile {
 
 	public String getFilename() {
 		return filename;
+	}
+
+	public Directory getParentDirectory() {
+		return file.getParentDirectory();
 	}
 
 	public String getContent() {

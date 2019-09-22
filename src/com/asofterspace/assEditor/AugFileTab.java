@@ -303,6 +303,11 @@ public class AugFileTab {
 		return augFile.getFilename();
 	}
 
+	public String getDirectoryName() {
+
+		return augFile.getParentDirectory().getAbsoluteDirname();
+	}
+
 	/*
 	public void setName(String newName) {
 
