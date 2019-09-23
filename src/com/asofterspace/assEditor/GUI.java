@@ -1642,7 +1642,7 @@ public class GUI extends MainWindow {
 					} else {
 						// ... if not, add a tab for it
 						latestTab = new AugFileTab(mainPanelRight, newFile, this, augFileCtrl);
-						augFileTabs.add(currentlyShownTab);
+						augFileTabs.add(latestTab);
 					}
 				}
 
