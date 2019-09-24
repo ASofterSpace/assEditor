@@ -45,6 +45,10 @@ public class AugFile {
 		filename = file.getCanonicalFilename();
 	}
 
+	public boolean exists() {
+		return file.exists();
+	}
+
 	public CodeLanguage getSourceLanguage() {
 
 		if (sourceLanguage == null) {

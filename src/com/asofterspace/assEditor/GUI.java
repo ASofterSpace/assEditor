@@ -8,6 +8,11 @@ import com.asofterspace.toolbox.codeeditor.base.Code;
 import com.asofterspace.toolbox.codeeditor.utils.CodeLanguage;
 import com.asofterspace.toolbox.configuration.ConfigFile;
 import com.asofterspace.toolbox.gui.Arrangement;
+import com.asofterspace.toolbox.gui.FileTab;
+import com.asofterspace.toolbox.gui.FileTree;
+import com.asofterspace.toolbox.gui.FileTreeFile;
+import com.asofterspace.toolbox.gui.FileTreeModel;
+import com.asofterspace.toolbox.gui.FileTreeNode;
 import com.asofterspace.toolbox.gui.GuiUtils;
 import com.asofterspace.toolbox.gui.MainWindow;
 import com.asofterspace.toolbox.gui.ProgressDialog;
@@ -21,6 +26,7 @@ import com.asofterspace.toolbox.Utils;
 
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
+import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -35,6 +41,7 @@ import java.awt.FlowLayout;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Point;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -63,7 +70,6 @@ import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
-import javax.swing.JTree;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import javax.swing.tree.TreePath;
@@ -79,9 +85,6 @@ public class GUI extends MainWindow {
 	private JTextField searchField;
 
 	private AugFileTab currentlyShownTab;
-
-	// on the left hand side, we add this string to indicate that the file has changed
-	private final static String CHANGE_INDICATOR = " *";
 
 	private final static String CONFIG_KEY_LAST_DIRECTORY = "lastDirectory";
 	private final static String CONFIG_KEY_SCHEME = "scheme";
@@ -135,7 +138,7 @@ public class GUI extends MainWindow {
 
 	private ConfigFile configuration;
 	private JList<String> fileListComponent;
-	private JTree fileTreeComponent;
+	private FileTree fileTreeComponent;
 	private JPopupMenu fileListPopup;
 	private String[] strAugFiles;
 	private FileTreeModel fileTreeModel;
@@ -1105,6 +1108,20 @@ public class GUI extends MainWindow {
 		settings.add(tabEntireBlocksItem);
 
 		JMenu huh = new JMenu("?");
+
+		JMenuItem openBackupPath = new JMenuItem("Open Backup Path");
+		openBackupPath.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				try {
+					Desktop.getDesktop().open(new java.io.File(AugFileTab.getBackupPath()));
+				} catch (IOException ex) {
+					// do nothing
+				}
+			}
+		});
+		huh.add(openBackupPath);
+
 		JMenuItem about = new JMenuItem("About");
 		about.addActionListener(new ActionListener() {
 			@Override
@@ -1220,7 +1237,7 @@ public class GUI extends MainWindow {
 
 		String[] fileList = new String[0];
 		fileListComponent = new JList<String>(fileList);
-		fileTreeComponent = new JTree(fileTreeModel);
+		fileTreeComponent = new FileTree(fileTreeModel);
 		augFileTabs = new ArrayList<>();
 
 		fileListComponent.addMouseListener(new MouseListener() {
@@ -1289,7 +1306,10 @@ public class GUI extends MainWindow {
 				FileTreeNode node = fileTreeModel.getChild(path);
 				if ((node != null) && (node instanceof FileTreeFile)) {
 					FileTreeFile file = (FileTreeFile) node;
-					showTab(file.getTab());
+					FileTab tab = file.getTab();
+					if (tab instanceof AugFileTab) {
+						showTab((AugFileTab) tab);
+					}
 				}
 			}
 		});
@@ -1601,6 +1621,17 @@ public class GUI extends MainWindow {
 			lastDirectory = currentlyShownTab.getDirectoryName();
 		}
 
+		// if we are really totally awesome though, then we are using the tree right now...
+		if (showFilesInTree) {
+			// ... and can get the path of the last node ...
+			Object lastNode = fileTreeComponent.getLastSelectedPathComponent();
+			// which might even be a folder, in which case we want THAT rather than a particular tab!
+			if (lastNode instanceof FileTreeNode) {
+				FileTreeNode lastTreeNode = (FileTreeNode) lastNode;
+				lastDirectory = lastTreeNode.getDirectoryName();
+			}
+		}
+
 		if ((lastDirectory != null) && !"".equals(lastDirectory)) {
 			augFilePicker = new JFileChooser(new java.io.File(lastDirectory));
 		} else {
@@ -1634,7 +1665,7 @@ public class GUI extends MainWindow {
 						// ... then load this existing tab!
 						String newFilename = fileToOpen.getCanonicalFilename();
 						for (AugFileTab tab : augFileTabs) {
-							if (newFilename.equals(tab.getFullName())) {
+							if (newFilename.equals(tab.getFilePath())) {
 								latestTab = tab;
 								break;
 							}
@@ -1765,8 +1796,7 @@ public class GUI extends MainWindow {
 		mainFrame.pack();
 
 		if (currentlyShownTab != null) {
-			highlightTabInLeftList(currentlyShownTab);
-			highlightTabInLeftTree(currentlyShownTab);
+			highlightTabInLeftListOrTree(currentlyShownTab);
 		}
 	}
 
@@ -2480,7 +2510,7 @@ public class GUI extends MainWindow {
 				// TODO :: make it configurable whether to sort by just the name or by
 				// the full name (including the path)!
 				// return a.getName().toLowerCase().compareTo(b.getName().toLowerCase());
-				return a.getFullName().toLowerCase().compareTo(b.getFullName().toLowerCase());
+				return a.getFilePath().toLowerCase().compareTo(b.getFilePath().toLowerCase());
 			}
 		});
 
@@ -2491,7 +2521,7 @@ public class GUI extends MainWindow {
 		for (AugFileTab augFileTab : augFileTabs) {
 			strAugFiles[i] = augFileTab.getName();
 			if (augFileTab.hasBeenChanged()) {
-				strAugFiles[i] += CHANGE_INDICATOR;
+				strAugFiles[i] += GuiUtils.CHANGE_INDICATOR;
 			}
 			i++;
 		}
@@ -2507,32 +2537,31 @@ public class GUI extends MainWindow {
 		// show the last shown tab
 		showTab(currentlyShownTab);
 
-		highlightTabInLeftList(currentlyShownTab);
-		highlightTabInLeftTree(currentlyShownTab);
+		highlightTabInLeftListOrTree(currentlyShownTab);
 	}
 
-	public void highlightTabInLeftList(AugFileTab tab) {
-
-		int i = 0;
-
-		for (AugFileTab augFileTab : augFileTabs) {
-
-			if (tab.equals(augFileTab)) {
-				fileListComponent.setSelectedIndex(i);
-				break;
-			}
-			i++;
-		}
-	}
-
-	public void highlightTabInLeftTree(AugFileTab tab) {
+	public void highlightTabInLeftListOrTree(AugFileTab tab) {
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
 			public void run() {
+				// highlight tab the list
+				int i = 0;
+				for (AugFileTab augFileTab : augFileTabs) {
+					if (tab.equals(augFileTab)) {
+						fileListComponent.setSelectedIndex(i);
+						break;
+					}
+					i++;
+				}
+
+				// highlight tab the tree
 				Object[] paths = fileTreeModel.getPathToRoot(tab);
 				if (paths.length > 0) {
 					fileTreeComponent.setSelectionPath(new TreePath(fileTreeModel.getPathToRoot(tab)));
 				}
+
+				// jump back to the actual tab
+				tab.setFocus();
 			}
 		});
 	}

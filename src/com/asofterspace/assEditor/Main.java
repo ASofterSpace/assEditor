@@ -15,15 +15,14 @@ import javax.swing.SwingUtilities;
 public class Main {
 
 	public final static String PROGRAM_TITLE = "A Softer Space Editor";
-	public final static String VERSION_NUMBER = "0.0.1.7(" + Utils.TOOLBOX_VERSION_NUMBER + ")";
-	public final static String VERSION_DATE = "18. December 2018 - 14. September 2019";
+	public final static String VERSION_NUMBER = "0.0.1.8(" + Utils.TOOLBOX_VERSION_NUMBER + ")";
+	public final static String VERSION_DATE = "18. December 2018 - 24. September 2019";
 
 
 	/**
 	 * TODO:
 	 * converters inbuilt
 	 * enable stats at the bottom
-	 * indent 1, 2, 4, 8, tab, 2 tab, unindent, force unindent by 1 or 2 characters
 	 * add highlighting for datex
 	 * increase / decrease font size
 	 * cut, copy, paste
@@ -36,14 +35,15 @@ public class Main {
 	 * create a better opening dialog (e.g. one in which we can enter a path at the top, and where we can
 	 * automagically descend into Java-madness without having to click through src>main>java>com>ass>...)
 	 * increase scroll speed while scrolling through code files
-	 * do not base left-hand tabs on filename only (such that several Main.java can be opened at the same time)
 	 * not only call resizeNameLabel() in the AugFileTab.show(), but also in an onResize event!
 	 * show "changemark *" at the top also
 	 * disable "reorganize imports" in the menu when the highlighter does not support it
 	 * add git diff as another file type (for .diff and .patch)
 	 * add a popup to the AugFileTab's code editor (e.g. for undo + redo also there)
 	 * only show undo and redo enabled when undoing / redoing curly possible
+	 * get redo to actually work properly ;)
 	 * when showing functions on the right, highlight whichever one we are curly inside
+	 * add an optional memo on the right where any random nonsense can be dumped, workspace-independent!
 	 */
 	public static void main(String[] args) {
 

@@ -13,6 +13,7 @@ import com.asofterspace.toolbox.configuration.ConfigFile;
 import com.asofterspace.toolbox.gui.Arrangement;
 import com.asofterspace.toolbox.gui.CodeEditor;
 import com.asofterspace.toolbox.gui.CodeEditorLineMemo;
+import com.asofterspace.toolbox.gui.FileTab;
 import com.asofterspace.toolbox.gui.GuiUtils;
 import com.asofterspace.toolbox.io.Directory;
 import com.asofterspace.toolbox.io.File;
@@ -58,7 +59,7 @@ import javax.swing.JTextPane;
 import javax.swing.JTree;
 
 
-public class AugFileTab {
+public class AugFileTab implements FileTab {
 
 	private JPanel parent;
 
@@ -120,14 +121,14 @@ public class AugFileTab {
 		JPanel tab = new JPanel();
 		tab.setLayout(new GridBagLayout());
 
-		nameLabel = new JLabel(getFullName());
+		nameLabel = new JLabel(getFilePath());
 		nameLabel.setPreferredSize(new Dimension(0, nameLabel.getPreferredSize().height*2));
 		tab.add(nameLabel, new Arrangement(0, 0, 1.0, 0.0));
 
 		nameLabel.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				StringSelection selection = new StringSelection(getFullName());
+				StringSelection selection = new StringSelection(getFilePath());
 				Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
 				clipboard.setContents(selection, selection);
 			}
@@ -241,7 +242,7 @@ public class AugFileTab {
 
 	private void resizeNameLabel() {
 
-		String text = getFullName();
+		String text = getFilePath();
 
 		FontMetrics metrics = nameLabel.getFontMetrics(nameLabel.getFont());
 
@@ -288,6 +289,13 @@ public class AugFileTab {
 		return item.equals(augFile.getName());
 	}
 
+	@Override
+	public boolean isMissing() {
+
+		return !augFile.exists();
+	}
+
+	@Override
 	public boolean hasBeenChanged() {
 
 		return changed;
@@ -298,11 +306,13 @@ public class AugFileTab {
 		return augFile.getName();
 	}
 
-	public String getFullName() {
+	@Override
+	public String getFilePath() {
 
 		return augFile.getFilename();
 	}
 
+	@Override
 	public String getDirectoryName() {
 
 		return augFile.getParentDirectory().getAbsoluteDirname();
@@ -713,7 +723,7 @@ public class AugFileTab {
 			return matchAmount;
 		}
 
-		result.append(getFullName());
+		result.append(getFilePath());
 		result.append(":\n\n");
 
 		int oldfrom = -1;
@@ -777,11 +787,15 @@ public class AugFileTab {
 		highlighter.setSearchStr("");
 	}
 
+	public static String getBackupPath() {
+		return System.getProperty("java.class.path") + "/../backup/";
+	}
+
 	public void backup(int backupNum) {
 
 		// set the backup file location relative to the class path to always
 		// get the same location, even when we are called from somewhere else
-		SimpleFile backupFile = new SimpleFile(System.getProperty("java.class.path") + "/../backup/" + Utils.leftPad0(backupNum, 4) + ".txt");
+		SimpleFile backupFile = new SimpleFile(getBackupPath() + Utils.leftPad0(backupNum, 4) + ".txt");
 
 		backupFile.setContent(augFile.getFilename() + "\n\n" + fileContentMemo.getText());
 
@@ -1006,6 +1020,11 @@ public class AugFileTab {
 		}
 	}
 
+	public void setFocus() {
+		fileContentMemo.grabFocus();
+		fileContentMemo.requestFocus();
+	}
+
 	public void remove() {
 
 		parent.remove(visualPanel);
@@ -1025,8 +1044,8 @@ public class AugFileTab {
 		}
 		if (other instanceof AugFileTab) {
 			AugFileTab otherTab = (AugFileTab) other;
-			if (otherTab.getFullName() != null) {
-				if (otherTab.getFullName().equals(this.getFullName())) {
+			if (otherTab.getFilePath() != null) {
+				if (otherTab.getFilePath().equals(this.getFilePath())) {
 					return true;
 				}
 			}
@@ -1036,7 +1055,7 @@ public class AugFileTab {
 
 	@Override
 	public int hashCode() {
-		String fullName = this.getFullName();
+		String fullName = this.getFilePath();
 		if (fullName == null) {
 			return 0;
 		}
