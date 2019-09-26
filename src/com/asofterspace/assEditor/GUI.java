@@ -45,6 +45,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -144,6 +145,9 @@ public class GUI extends MainWindow {
 	private FileTreeModel fileTreeModel;
 	private JScrollPane augFileListScroller;
 	private JScrollPane augFileTreeScroller;
+	private JTextArea noteArea;
+	private JScrollPane noteAreaScroller;
+	private SimpleFile noteAreaFile;
 
 	private Integer currentBackup;
 
@@ -233,6 +237,9 @@ public class GUI extends MainWindow {
 		createPopupMenu(mainFrame);
 
 		createMainPanel(mainFrame);
+
+		noteAreaFile = new SimpleFile(configuration.getParentDirectory().getCanonicalDirname() + "/notes.txt");
+		noteArea.setText(noteAreaFile.getContent());
 
 		configureGUI();
 
@@ -361,6 +368,15 @@ public class GUI extends MainWindow {
 			}
 		});
 		file.add(saveAllFiles);
+
+		JMenuItem saveNotes = new JMenuItem("Save Notes");
+		saveNotes.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				saveNotes();
+			}
+		});
+		file.add(saveNotes);
 
 		file.addSeparator();
 
@@ -1107,6 +1123,29 @@ public class GUI extends MainWindow {
 		setTabEntireBlocks(tabEntireBlocks);
 		settings.add(tabEntireBlocksItem);
 
+		JMenu window = new JMenu("Window");
+
+		JMenuItem toggleNoteArea = new JMenuItem("Toggle Note Area");
+		toggleNoteArea.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				noteAreaScroller.setVisible(!noteAreaScroller.isVisible());
+				mainFrame.pack();
+			}
+		});
+		window.add(toggleNoteArea);
+
+		JMenuItem toggleSearchBar = new JMenuItem("Toggle Search Bar");
+		toggleSearchBar.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				searchPanel.setVisible(!searchPanel.isVisible());
+			}
+		});
+		window.add(toggleSearchBar);
+
+		menu.add(window);
+
 		JMenu huh = new JMenu("?");
 
 		JMenuItem openBackupPath = new JMenuItem("Open Backup Path");
@@ -1375,11 +1414,17 @@ public class GUI extends MainWindow {
 			}
 		});
 
+		noteArea = new JTextArea();
+
+		noteAreaScroller = new JScrollPane(noteArea);
+		noteAreaScroller.setPreferredSize(new Dimension(8, 8));
+		noteAreaScroller.setBorder(BorderFactory.createEmptyBorder());
+		noteAreaScroller.setVisible(false);
+
 		searchPanel.add(searchField, new Arrangement(0, 0, 1.0, 1.0));
 		searchPanel.add(replaceField, new Arrangement(0, 1, 1.0, 1.0));
 
 		mainPanelRightOuter.add(mainPanelRight, new Arrangement(0, 0, 1.0, 1.0));
-
 		mainPanelRightOuter.add(searchPanel, new Arrangement(0, 1, 1.0, 0.0));
 
 		mainPanel.add(augFileListScroller, new Arrangement(0, 0, 0.2, 1.0));
@@ -1388,6 +1433,8 @@ public class GUI extends MainWindow {
 		mainPanel.add(gapPanel, new Arrangement(2, 0, 0.0, 0.0));
 
 		mainPanel.add(mainPanelRightOuter, new Arrangement(3, 0, 1.0, 1.0));
+
+		mainPanel.add(noteAreaScroller, new Arrangement(4, 0, 0.2, 1.0));
 
 		parent.add(mainPanel, BorderLayout.CENTER);
 
@@ -1404,9 +1451,16 @@ public class GUI extends MainWindow {
 			workspace.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
+
 					uncheckWorkspaces();
+
 					workspace.setSelected(true);
+
+					// set the current tab to null such that we automagically open the latest one of the newly opened workspace
+					setCurrentlyShownTab(null);
+
 					augFileCtrl.switchToWorkspace(workspaceName);
+
 					reloadAllAugFileTabs();
 				}
 			});
@@ -1714,12 +1768,25 @@ public class GUI extends MainWindow {
 	private void saveFile() {
 
 		currentlyShownTab.save();
+
+		saveNotes();
 	}
 
 	private void saveAllFiles() {
 
 		for (AugFileTab tab : augFileTabs) {
 			tab.save();
+		}
+
+		saveNotes();
+	}
+
+	private void saveNotes() {
+
+		String noteText = noteArea.getText();
+
+		if (!("".equals(noteText))) {
+			noteAreaFile.saveContent(noteText);
 		}
 	}
 
@@ -1749,6 +1816,8 @@ public class GUI extends MainWindow {
 
 		augFileTabs.remove(currentlyShownTab);
 
+		setCurrentlyShownTab(null);
+
 		regenerateAugFileList();
 	}
 
@@ -1759,6 +1828,8 @@ public class GUI extends MainWindow {
 		currentlyShownTab.remove();
 
 		augFileTabs.remove(currentlyShownTab);
+
+		setCurrentlyShownTab(null);
 
 		regenerateAugFileList();
 	}
@@ -1772,6 +1843,8 @@ public class GUI extends MainWindow {
 		}
 
 		augFileTabs = new ArrayList<>();
+
+		setCurrentlyShownTab(null);
 
 		regenerateAugFileList();
 	}
@@ -1980,8 +2053,13 @@ public class GUI extends MainWindow {
 
 		currentlyShownTab = tab;
 
+		if (tab == null) {
+			return;
+		}
+
 		setUsingUTF8WithBOM(tab.isUsingUTF8BOM());
 
+		tab.getFile().setLastAccessTime(new Date());
 	}
 
 	private void setUsingUTF8WithBOM(boolean useItOrNot) {
@@ -2493,7 +2571,16 @@ public class GUI extends MainWindow {
 		if (currentlyShownTab == null) {
 			// ... show some random tab explicitly - this is fun, and the tabbed layout otherwise shows it anyway, so may as well...
 			if (augFileTabs.size() > 0) {
-				setCurrentlyShownTab(augFileTabs.get(0));
+				AugFileTab latestTab = augFileTabs.get(0);
+				Date latestAccessTime = latestTab.getFile().getLastAccessTime();
+				for (int i = 1; i < augFileTabs.size(); i++) {
+					Date curAccessTime = augFileTabs.get(i).getFile().getLastAccessTime();
+					if (curAccessTime.compareTo(latestAccessTime) > 0) {
+						latestTab = augFileTabs.get(i);
+						latestAccessTime = curAccessTime;
+					}
+				}
+				setCurrentlyShownTab(latestTab);
 			}
 		}
 

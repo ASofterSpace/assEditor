@@ -9,6 +9,8 @@ import com.asofterspace.toolbox.io.Directory;
 import com.asofterspace.toolbox.io.File;
 import com.asofterspace.toolbox.io.SimpleFile;
 
+import java.util.Date;
+
 
 /**
  * This is an augmented file - a file that is augmented with metadata
@@ -30,6 +32,8 @@ public class AugFile {
 	private Integer initialCaretPos;
 	private CodeLanguage sourceLanguage;
 
+	private Date lastAccessTime;
+
 
 	public AugFile(AugFileCtrl parent, File file) {
 
@@ -42,7 +46,9 @@ public class AugFile {
 
 		this.parent = parent;
 
-		filename = file.getCanonicalFilename();
+		this.filename = file.getCanonicalFilename();
+
+		this.lastAccessTime = new Date();
 	}
 
 	public boolean exists() {
@@ -92,6 +98,10 @@ public class AugFile {
 		return associatedTab.getCaretPos();
 	}
 
+	public Date getLastAccessTime() {
+		return lastAccessTime;
+	}
+
 	public boolean isUsingUTF8BOM() {
 		return file.isUsingUTF8BOM();
 	}
@@ -114,6 +124,10 @@ public class AugFile {
 
 	public void setSourceLanguage(CodeLanguage language) {
 		sourceLanguage = language;
+	}
+
+	public void setLastAccessTime(Date time) {
+		lastAccessTime = time;
 	}
 
 	public void delete() {

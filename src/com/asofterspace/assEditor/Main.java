@@ -15,8 +15,8 @@ import javax.swing.SwingUtilities;
 public class Main {
 
 	public final static String PROGRAM_TITLE = "A Softer Space Editor";
-	public final static String VERSION_NUMBER = "0.0.1.8(" + Utils.TOOLBOX_VERSION_NUMBER + ")";
-	public final static String VERSION_DATE = "18. December 2018 - 24. September 2019";
+	public final static String VERSION_NUMBER = "0.0.1.9(" + Utils.TOOLBOX_VERSION_NUMBER + ")";
+	public final static String VERSION_DATE = "18. December 2018 - 26. September 2019";
 
 
 	/**
@@ -43,7 +43,6 @@ public class Main {
 	 * only show undo and redo enabled when undoing / redoing curly possible
 	 * get redo to actually work properly ;)
 	 * when showing functions on the right, highlight whichever one we are curly inside
-	 * add an optional memo on the right where any random nonsense can be dumped, workspace-independent!
 	 */
 	public static void main(String[] args) {
 
