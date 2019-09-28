@@ -33,7 +33,7 @@ public class Main {
 	 * replace also including newlines etc.!
 	 * let user add and remove workspaces
 	 * create a better opening dialog (e.g. one in which we can enter a path at the top, and where we can
-	 * automagically descend into Java-madness without having to click through src>main>java>com>ass>...)
+	 *   automagically descend into Java-madness without having to click through src>main>java>com>ass>...)
 	 * increase scroll speed while scrolling through code files
 	 * not only call resizeNameLabel() in the AugFileTab.show(), but also in an onResize event!
 	 * show "changemark *" at the top also
@@ -43,6 +43,9 @@ public class Main {
 	 * only show undo and redo enabled when undoing / redoing curly possible
 	 * get redo to actually work properly ;)
 	 * when showing functions on the right, highlight whichever one we are curly inside
+	 * when we are saving the test_rest.sh file, if there is no trailing newline, a " is added ON SAVE... fix that!
+	 * show (and allow us to change) whether Windows or Unix line endings are used
+	 * add ISO-Latin-1 encoding as option
 	 */
 	public static void main(String[] args) {
 
