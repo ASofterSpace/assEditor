@@ -1664,7 +1664,7 @@ public class GUI extends MainWindow {
 
 		// TODO :: de-localize the JFileChooser (by default it seems localized, which is inconsistent when the rest of the program is in English...)
 		// (while you're at it, make Öffnen into Save for the save dialog, but keep it as Open for the open dialog... ^^)
-		// TODO :: actually, write our own file choose which also allows opening recursively all files in selected folders
+		// TODO :: actually, write our own file chooser
 		JFileChooser augFilePicker;
 
 		// if we find nothing better, use the last-used directory
@@ -1693,7 +1693,7 @@ public class GUI extends MainWindow {
 		}
 
 		augFilePicker.setDialogTitle("Open a Code File to Edit");
-		augFilePicker.setFileSelectionMode(JFileChooser.FILES_ONLY);
+		augFilePicker.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
 		augFilePicker.setMultiSelectionEnabled(true);
 
 		int result = augFilePicker.showOpenDialog(mainFrame);
@@ -1709,26 +1709,7 @@ public class GUI extends MainWindow {
 				AugFileTab latestTab = null;
 
 				for (java.io.File curFile : augFilePicker.getSelectedFiles()) {
-
-					File fileToOpen = new File(curFile);
-
-					AugFile newFile = augFileCtrl.loadAnotherFile(fileToOpen);
-
-					// if the file was already opened before...
-					if (newFile == null) {
-						// ... then load this existing tab!
-						String newFilename = fileToOpen.getCanonicalFilename();
-						for (AugFileTab tab : augFileTabs) {
-							if (newFilename.equals(tab.getFilePath())) {
-								latestTab = tab;
-								break;
-							}
-						}
-					} else {
-						// ... if not, add a tab for it
-						latestTab = new AugFileTab(mainPanelRight, newFile, this, augFileCtrl);
-						augFileTabs.add(latestTab);
-					}
+					latestTab = openFilesRecursively(curFile);
 				}
 
 				// show the latest tab that we added!
@@ -1746,6 +1727,40 @@ public class GUI extends MainWindow {
 				// cancel was pressed... do nothing for now
 				break;
 		}
+	}
+
+	private AugFileTab openFilesRecursively(java.io.File parent) {
+
+		AugFileTab result = null;
+
+		if (parent.isDirectory()) {
+			java.io.File[] curFiles = parent.listFiles();
+
+			for (java.io.File curFile : curFiles) {
+				result = openFilesRecursively(curFile);
+			}
+		} else {
+			File fileToOpen = new File(parent);
+
+			AugFile newFile = augFileCtrl.loadAnotherFile(fileToOpen);
+
+			// if the file was already opened before...
+			if (newFile == null) {
+				// ... then load this existing tab!
+				String newFilename = fileToOpen.getCanonicalFilename();
+				for (AugFileTab tab : augFileTabs) {
+					if (newFilename.equals(tab.getFilePath())) {
+						return tab;
+					}
+				}
+			} else {
+				// ... if not, add a tab for it
+				result = new AugFileTab(mainPanelRight, newFile, this, augFileCtrl);
+				augFileTabs.add(result);
+			}
+		}
+
+		return result;
 	}
 
 	private void newFile() {

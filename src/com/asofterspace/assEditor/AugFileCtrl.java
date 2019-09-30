@@ -188,6 +188,8 @@ public class AugFileCtrl {
 	 */
 	public AugFile loadAnotherFileWithoutSaving(File fileToLoad) {
 
+		System.out.println("Loading " + fileToLoad + "...");
+
 		String newFilename = fileToLoad.getCanonicalFilename();
 
 		// first of all check that the file has not already been loaded!
