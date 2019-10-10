@@ -9,7 +9,7 @@ import com.asofterspace.toolbox.configuration.ConfigFile;
 import com.asofterspace.toolbox.io.Directory;
 import com.asofterspace.toolbox.io.File;
 import com.asofterspace.toolbox.io.Record;
-import com.asofterspace.toolbox.Utils;
+import com.asofterspace.toolbox.utils.DateUtils;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -145,7 +145,7 @@ public class AugFileCtrl {
 
 					curFile.setSourceLanguage(sourceLang);
 
-					curFile.setLastAccessTime(Utils.parseDateTime(recFile.getString(CONF_ACCESS_TIME)));
+					curFile.setLastAccessTime(DateUtils.parseDateTime(recFile.getString(CONF_ACCESS_TIME)));
 				}
 			}
 		}
@@ -260,7 +260,7 @@ public class AugFileCtrl {
 				curRec.setString(CONF_FILENAME, augFile.getFilename());
 				curRec.setString(CONF_CARET_POS, augFile.getCaretPos());
 				curRec.setString(CONF_LANGUAGE, augFile.getSourceLanguage());
-				curRec.setString(CONF_ACCESS_TIME, Utils.serializeDateTime(augFile.getLastAccessTime()));
+				curRec.setString(CONF_ACCESS_TIME, DateUtils.serializeDateTime(augFile.getLastAccessTime()));
 
 				filesRec.append(curRec);
 			}

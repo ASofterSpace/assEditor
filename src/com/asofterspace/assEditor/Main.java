@@ -7,6 +7,7 @@ package com.asofterspace.assEditor;
 import com.asofterspace.toolbox.configuration.ConfigFile;
 import com.asofterspace.toolbox.io.File;
 import com.asofterspace.toolbox.io.JSON;
+import com.asofterspace.toolbox.io.JsonParseException;
 import com.asofterspace.toolbox.Utils;
 
 import javax.swing.SwingUtilities;
@@ -66,13 +67,21 @@ public class Main {
 			}
 		}
 
-		// we get a config file based on the classpath, such that we know that this is always the
-		// same "install" location, without change even if we are called from somewhere else
-		ConfigFile config = new ConfigFile("settings", true);
+		ConfigFile config = null;
 
-		// create a default config file, if necessary
-		if (config.getAllContents().isEmpty()) {
-			config.setAllContents(new JSON("{\"workspaces\": [{\"name\": \"default\", \"files\": []}]}"));
+		try {
+			// we get a config file based on the classpath, such that we know that this is always the
+			// same "install" location, without change even if we are called from somewhere else
+			config = new ConfigFile("settings", true);
+
+			// create a default config file, if necessary
+			if (config.getAllContents().isEmpty()) {
+				config.setAllContents(new JSON("{\"workspaces\": [{\"name\": \"default\", \"files\": []}]}"));
+			}
+		} catch (JsonParseException e) {
+			System.err.println("Loading the settings failed:");
+			System.err.println(e);
+			System.exit(1);
 		}
 
 		AugFileCtrl augFileCtrl = new AugFileCtrl(config);

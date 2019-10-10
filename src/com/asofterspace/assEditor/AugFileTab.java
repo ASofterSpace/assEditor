@@ -19,7 +19,7 @@ import com.asofterspace.toolbox.io.Directory;
 import com.asofterspace.toolbox.io.File;
 import com.asofterspace.toolbox.io.SimpleFile;
 import com.asofterspace.toolbox.utils.Callback;
-import com.asofterspace.toolbox.Utils;
+import com.asofterspace.toolbox.utils.StrUtils;
 
 import java.awt.Component;
 import java.awt.datatransfer.Clipboard;
@@ -795,7 +795,7 @@ public class AugFileTab implements FileTab {
 
 		// set the backup file location relative to the class path to always
 		// get the same location, even when we are called from somewhere else
-		SimpleFile backupFile = new SimpleFile(getBackupPath() + Utils.leftPad0(backupNum, 4) + ".txt");
+		SimpleFile backupFile = new SimpleFile(getBackupPath() + StrUtils.leftPad0(backupNum, 4) + ".txt");
 
 		backupFile.setContent(augFile.getFilename() + "\n\n" + fileContentMemo.getText());
 

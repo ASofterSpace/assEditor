@@ -22,7 +22,7 @@ import com.asofterspace.toolbox.io.Record;
 import com.asofterspace.toolbox.io.SimpleFile;
 import com.asofterspace.toolbox.utils.Callback;
 import com.asofterspace.toolbox.utils.ProgressIndicator;
-import com.asofterspace.toolbox.Utils;
+import com.asofterspace.toolbox.utils.StrUtils;
 
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
@@ -1633,9 +1633,9 @@ public class GUI extends MainWindow {
 
 		searchInWorkspaceOutputLabel.setText(
 			"Found " +
-			Utils.thingOrThings(matches, "match", "matches") +
+			StrUtils.thingOrThings(matches, "match", "matches") +
 			" in " +
-			Utils.thingOrThings(infiles, "file") +
+			StrUtils.thingOrThings(infiles, "file") +
 			"."
 		);
 	}
