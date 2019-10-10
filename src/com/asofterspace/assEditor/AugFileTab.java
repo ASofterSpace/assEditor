@@ -1038,6 +1038,14 @@ public class AugFileTab implements FileTab {
 	}
 
 	@Override
+	public String toString() {
+		if (hasBeenChanged()) {
+			return getName() + GuiUtils.CHANGE_INDICATOR;
+		}
+		return getName();
+	}
+
+	@Override
 	public boolean equals(Object other) {
 		if (other == null) {
 			return false;

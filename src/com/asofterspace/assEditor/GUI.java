@@ -136,12 +136,12 @@ public class GUI extends MainWindow {
 	private JLabel searchInWorkspaceOutputLabel;
 
 	private List<AugFileTab> augFileTabs;
+	private AugFileTab[] augFileTabArray;
 
 	private ConfigFile configuration;
-	private JList<String> fileListComponent;
+	private JList<AugFileTab> fileListComponent;
 	private FileTree fileTreeComponent;
 	private JPopupMenu fileListPopup;
-	private String[] strAugFiles;
 	private FileTreeModel fileTreeModel;
 	private JScrollPane augFileListScroller;
 	private JScrollPane augFileTreeScroller;
@@ -168,7 +168,7 @@ public class GUI extends MainWindow {
 
 		this.configuration = config;
 
-		strAugFiles = new String[0];
+		augFileTabArray = new AugFileTab[0];
 		fileTreeModel = new FileTreeModel();
 
 		augFileTabs = new ArrayList<>();
@@ -343,7 +343,7 @@ public class GUI extends MainWindow {
 		saveFile.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				saveFile();
+				saveFiles(getCurrentTabAsList());
 			}
 		});
 		file.add(saveFile);
@@ -364,7 +364,7 @@ public class GUI extends MainWindow {
 		saveAllFiles.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				saveAllFiles();
+				saveFiles(augFileTabs);
 			}
 		});
 		file.add(saveAllFiles);
@@ -384,7 +384,7 @@ public class GUI extends MainWindow {
 		deleteFile.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				deleteFile();
+				deleteFiles(getCurrentTabAsList());
 			}
 		});
 		file.add(deleteFile);
@@ -395,7 +395,7 @@ public class GUI extends MainWindow {
 		closeFile.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				closeFile();
+				closeFiles(getCurrentTabAsList());
 			}
 		});
 		file.add(closeFile);
@@ -404,7 +404,7 @@ public class GUI extends MainWindow {
 		closeAllFiles.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				closeAllFiles();
+				closeFiles(augFileTabs);
 			}
 		});
 		file.add(closeAllFiles);
@@ -1183,30 +1183,30 @@ public class GUI extends MainWindow {
 
 		fileListPopup = new JPopupMenu();
 
-		saveFilePopup = new JMenuItem("Save This File");
+		saveFilePopup = new JMenuItem("Save These Files");
 		saveFilePopup.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, ActionEvent.CTRL_MASK));
 		saveFilePopup.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				saveFile();
+				saveFiles(getHighlightedTabs());
 			}
 		});
 		fileListPopup.add(saveFilePopup);
 
-		deleteFilePopup = new JMenuItem("Delete This File");
+		deleteFilePopup = new JMenuItem("Delete These Files");
 		deleteFilePopup.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				deleteFile();
+				deleteFiles(getHighlightedTabs());
 			}
 		});
 		fileListPopup.add(deleteFilePopup);
 
-		closeFilePopup = new JMenuItem("Close This File");
+		closeFilePopup = new JMenuItem("Close These Files");
 		closeFilePopup.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				closeFile();
+				closeFiles(getHighlightedTabs());
 			}
 		});
 		fileListPopup.add(closeFilePopup);
@@ -1274,8 +1274,7 @@ public class GUI extends MainWindow {
 		JPanel gapPanel = new JPanel();
 		gapPanel.setPreferredSize(new Dimension(8, 8));
 
-		String[] fileList = new String[0];
-		fileListComponent = new JList<String>(fileList);
+		fileListComponent = new JList<AugFileTab>(augFileTabArray);
 		fileTreeComponent = new FileTree(fileTreeModel);
 		augFileTabs = new ArrayList<>();
 
@@ -1780,16 +1779,9 @@ public class GUI extends MainWindow {
 		}
 	}
 
-	private void saveFile() {
+	private void saveFiles(List<AugFileTab> tabs) {
 
-		currentlyShownTab.save();
-
-		saveNotes();
-	}
-
-	private void saveAllFiles() {
-
-		for (AugFileTab tab : augFileTabs) {
+		for (AugFileTab tab : tabs) {
 			tab.save();
 		}
 
@@ -1805,63 +1797,72 @@ public class GUI extends MainWindow {
 		}
 	}
 
-	/*
-	private void saveAugFiles() {
+	private void deleteFiles(List<AugFileTab> tabs) {
 
-		// apply all changes, such that the current source code editor contents are actually stored in the CDM file objects
-		for (AugFileTab augFileTab : augFileTabs) {
-			augFileTab.saveIfChanged();
+		for (AugFileTab tab : tabs) {
+
+			augFileCtrl.removeFile(tab.getFile());
+
+			tab.delete();
+
+			augFileTabs.remove(tab);
 		}
 
-		// remove all change indicators on the left-hand side
-		regenerateAugFileList();
-
-		// DO NOT save all opened files - instead, we called augFileTab.saveIfChanged, so we only save un-saved changes!
-		// augFileCtrl.save();
-
-		JOptionPane.showMessageDialog(mainFrame, "All changed files have been saved!", "AugFiles Saved", JOptionPane.INFORMATION_MESSAGE);
-	}
-	*/
-
-	private void deleteFile() {
-
-		augFileCtrl.removeFile(currentlyShownTab.getFile());
-
-		currentlyShownTab.delete();
-
-		augFileTabs.remove(currentlyShownTab);
-
 		setCurrentlyShownTab(null);
 
 		regenerateAugFileList();
 	}
 
-	private void closeFile() {
+	private void closeFiles(List<AugFileTab> tabs) {
 
-		augFileCtrl.removeFile(currentlyShownTab.getFile());
+		for (AugFileTab tab : tabs) {
 
-		currentlyShownTab.remove();
+			augFileCtrl.removeFile(tab.getFile());
 
-		augFileTabs.remove(currentlyShownTab);
-
-		setCurrentlyShownTab(null);
-
-		regenerateAugFileList();
-	}
-
-	private void closeAllFiles() {
-
-		augFileCtrl.removeAllFiles();
-
-		for (AugFileTab tab : augFileTabs) {
 			tab.remove();
-		}
 
-		augFileTabs = new ArrayList<>();
+			augFileTabs.remove(tab);
+		}
 
 		setCurrentlyShownTab(null);
 
 		regenerateAugFileList();
+	}
+
+	private List<AugFileTab> getCurrentTabAsList() {
+
+		List<AugFileTab> result = new ArrayList<>();
+
+		result.add(currentlyShownTab);
+
+		return result;
+	}
+
+	private List<AugFileTab> getHighlightedTabs() {
+
+		if (showFilesInTree) {
+
+			TreePath[] selectedPaths = fileTreeComponent.getSelectionPaths();
+
+			List<AugFileTab> result = new ArrayList<>();
+
+			for (TreePath path : selectedPaths) {
+				FileTreeNode node = fileTreeModel.getChild(path);
+				if (node instanceof FileTreeFile) {
+					FileTreeFile file = (FileTreeFile) node;
+					FileTab tab = file.getTab();
+					if (tab instanceof AugFileTab) {
+						result.add((AugFileTab) tab);
+					}
+				}
+			}
+
+			return result;
+
+		} else {
+
+			return fileListComponent.getSelectedValuesList();
+		}
 	}
 
 	private void updateHighlightersOnAllTabs() {
@@ -2616,19 +2617,16 @@ public class GUI extends MainWindow {
 			}
 		});
 
-		strAugFiles = new String[augFileTabs.size()];
+		augFileTabArray = new AugFileTab[augFileTabs.size()];
 
 		int i = 0;
 
 		for (AugFileTab augFileTab : augFileTabs) {
-			strAugFiles[i] = augFileTab.getName();
-			if (augFileTab.hasBeenChanged()) {
-				strAugFiles[i] += GuiUtils.CHANGE_INDICATOR;
-			}
+			augFileTabArray[i] = augFileTab;
 			i++;
 		}
 
-		fileListComponent.setListData(strAugFiles);
+		fileListComponent.setListData(augFileTabArray);
 
 		// if there still is no last shown tab (e.g. we just deleted the very last one)...
 		if (currentlyShownTab == null) {
@@ -2707,20 +2705,6 @@ public class GUI extends MainWindow {
 		mainFrame.setTitle(Main.PROGRAM_TITLE);
 	}
 
-	private void clearAllaugFileTabs() {
-
-		// remove old file tabs
-		for (AugFileTab augFileTab : augFileTabs) {
-			augFileTab.remove();
-		}
-		strAugFiles = new String[0];
-		augFileTabs = new ArrayList<>();
-		fileListComponent.setListData(strAugFiles);
-		setCurrentlyShownTab(null);
-
-		mainPanelRight.repaint();
-	}
-
 	private void reloadAllAugFileTabs() {
 
 		if (augFileTabs != null) {
@@ -2734,6 +2718,7 @@ public class GUI extends MainWindow {
 
 		List<AugFile> files = augFileCtrl.getFiles();
 		for (AugFile file : files) {
+			file.refreshContent();
 			augFileTabs.add(new AugFileTab(mainPanelRight, file, this, augFileCtrl));
 		}
 

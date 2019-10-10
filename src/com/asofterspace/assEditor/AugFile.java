@@ -106,6 +106,10 @@ public class AugFile {
 		return file.isUsingUTF8BOM();
 	}
 
+	public void refreshContent() {
+		file.loadContents(true);
+	}
+
 	public void setUsingUTF8BOM(boolean useItOrNot) {
 		file.useUTF8BOM(useItOrNot);
 	}
