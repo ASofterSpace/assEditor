@@ -1733,9 +1733,26 @@ public class GUI extends MainWindow {
 		AugFileTab result = null;
 
 		if (parent.isDirectory()) {
+			// when opening entires directories...
 			java.io.File[] curFiles = parent.listFiles();
 
 			for (java.io.File curFile : curFiles) {
+				if (!curFile.isDirectory()) {
+					// ... ignore gedit backup files
+					if (curFile.getName().endsWith("~")) {
+						continue;
+					}
+					// ... ignore unity meta files
+					if (curFile.getName().endsWith(".meta")) {
+						continue;
+					}
+					// ... ignore java package info files
+					if (curFile.getName().equals("package-info.java")) {
+						continue;
+					}
+					// TODO :: maybe ignore files that are covered by .gitignore?
+					// (as those are often also backup files or similar...)
+				}
 				result = openFilesRecursively(curFile);
 			}
 		} else {
