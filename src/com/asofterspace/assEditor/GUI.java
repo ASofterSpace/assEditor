@@ -15,13 +15,11 @@ import com.asofterspace.toolbox.gui.FileTreeModel;
 import com.asofterspace.toolbox.gui.FileTreeNode;
 import com.asofterspace.toolbox.gui.GuiUtils;
 import com.asofterspace.toolbox.gui.MainWindow;
-import com.asofterspace.toolbox.gui.ProgressDialog;
 import com.asofterspace.toolbox.io.Directory;
 import com.asofterspace.toolbox.io.File;
 import com.asofterspace.toolbox.io.Record;
 import com.asofterspace.toolbox.io.SimpleFile;
 import com.asofterspace.toolbox.utils.Callback;
-import com.asofterspace.toolbox.utils.ProgressIndicator;
 import com.asofterspace.toolbox.utils.StrUtils;
 
 import java.awt.BorderLayout;
@@ -37,7 +35,6 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.awt.FlowLayout;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Point;
@@ -46,7 +43,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -67,7 +63,6 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
-import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
@@ -92,6 +87,7 @@ public class GUI extends MainWindow {
 	private final static String CONFIG_KEY_REMOVE_TRAILING_WHITESPACE_ON_SAVE = "onSaveRemoveTrailingWhitespace";
 	private final static String CONFIG_KEY_REPLACE_WHITESPACES_WITH_TABS_ON_SAVE = "onSaveReplaceWhitespacesWithTabs";
 	private final static String CONFIG_KEY_REORGANIZE_IMPORTS_ON_SAVE = "onSaveReorganizeImports";
+	private final static String CONFIG_KEY_REMOVE_UNUSED_IMPORTS_ON_SAVE = "onSaveRemoveUnusedImports";
 	private final static String CONFIG_KEY_COPY_ON_ENTER = "copyOnEnter";
 	private final static String CONFIG_KEY_TAB_ENTIRE_BLOCKS = "tabEntireBlocks";
 	private final static String CONFIG_KEY_BACKUP_NUM = "backupNum";
@@ -122,6 +118,7 @@ public class GUI extends MainWindow {
 	private JCheckBoxMenuItem removeTrailingWhitespaceOnSaveItem;
 	private JCheckBoxMenuItem replaceWhitespacesWithTabsOnSaveItem;
 	private JCheckBoxMenuItem reorganizeImportsOnSaveItem;
+	private JCheckBoxMenuItem removeUnusedImportsOnSaveItem;
 	private JCheckBoxMenuItem copyOnEnterItem;
 	private JCheckBoxMenuItem tabEntireBlocksItem;
 	private JCheckBoxMenuItem usingUTF8WithBOM;
@@ -157,6 +154,7 @@ public class GUI extends MainWindow {
 	Boolean removeTrailingWhitespaceOnSave;
 	Boolean replaceWhitespacesWithTabsOnSave;
 	Boolean reorganizeImportsOnSave;
+	Boolean removeUnusedImportsOnSave;
 	Boolean copyOnEnter;
 	Boolean tabEntireBlocks;
 	Boolean showFilesInTree;
@@ -184,6 +182,8 @@ public class GUI extends MainWindow {
 		replaceWhitespacesWithTabsOnSave = configuration.getBoolean(CONFIG_KEY_REPLACE_WHITESPACES_WITH_TABS_ON_SAVE, true);
 
 		reorganizeImportsOnSave = configuration.getBoolean(CONFIG_KEY_REORGANIZE_IMPORTS_ON_SAVE, true);
+
+		removeUnusedImportsOnSave = configuration.getBoolean(CONFIG_KEY_REMOVE_UNUSED_IMPORTS_ON_SAVE, true);
 
 		copyOnEnter = configuration.getBoolean(CONFIG_KEY_COPY_ON_ENTER, true);
 
@@ -832,6 +832,17 @@ public class GUI extends MainWindow {
 		});
 		edit.add(reorgImports);
 
+		JMenuItem removeUnusedImports = new JMenuItem("Remove Unused Imports");
+		removeUnusedImports.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (currentlyShownTab != null) {
+					currentlyShownTab.removeUnusedImports();
+				}
+			}
+		});
+		edit.add(removeUnusedImports);
+
 		edit.addSeparator();
 
 		JMenuItem sortDocumentAlph = new JMenuItem("Sort Entire Document Alphabetically");
@@ -1087,6 +1098,15 @@ public class GUI extends MainWindow {
 		setReorganizeImportsOnSave(reorganizeImportsOnSave);
 		settings.add(reorganizeImportsOnSaveItem);
 
+		removeUnusedImportsOnSaveItem = new JCheckBoxMenuItem("Remove Unused Imports on Save");
+		removeUnusedImportsOnSaveItem.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				setRemoveUnusedImportsOnSave(!removeUnusedImportsOnSave);
+			}
+		});
+		settings.add(removeUnusedImportsOnSaveItem);
+
 		JMenuItem toggleAllSwitchesInGroup = new JMenuItem("Toggle All Switches In Group");
 		toggleAllSwitchesInGroup.addActionListener(new ActionListener() {
 			@Override
@@ -1095,6 +1115,7 @@ public class GUI extends MainWindow {
 				setRemoveTrailingWhitespaceOnSave(toggleTo);
 				setReplaceWhitespacesWithTabsOnSave(toggleTo);
 				setReorganizeImportsOnSave(toggleTo);
+				setRemoveUnusedImportsOnSave(toggleTo);
 			}
 		});
 		settings.add(toggleAllSwitchesInGroup);
@@ -2007,6 +2028,19 @@ public class GUI extends MainWindow {
 		configuration.set(CONFIG_KEY_REORGANIZE_IMPORTS_ON_SAVE, reorganizeImportsOnSave);
 
 		reorganizeImportsOnSaveItem.setSelected(reorganizeImportsOnSave);
+	}
+
+	private void setRemoveUnusedImportsOnSave(Boolean setTo) {
+
+		if (setTo == null) {
+			setTo = true;
+		}
+
+		removeUnusedImportsOnSave = setTo;
+
+		configuration.set(CONFIG_KEY_REMOVE_UNUSED_IMPORTS_ON_SAVE, removeUnusedImportsOnSave);
+
+		removeUnusedImportsOnSaveItem.setSelected(removeUnusedImportsOnSave);
 	}
 
 	private void setCopyOnEnter(Boolean setTo) {

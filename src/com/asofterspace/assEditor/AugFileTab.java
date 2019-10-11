@@ -9,7 +9,6 @@ import com.asofterspace.toolbox.codeeditor.utils.CodeHighlighterFactory;
 import com.asofterspace.toolbox.codeeditor.utils.CodeLanguage;
 import com.asofterspace.toolbox.codeeditor.utils.CodeLocation;
 import com.asofterspace.toolbox.codeeditor.utils.LineNumbering;
-import com.asofterspace.toolbox.configuration.ConfigFile;
 import com.asofterspace.toolbox.gui.Arrangement;
 import com.asofterspace.toolbox.gui.CodeEditor;
 import com.asofterspace.toolbox.gui.CodeEditorLineMemo;
@@ -21,42 +20,21 @@ import com.asofterspace.toolbox.io.SimpleFile;
 import com.asofterspace.toolbox.utils.Callback;
 import com.asofterspace.toolbox.utils.StrUtils;
 
-import java.awt.Component;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
-import java.awt.Desktop;
 import java.awt.Dimension;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.FontMetrics;
 import java.awt.GridBagLayout;
-import java.awt.GridLayout;
 import java.awt.Toolkit;
-import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.List;
-import java.util.Set;
 
-import javax.swing.border.CompoundBorder;
-import javax.swing.BorderFactory;
-import javax.swing.Box;
-import javax.swing.BoxLayout;
-import javax.swing.JButton;
-import javax.swing.JComponent;
-import javax.swing.JDialog;
 import javax.swing.JLabel;
-import javax.swing.JList;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
 import javax.swing.JTextPane;
-import javax.swing.JTree;
 
 
 public class AugFileTab implements FileTab {
@@ -808,6 +786,11 @@ public class AugFileTab implements FileTab {
 
 		origCaretPos = fileContentMemo.getCaretPosition();
 
+		if (gui.removeUnusedImportsOnSave) {
+
+			contentText = highlighter.removeUnusedImports(contentText);
+		}
+
 		if (gui.reorganizeImportsOnSave) {
 
 			contentText = highlighter.reorganizeImports(contentText);
@@ -843,6 +826,11 @@ public class AugFileTab implements FileTab {
 	public void reorganizeImports() {
 
 		highlighter.reorganizeImports();
+	}
+
+	public void removeUnusedImports() {
+
+		highlighter.removeUnusedImports();
 	}
 
 	public void sortDocumentAlphabetically() {
