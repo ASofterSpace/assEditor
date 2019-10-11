@@ -24,6 +24,7 @@ import com.asofterspace.toolbox.utils.StrUtils;
 
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
+import java.awt.Color;
 import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
@@ -98,9 +99,6 @@ public class GUI extends MainWindow {
 	private final static String CONFIG_KEY_FONT_SIZE = "fontSize";
 	private final static String CONFIG_KEY_SHOW_FILES_IN_TREE = "showFilesInTree";
 
-	final static String LIGHT_SCHEME = "light";
-	final static String DARK_SCHEME = "dark";
-
 	private final static int DEFAULT_FONT_SIZE = 14;
 
 	private JMenu switchWorkspace;
@@ -174,7 +172,7 @@ public class GUI extends MainWindow {
 		currentScheme = configuration.getValue(CONFIG_KEY_SCHEME);
 
 		if (currentScheme == null) {
-			currentScheme = DARK_SCHEME;
+			currentScheme = GuiUtils.DARK_SCHEME;
 		}
 
 		removeTrailingWhitespaceOnSave = configuration.getBoolean(CONFIG_KEY_REMOVE_TRAILING_WHITESPACE_ON_SAVE, true);
@@ -247,7 +245,7 @@ public class GUI extends MainWindow {
 
 		reEnableDisableMenuItems();
 
-		reSelectSchemeItems();
+		setScheme(currentScheme);
 
 		// do not call super.show, as we are doing things a little bit
 		// differently around here (including restoring from previous
@@ -1010,7 +1008,7 @@ public class GUI extends MainWindow {
 		setLightSchemeItem.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				setScheme(LIGHT_SCHEME);
+				setScheme(GuiUtils.LIGHT_SCHEME);
 			}
 		});
 		scheme.add(setLightSchemeItem);
@@ -1018,7 +1016,7 @@ public class GUI extends MainWindow {
 		setDarkSchemeItem.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				setScheme(DARK_SCHEME);
+				setScheme(GuiUtils.DARK_SCHEME);
 			}
 		});
 		scheme.add(setDarkSchemeItem);
@@ -1963,11 +1961,11 @@ public class GUI extends MainWindow {
 
 		switch (currentScheme) {
 
-			case LIGHT_SCHEME:
+			case GuiUtils.LIGHT_SCHEME:
 				setLightSchemeItem.setSelected(true);
 				break;
 
-			case DARK_SCHEME:
+			case GuiUtils.DARK_SCHEME:
 				setDarkSchemeItem.setSelected(true);
 				break;
 		}
@@ -1982,13 +1980,15 @@ public class GUI extends MainWindow {
 		configuration.set(CONFIG_KEY_SCHEME, currentScheme);
 
 		switch (currentScheme) {
-			case LIGHT_SCHEME:
+			case GuiUtils.LIGHT_SCHEME:
 				Code.setLightSchemeForAllEditors();
 				break;
-			case DARK_SCHEME:
+			case GuiUtils.DARK_SCHEME:
 				Code.setDarkSchemeForAllEditors();
 				break;
 		}
+
+		fileTreeComponent.setScheme(currentScheme);
 	}
 
 	private void setRemoveTrailingWhitespaceOnSave(Boolean setTo) {

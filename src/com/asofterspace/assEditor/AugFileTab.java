@@ -367,11 +367,11 @@ public class AugFileTab implements FileTab {
 
 		// update color scheme
 		switch (gui.currentScheme) {
-			case GUI.LIGHT_SCHEME:
+			case GuiUtils.LIGHT_SCHEME:
 				highlighter.setLightScheme();
 				lineNumbers.setLightScheme();
 				break;
-			case GUI.DARK_SCHEME:
+			case GuiUtils.DARK_SCHEME:
 				highlighter.setDarkScheme();
 				lineNumbers.setDarkScheme();
 				break;
