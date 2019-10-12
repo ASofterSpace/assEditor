@@ -323,7 +323,7 @@ public class GUI extends MainWindow {
 		});
 		file.add(openFile);
 
-		refreshFiles = new JMenuItem("Refresh All Files From Disk");
+		refreshFiles = new JMenuItem("Refresh All Files From Disk (Discard All Unsaved Changes)");
 		refreshFiles.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {

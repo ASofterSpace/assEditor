@@ -32,6 +32,7 @@ import java.awt.GridBagLayout;
 import java.awt.Toolkit;
 import java.util.List;
 
+import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -131,6 +132,7 @@ public class AugFileTab implements FileTab {
 
 		sourceCodeScroller = new JScrollPane(scrolledPanel);
 		sourceCodeScroller.setPreferredSize(new Dimension(1, 1));
+		sourceCodeScroller.setBorder(BorderFactory.createEmptyBorder());
 		tab.add(sourceCodeScroller, new Arrangement(0, 1, 1.0, 0.8));
 
 		Integer origCaretPos = augFile.getInitialCaretPos();
@@ -148,6 +150,7 @@ public class AugFileTab implements FileTab {
 		functionMemo = new CodeEditor();
 
 		sideScrollPane = new JScrollPane(functionMemo);
+		sideScrollPane.setBorder(BorderFactory.createEmptyBorder());
 		sideScrollPane.setPreferredSize(new Dimension(1, 1));
 
 		tab.add(sideScrollPane, new Arrangement(1, 1, 0.2, 1.0));
