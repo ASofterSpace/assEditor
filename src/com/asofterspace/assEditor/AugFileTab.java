@@ -20,6 +20,7 @@ import com.asofterspace.toolbox.io.SimpleFile;
 import com.asofterspace.toolbox.utils.Callback;
 import com.asofterspace.toolbox.utils.StrUtils;
 
+import java.awt.Color;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
 import java.awt.Dimension;
@@ -57,9 +58,11 @@ public class AugFileTab implements FileTab {
 	private boolean changed = false;
 
 	// graphical components
+	private JPanel tab;
 	private JLabel nameLabel;
 	private JTextPane lineMemo;
 	private JTextPane fileContentMemo;
+	private JScrollPane sourceCodeScroller;
 	private JTextPane functionMemo;
 	private JScrollPane sideScrollPane;
 
@@ -96,11 +99,12 @@ public class AugFileTab implements FileTab {
 
 	private JPanel createVisualPanel() {
 
-		JPanel tab = new JPanel();
+		tab = new JPanel();
 		tab.setLayout(new GridBagLayout());
 
 		nameLabel = new JLabel(getFilePath());
 		nameLabel.setPreferredSize(new Dimension(0, nameLabel.getPreferredSize().height*2));
+		nameLabel.setHorizontalAlignment(JLabel.CENTER);
 		tab.add(nameLabel, new Arrangement(0, 0, 1.0, 0.0));
 
 		nameLabel.addMouseListener(new MouseAdapter() {
@@ -125,7 +129,7 @@ public class AugFileTab implements FileTab {
 		scrolledPanel.add(lineMemo, new Arrangement(0, 0, 0.0, 1.0));
 		scrolledPanel.add(fileContentMemo, new Arrangement(1, 0, 1.0, 1.0));
 
-		JScrollPane sourceCodeScroller = new JScrollPane(scrolledPanel);
+		sourceCodeScroller = new JScrollPane(scrolledPanel);
 		sourceCodeScroller.setPreferredSize(new Dimension(1, 1));
 		tab.add(sourceCodeScroller, new Arrangement(0, 1, 1.0, 0.8));
 
@@ -363,9 +367,32 @@ public class AugFileTab implements FileTab {
 		updateHighlighterConfig();
 	}
 
+	public void setComponentScheme(String scheme) {
+
+		switch (scheme) {
+			case GuiUtils.LIGHT_SCHEME:
+				tab.setForeground(Color.black);
+				tab.setBackground(new Color(235, 215, 255));
+				nameLabel.setForeground(Color.black);
+				nameLabel.setBackground(new Color(235, 215, 255));
+				break;
+			case GuiUtils.DARK_SCHEME:
+				tab.setForeground(new Color(255, 245, 255));
+				tab.setBackground(new Color(19, 18, 25));
+				nameLabel.setForeground(new Color(255, 245, 255));
+				nameLabel.setBackground(new Color(19, 18, 25));
+				break;
+		}
+
+		GUI.setScheme(scheme, sideScrollPane);
+		GUI.setScheme(scheme, sourceCodeScroller);
+	}
+
 	public void updateHighlighterConfig() {
 
 		// update color scheme
+		setComponentScheme(gui.currentScheme);
+
 		switch (gui.currentScheme) {
 			case GuiUtils.LIGHT_SCHEME:
 				highlighter.setLightScheme();

@@ -68,6 +68,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
+import javax.swing.plaf.basic.BasicScrollBarUI;
 import javax.swing.SwingUtilities;
 import javax.swing.tree.TreePath;
 
@@ -80,6 +81,7 @@ public class GUI extends MainWindow {
 
 	private JPanel searchPanel;
 	private JTextField searchField;
+	private JTextField replaceField;
 
 	private AugFileTab currentlyShownTab;
 
@@ -1103,6 +1105,7 @@ public class GUI extends MainWindow {
 				setRemoveUnusedImportsOnSave(!removeUnusedImportsOnSave);
 			}
 		});
+		setRemoveUnusedImportsOnSave(removeUnusedImportsOnSave);
 		settings.add(removeUnusedImportsOnSaveItem);
 
 		JMenuItem toggleAllSwitchesInGroup = new JMenuItem("Toggle All Switches In Group");
@@ -1290,9 +1293,6 @@ public class GUI extends MainWindow {
 		mainPanelRight.setLayout(new CardLayout());
 		mainPanelRight.setPreferredSize(new Dimension(8, 8));
 
-		JPanel gapPanel = new JPanel();
-		gapPanel.setPreferredSize(new Dimension(8, 8));
-
 		fileListComponent = new JList<AugFileTab>(augFileTabArray);
 		fileTreeComponent = new FileTree(fileTreeModel);
 		augFileTabs = new ArrayList<>();
@@ -1418,7 +1418,7 @@ public class GUI extends MainWindow {
 			}
 		});
 
-		final JTextField replaceField = new JTextField();
+		replaceField = new JTextField();
 
 		// listen to the enter key being pressed (which does not create text updates)
 		replaceField.addActionListener(new ActionListener() {
@@ -1448,11 +1448,9 @@ public class GUI extends MainWindow {
 		mainPanel.add(augFileListScroller, new Arrangement(0, 0, 0.2, 1.0));
 		mainPanel.add(augFileTreeScroller, new Arrangement(1, 0, 0.2, 1.0));
 
-		mainPanel.add(gapPanel, new Arrangement(2, 0, 0.0, 0.0));
+		mainPanel.add(mainPanelRightOuter, new Arrangement(2, 0, 1.0, 1.0));
 
-		mainPanel.add(mainPanelRightOuter, new Arrangement(3, 0, 1.0, 1.0));
-
-		mainPanel.add(noteAreaScroller, new Arrangement(4, 0, 0.2, 1.0));
+		mainPanel.add(noteAreaScroller, new Arrangement(3, 0, 0.2, 1.0));
 
 		parent.add(mainPanel, BorderLayout.CENTER);
 
@@ -1578,15 +1576,15 @@ public class GUI extends MainWindow {
 		explanationLabel.setText("Enter the text you are searching for:");
 		searchInWorkspaceDialog.add(explanationLabel, new Arrangement(0, 0, 1.0, 0.0));
 
-		final JTextField searchField = new JTextField();
-		searchInWorkspaceDialog.add(searchField, new Arrangement(0, 1, 1.0, 0.0));
+		final JTextField workspaceSearchField = new JTextField();
+		searchInWorkspaceDialog.add(workspaceSearchField, new Arrangement(0, 1, 1.0, 0.0));
 
 		JLabel explanationReplaceLabel = new JLabel();
 		explanationReplaceLabel.setText("Enter here the replacement text in case you want to replace anything:");
 		searchInWorkspaceDialog.add(explanationReplaceLabel, new Arrangement(0, 2, 1.0, 0.0));
 
-		final JTextField replaceField = new JTextField();
-		searchInWorkspaceDialog.add(replaceField, new Arrangement(0, 3, 1.0, 0.0));
+		final JTextField workspaceReplaceField = new JTextField();
+		searchInWorkspaceDialog.add(workspaceReplaceField, new Arrangement(0, 3, 1.0, 0.0));
 
 		searchInWorkspaceOutputMemo = new JTextArea();
 		JScrollPane outputMemoScroller = new JScrollPane(searchInWorkspaceOutputMemo);
@@ -1604,7 +1602,7 @@ public class GUI extends MainWindow {
 		JButton searchButton = new JButton("Search");
 		searchButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				searchInWorkspaceFor(searchField.getText());
+				searchInWorkspaceFor(workspaceSearchField.getText());
 			}
 		});
 		buttonRow.add(searchButton);
@@ -1612,7 +1610,7 @@ public class GUI extends MainWindow {
 		JButton replaceButton = new JButton("Replace");
 		replaceButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				searchInWorkspaceAndReplaceWith(searchField.getText(), replaceField.getText());
+				searchInWorkspaceAndReplaceWith(workspaceSearchField.getText(), workspaceReplaceField.getText());
 			}
 		});
 		buttonRow.add(replaceButton);
@@ -1982,13 +1980,116 @@ public class GUI extends MainWindow {
 		switch (currentScheme) {
 			case GuiUtils.LIGHT_SCHEME:
 				Code.setLightSchemeForAllEditors();
+				noteArea.setForeground(Color.black);
+				noteArea.setBackground(Color.white);
+				searchField.setForeground(Color.black);
+				searchField.setBackground(Color.white);
+				replaceField.setForeground(Color.black);
+				replaceField.setBackground(Color.white);
+				fileListComponent.setForeground(Color.black);
+				fileListComponent.setBackground(Color.white);
 				break;
 			case GuiUtils.DARK_SCHEME:
 				Code.setDarkSchemeForAllEditors();
+				noteArea.setForeground(Color.white);
+				noteArea.setBackground(Color.black);
+				searchField.setForeground(Color.white);
+				searchField.setBackground(Color.black);
+				replaceField.setForeground(Color.white);
+				replaceField.setBackground(Color.black);
+				fileListComponent.setForeground(Color.white);
+				fileListComponent.setBackground(Color.black);
 				break;
 		}
 
+		setScheme(scheme, augFileListScroller);
+		setScheme(scheme, augFileTreeScroller);
+		setScheme(scheme, noteAreaScroller);
+
 		fileTreeComponent.setScheme(currentScheme);
+
+		for (AugFileTab tab : augFileTabs) {
+			tab.setComponentScheme(currentScheme);
+		}
+	}
+
+	public static void setScheme(String scheme, JScrollPane scroller) {
+
+		Color barColor = null;
+		Color backgroundColor = null;
+		Color backgroundHighlightColor = null;
+		Color backgroundLightColor = null;
+
+		switch (scheme) {
+			case GuiUtils.LIGHT_SCHEME:
+				barColor = new Color(150, 50, 235);
+				backgroundColor = new Color(215, 185, 240);
+				backgroundHighlightColor = new Color(200, 160, 220);
+				backgroundLightColor = new Color(190, 145, 212);
+				break;
+			case GuiUtils.DARK_SCHEME:
+				barColor = new Color(120, 45, 180);
+				backgroundColor = new Color(19, 18, 25);
+				backgroundHighlightColor = new Color(59, 48, 85);
+				backgroundLightColor = new Color(29, 28, 45);
+				break;
+		}
+
+		final Color finalBarColor = barColor;
+		final Color finalBackgroundColor = backgroundColor;
+		final Color finalBackgroundHighlightColor = backgroundHighlightColor;
+		final Color finalBackgroundLightColor = backgroundLightColor;
+
+		scroller.getVerticalScrollBar().setBackground(backgroundColor);
+		scroller.getVerticalScrollBar().setUI(new BasicScrollBarUI() {
+			@Override
+			protected JButton createDecreaseButton(int orientation) {
+				JButton button = super.createDecreaseButton(orientation);
+				button.setBackground(finalBackgroundColor);
+				return button;
+			}
+
+			@Override
+			protected JButton createIncreaseButton(int orientation) {
+				JButton button = super.createIncreaseButton(orientation);
+				button.setBackground(finalBackgroundColor);
+				return button;
+			}
+
+			@Override
+			protected void configureScrollBarColors() {
+				this.thumbColor = finalBarColor;
+				this.thumbDarkShadowColor = finalBackgroundColor;
+				this.thumbHighlightColor = finalBackgroundHighlightColor;
+				this.thumbLightShadowColor = finalBackgroundLightColor;
+				this.minimumThumbSize = new Dimension(4, 36);
+			}
+		});
+		scroller.getHorizontalScrollBar().setBackground(backgroundColor);
+		scroller.getHorizontalScrollBar().setUI(new BasicScrollBarUI() {
+			@Override
+			protected JButton createDecreaseButton(int orientation) {
+				JButton button = super.createDecreaseButton(orientation);
+				button.setBackground(finalBackgroundColor);
+				return button;
+			}
+
+			@Override
+			protected JButton createIncreaseButton(int orientation) {
+				JButton button = super.createIncreaseButton(orientation);
+				button.setBackground(finalBackgroundColor);
+				return button;
+			}
+
+			@Override
+			protected void configureScrollBarColors() {
+				this.thumbColor = finalBarColor;
+				this.thumbDarkShadowColor = finalBackgroundColor;
+				this.thumbHighlightColor = finalBackgroundHighlightColor;
+				this.thumbLightShadowColor = finalBackgroundLightColor;
+				this.minimumThumbSize = new Dimension(36, 4);
+			}
+		});
 	}
 
 	private void setRemoveTrailingWhitespaceOnSave(Boolean setTo) {

@@ -88,6 +88,16 @@ public class AugFileCtrl {
 
 	public void addWorkspace(String workspace) {
 
+		List<String> workspacesSoFar = getWorkspaces();
+		if (workspacesSoFar != null) {
+			for (String workspaceSoFar : workspacesSoFar) {
+				if (workspace.equals(workspaceSoFar)) {
+					// there is already a workspace with this name!
+					return;
+				}
+			}
+		}
+
 		Record recWorkspaces = configuration.getAllContents().get("workspaces");
 
 		Record newWorkspace = new Record();
