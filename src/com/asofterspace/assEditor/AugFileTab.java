@@ -7,7 +7,7 @@ package com.asofterspace.assEditor;
 import com.asofterspace.toolbox.codeeditor.base.Code;
 import com.asofterspace.toolbox.codeeditor.utils.CodeHighlighterFactory;
 import com.asofterspace.toolbox.codeeditor.utils.CodeLanguage;
-import com.asofterspace.toolbox.codeeditor.utils.CodeLocation;
+import com.asofterspace.toolbox.codeeditor.utils.CodeSnippetWithLocation;
 import com.asofterspace.toolbox.codeeditor.utils.LineNumbering;
 import com.asofterspace.toolbox.gui.Arrangement;
 import com.asofterspace.toolbox.gui.CodeEditor;
@@ -182,7 +182,7 @@ public class AugFileTab implements FileTab {
 
 			private void scrollToFunction(MouseEvent e) {
 
-				List<CodeLocation> functions = highlighter.getFunctions();
+				List<CodeSnippetWithLocation> functions = highlighter.getFunctions();
 
 				if ((functions == null) || (functions.size() < 1)) {
 					return;
@@ -191,7 +191,7 @@ public class AugFileTab implements FileTab {
 				int pressedLine = -1;
 				int caretPos = functionMemo.getCaretPosition();
 
-				for (CodeLocation codeLoc : functions) {
+				for (CodeSnippetWithLocation codeLoc : functions) {
 					pressedLine++;
 					caretPos -= codeLoc.getCode().length() + 1;
 					if (caretPos < 0) {
@@ -200,6 +200,7 @@ public class AugFileTab implements FileTab {
 				}
 
 				final int targetCaretPos = functions.get(pressedLine).getCaretPos();
+
 				// jump to the end...
 				fileContentMemo.setCaretPosition(fileContentMemo.getText().length());
 				new Thread(new Runnable() {
@@ -381,9 +382,9 @@ public class AugFileTab implements FileTab {
 				break;
 			case GuiUtils.DARK_SCHEME:
 				tab.setForeground(new Color(255, 245, 255));
-				tab.setBackground(new Color(19, 18, 25));
+				tab.setBackground(new Color(0, 0, 0));
 				nameLabel.setForeground(new Color(255, 245, 255));
-				nameLabel.setBackground(new Color(19, 18, 25));
+				nameLabel.setBackground(new Color(0, 0, 0));
 				break;
 		}
 
@@ -460,6 +461,32 @@ public class AugFileTab implements FileTab {
 			}
 
 			// treat all other lines (not starting with + or -) indifferently
+			sourceCode.append(line);
+			sourceCode.append("\n");
+		}
+
+		fileContentMemo.setText(sourceCode.toString());
+	}
+
+	public void removeDebugLines() {
+
+		String[] codeLines = fileContentMemo.getText().split("\n");
+
+		StringBuilder sourceCode = new StringBuilder();
+
+		for (String line : codeLines) {
+
+			// ignore Java-like DEBUG comments
+			if (line.contains("// "+"DEBUG")) {
+				continue;
+			}
+
+			// ignore bash-like DEBUG comments
+			if (line.contains("# "+"DEBUG")) {
+				continue;
+			}
+
+			// treat all other lines indifferently
 			sourceCode.append(line);
 			sourceCode.append("\n");
 		}

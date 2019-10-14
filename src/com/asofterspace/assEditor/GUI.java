@@ -777,6 +777,17 @@ public class GUI extends MainWindow {
 		});
 		edit.add(applyGit);
 
+		JMenuItem removeDebugLines = new JMenuItem("Remove Lines Containing // DEBUG or # DEBUG");
+		removeDebugLines.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (currentlyShownTab != null) {
+					currentlyShownTab.removeDebugLines();
+				}
+			}
+		});
+		edit.add(removeDebugLines);
+
 		JMenuItem writeLineNumbers = new JMenuItem("Write Line Numbers in Front of Each Line");
 		writeLineNumbers.addActionListener(new ActionListener() {
 			@Override
