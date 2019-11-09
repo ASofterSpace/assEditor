@@ -8,6 +8,7 @@ import com.asofterspace.toolbox.codeeditor.utils.CodeLanguage;
 import com.asofterspace.toolbox.io.Directory;
 import com.asofterspace.toolbox.io.File;
 import com.asofterspace.toolbox.io.SimpleFile;
+import com.asofterspace.toolbox.utils.TextEncoding;
 
 import java.util.Date;
 
@@ -102,16 +103,16 @@ public class AugFile {
 		return lastAccessTime;
 	}
 
-	public boolean isUsingUTF8BOM() {
-		return file.isUsingUTF8BOM();
+	public TextEncoding getEncoding() {
+		return file.getEncoding();
 	}
 
 	public void refreshContent() {
 		file.loadContents(true);
 	}
 
-	public void setUsingUTF8BOM(boolean useItOrNot) {
-		file.useUTF8BOM(useItOrNot);
+	public void setEncoding(TextEncoding encoding) {
+		file.setEncoding(encoding);
 	}
 
 	public void setContent(String content) {

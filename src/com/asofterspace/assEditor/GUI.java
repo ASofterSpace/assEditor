@@ -21,6 +21,7 @@ import com.asofterspace.toolbox.io.Record;
 import com.asofterspace.toolbox.io.SimpleFile;
 import com.asofterspace.toolbox.utils.Callback;
 import com.asofterspace.toolbox.utils.StrUtils;
+import com.asofterspace.toolbox.utils.TextEncoding;
 
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
@@ -123,6 +124,7 @@ public class GUI extends MainWindow {
 	private JCheckBoxMenuItem tabEntireBlocksItem;
 	private JCheckBoxMenuItem usingUTF8WithBOM;
 	private JCheckBoxMenuItem usingUTF8WithoutBOM;
+	private JCheckBoxMenuItem usingISOLatin1;
 	private JMenuItem close;
 	private List<JMenuItem> codeKindItems;
 	private List<JCheckBoxMenuItem> codeKindItemsCurrent;
@@ -918,8 +920,8 @@ public class GUI extends MainWindow {
 		usingUTF8WithoutBOM.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				currentlyShownTab.setUsingUTF8BOM(false);
-				setUsingUTF8WithBOM(false);
+				currentlyShownTab.setEncoding(TextEncoding.UTF8_WITHOUT_BOM);
+				setEncoding(TextEncoding.UTF8_WITHOUT_BOM);
 			}
 		});
 		usingUTF8WithoutBOM.setSelected(false);
@@ -929,12 +931,23 @@ public class GUI extends MainWindow {
 		usingUTF8WithBOM.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				currentlyShownTab.setUsingUTF8BOM(true);
-				setUsingUTF8WithBOM(true);
+				currentlyShownTab.setEncoding(TextEncoding.UTF8_WITH_BOM);
+				setEncoding(TextEncoding.UTF8_WITH_BOM);
 			}
 		});
 		usingUTF8WithBOM.setSelected(false);
 		encodings.add(usingUTF8WithBOM);
+
+		usingISOLatin1 = new JCheckBoxMenuItem("ISO-Latin-1");
+		usingISOLatin1.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				currentlyShownTab.setEncoding(TextEncoding.ISO_LATIN_1);
+				setEncoding(TextEncoding.ISO_LATIN_1);
+			}
+		});
+		usingISOLatin1.setSelected(false);
+		encodings.add(usingISOLatin1);
 
 		encodings.addSeparator();
 
@@ -943,9 +956,9 @@ public class GUI extends MainWindow {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				for (AugFileTab tab : augFileTabs) {
-					tab.setUsingUTF8BOM(false);
+					tab.setEncoding(TextEncoding.UTF8_WITHOUT_BOM);
 				}
-				setUsingUTF8WithBOM(false);
+				setEncoding(TextEncoding.UTF8_WITHOUT_BOM);
 			}
 		});
 		encodings.add(allUsingUTF8WithoutBOM);
@@ -955,12 +968,24 @@ public class GUI extends MainWindow {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				for (AugFileTab tab : augFileTabs) {
-					tab.setUsingUTF8BOM(true);
+					tab.setEncoding(TextEncoding.UTF8_WITH_BOM);
 				}
-				setUsingUTF8WithBOM(true);
+				setEncoding(TextEncoding.UTF8_WITH_BOM);
 			}
 		});
 		encodings.add(allUsingUTF8WithBOM);
+
+		JMenuItem allUsingISOLatin1 = new JMenuItem("Set All Files to ISO-Latin-1");
+		allUsingISOLatin1.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				for (AugFileTab tab : augFileTabs) {
+					tab.setEncoding(TextEncoding.ISO_LATIN_1);
+				}
+				setEncoding(TextEncoding.ISO_LATIN_1);
+			}
+		});
+		encodings.add(allUsingISOLatin1);
 
 
 		JMenu settings = new JMenu("Settings");
@@ -2236,15 +2261,16 @@ public class GUI extends MainWindow {
 			return;
 		}
 
-		setUsingUTF8WithBOM(tab.isUsingUTF8BOM());
+		setEncoding(tab.getEncoding());
 
 		tab.getFile().setLastAccessTime(new Date());
 	}
 
-	private void setUsingUTF8WithBOM(boolean useItOrNot) {
+	private void setEncoding(TextEncoding encoding) {
 
-		usingUTF8WithBOM.setSelected(useItOrNot);
-		usingUTF8WithoutBOM.setSelected(!useItOrNot);
+		usingUTF8WithBOM.setSelected(encoding == TextEncoding.UTF8_WITH_BOM);
+		usingUTF8WithoutBOM.setSelected(encoding == TextEncoding.UTF8_WITHOUT_BOM);
+		usingISOLatin1.setSelected(encoding == TextEncoding.ISO_LATIN_1);
 	}
 
 	private void configureGUI() {

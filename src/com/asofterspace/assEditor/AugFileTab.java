@@ -19,6 +19,7 @@ import com.asofterspace.toolbox.io.File;
 import com.asofterspace.toolbox.io.SimpleFile;
 import com.asofterspace.toolbox.utils.Callback;
 import com.asofterspace.toolbox.utils.StrUtils;
+import com.asofterspace.toolbox.utils.TextEncoding;
 
 import java.awt.Color;
 import java.awt.datatransfer.Clipboard;
@@ -1036,13 +1037,13 @@ public class AugFileTab implements FileTab {
 		return newContent.toString();
 	}
 
-	public boolean isUsingUTF8BOM() {
-		return augFile.isUsingUTF8BOM();
+	public TextEncoding getEncoding() {
+		return augFile.getEncoding();
 	}
 
-	public void setUsingUTF8BOM(boolean usingUTF8BOM) {
+	public void setEncoding(TextEncoding encoding) {
 
-		augFile.setUsingUTF8BOM(usingUTF8BOM);
+		augFile.setEncoding(encoding);
 
 		changed = true;
 		gui.regenerateAugFileList();
