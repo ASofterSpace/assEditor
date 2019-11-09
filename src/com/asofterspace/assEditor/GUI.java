@@ -17,7 +17,6 @@ import com.asofterspace.toolbox.gui.GuiUtils;
 import com.asofterspace.toolbox.gui.MainWindow;
 import com.asofterspace.toolbox.io.Directory;
 import com.asofterspace.toolbox.io.File;
-import com.asofterspace.toolbox.io.Record;
 import com.asofterspace.toolbox.io.SimpleFile;
 import com.asofterspace.toolbox.utils.Callback;
 import com.asofterspace.toolbox.utils.StrUtils;
@@ -1493,7 +1492,7 @@ public class GUI extends MainWindow {
 		return mainPanel;
 	}
 
-	private void refreshWorkspaces() {
+	public void refreshWorkspaces() {
 
 		switchWorkspace.removeAll();
 
@@ -1531,56 +1530,9 @@ public class GUI extends MainWindow {
 		editWorkspaces.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				// TODO :: create a modal in which existing workspaces can be deleted,
-				// TODO :: and existing ones can be moved up and down
-
-				// Create the window
-				final JDialog editWorkitemsDialog = new JDialog(mainFrame, "Edit Workspaces", true);
-				GridLayout editWorkitemsDialogLayout = new GridLayout(3, 1);
-				editWorkitemsDialogLayout.setVgap(8);
-				editWorkitemsDialog.setLayout(editWorkitemsDialogLayout);
-				editWorkitemsDialog.getRootPane().setBorder(BorderFactory.createEmptyBorder(8, 8, 8, 8));
-
-				// Populate the window
-				JLabel explanationLabel = new JLabel();
-				explanationLabel.setText("Enter a new name here to add a new workspace:");
-				editWorkitemsDialog.add(explanationLabel);
-
-				final JTextField newWorkspaceName = new JTextField();
-				editWorkitemsDialog.add(newWorkspaceName);
-
-				JPanel buttonRow = new JPanel();
-				GridLayout buttonRowLayout = new GridLayout(1, 2);
-				buttonRowLayout.setHgap(8);
-				buttonRow.setLayout(buttonRowLayout);
-				editWorkitemsDialog.add(buttonRow);
-
-				JButton addButton = new JButton("Add this Workspace");
-				addButton.addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent e) {
-
-						augFileCtrl.addWorkspace(newWorkspaceName.getText());
-
-						refreshWorkspaces();
-					}
-				});
-				buttonRow.add(addButton);
-
-				JButton doneButton = new JButton("Done");
-				doneButton.addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent e) {
-						editWorkitemsDialog.dispose();
-					}
-				});
-				buttonRow.add(doneButton);
-
-				// Set the preferred size of the dialog
-				int width = 600;
-				int height = 150;
-				editWorkitemsDialog.setSize(width, height);
-				editWorkitemsDialog.setPreferredSize(new Dimension(width, height));
-
-				GuiUtils.centerAndShowWindow(editWorkitemsDialog);
+				// show the workspace editing GUI
+				WorkspaceGUI workspaceGUI = new WorkspaceGUI(GUI.this, augFileCtrl);
+				workspaceGUI.show();
 			}
 		});
 		switchWorkspace.add(editWorkspaces);
@@ -1720,7 +1672,7 @@ public class GUI extends MainWindow {
 		JFileChooser augFilePicker;
 
 		// if we find nothing better, use the last-used directory
-		String lastDirectory = getWorkspace().getString(CONFIG_KEY_LAST_DIRECTORY);
+		String lastDirectory = augFileCtrl.getWorkspace().getString(CONFIG_KEY_LAST_DIRECTORY);
 
 		// if we can though, use the directory of the currently selected tab :)
 		if (currentlyShownTab != null) {
@@ -1755,7 +1707,7 @@ public class GUI extends MainWindow {
 			case JFileChooser.APPROVE_OPTION:
 
 				// load the files
-				getWorkspace().setString(CONFIG_KEY_LAST_DIRECTORY, augFilePicker.getCurrentDirectory().getAbsolutePath());
+				augFileCtrl.getWorkspace().setString(CONFIG_KEY_LAST_DIRECTORY, augFilePicker.getCurrentDirectory().getAbsolutePath());
 				configuration.create();
 
 				AugFileTab latestTab = null;
@@ -2998,9 +2950,5 @@ public class GUI extends MainWindow {
 		GuiUtils.centerAndShowWindow(whatToDoDialog);
 	}
 	*/
-
-	private Record getWorkspace() {
-		return augFileCtrl.getWorkspace();
-	}
 
 }

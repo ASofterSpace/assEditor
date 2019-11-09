@@ -12,6 +12,8 @@ import com.asofterspace.toolbox.io.Record;
 import com.asofterspace.toolbox.utils.DateUtils;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 
@@ -110,6 +112,22 @@ public class AugFileCtrl {
 		newWorkspace.setString("name", workspace);
 
 		recWorkspaces.append(newWorkspace);
+
+		configuration.create();
+	}
+
+	public void sortWorkspaces() {
+
+		List<Record> recWorkspaces = configuration.getAllContents().getArray("workspaces");
+
+		Collections.sort(recWorkspaces, new Comparator<Record>(){
+			@Override
+			public int compare(final Record a, final Record b) {
+				return a.getString("name").compareToIgnoreCase(b.getString("name"));
+			}
+		});
+
+		configuration.getAllContents().setArray("workspaces", recWorkspaces);
 
 		configuration.create();
 	}
