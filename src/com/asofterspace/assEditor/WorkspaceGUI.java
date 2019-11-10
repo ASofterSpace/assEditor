@@ -40,7 +40,7 @@ public class WorkspaceGUI {
 		this.editWorkitemsDialog = createGUI();
 	}
 
-	public JDialog createGUI() {
+	private JDialog createGUI() {
 
 		// TODO :: create a modal in which existing workspaces can be deleted,
 		// TODO :: and existing ones can be moved up and down
