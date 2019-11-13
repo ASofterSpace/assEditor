@@ -732,6 +732,17 @@ public class GUI extends MainWindow {
 		});
 		unindentSelection.add(unindentFourLevels);
 
+		JMenuItem unindentAllLevels = new JMenuItem("All Levels");
+		unindentAllLevels.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (currentlyShownTab != null) {
+					currentlyShownTab.unindentSelection(Integer.MAX_VALUE, false);
+				}
+			}
+		});
+		unindentSelection.add(unindentAllLevels);
+
 		JMenuItem forceUnindentOneLevel = new JMenuItem("Force Unindent One Level");
 		forceUnindentOneLevel.addActionListener(new ActionListener() {
 			@Override
