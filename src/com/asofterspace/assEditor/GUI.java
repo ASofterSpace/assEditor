@@ -1642,6 +1642,10 @@ public class GUI extends MainWindow {
 
 	private void searchInWorkspaceFor(String searchFor) {
 
+		if ((searchFor == null) || "".equals(searchFor)) {
+			return;
+		}
+
 		StringBuilder result = new StringBuilder();
 
 		int matches = 0;
@@ -1668,6 +1672,10 @@ public class GUI extends MainWindow {
 	}
 
 	private void searchInWorkspaceAndReplaceWith(String searchFor, String replaceWith) {
+
+		if ((searchFor == null) || "".equals(searchFor)) {
+			return;
+		}
 
 		for (AugFileTab curTab : augFileTabs) {
 			curTab.replaceAll(searchFor, replaceWith);
