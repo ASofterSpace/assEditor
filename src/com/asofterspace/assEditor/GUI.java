@@ -151,6 +151,8 @@ public class GUI extends MainWindow {
 
 	private int fontSize;
 
+	private WorkspaceGUI workspaceGUI;
+
 	String currentScheme;
 	Boolean removeTrailingWhitespaceOnSave;
 	Boolean replaceWhitespacesWithTabsOnSave;
@@ -159,6 +161,9 @@ public class GUI extends MainWindow {
 	Boolean copyOnEnter;
 	Boolean tabEntireBlocks;
 	Boolean showFilesInTree;
+
+	// TODO :: move entire workspace search GUI into its own class
+	private JTextField workspaceSearchField;
 
 
 	public GUI(AugFileCtrl augFileCtrl, ConfigFile config) {
@@ -1542,7 +1547,9 @@ public class GUI extends MainWindow {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// show the workspace editing GUI
-				WorkspaceGUI workspaceGUI = new WorkspaceGUI(GUI.this, augFileCtrl);
+				if (workspaceGUI == null) {
+					workspaceGUI = new WorkspaceGUI(GUI.this, augFileCtrl);
+				}
 				workspaceGUI.show();
 			}
 		});
@@ -1562,6 +1569,10 @@ public class GUI extends MainWindow {
 		searchField.requestFocus();
 	}
 
+	public String getSearchFieldText() {
+		return searchField.getText();
+	}
+
 	private void createSearchWindow() {
 
 		// Create the window
@@ -1575,7 +1586,7 @@ public class GUI extends MainWindow {
 		explanationLabel.setText("Enter the text you are searching for:");
 		searchInWorkspaceDialog.add(explanationLabel, new Arrangement(0, 0, 1.0, 0.0));
 
-		final JTextField workspaceSearchField = new JTextField();
+		workspaceSearchField = new JTextField();
 		searchInWorkspaceDialog.add(workspaceSearchField, new Arrangement(0, 1, 1.0, 0.0));
 
 		JLabel explanationReplaceLabel = new JLabel();
@@ -1673,6 +1684,11 @@ public class GUI extends MainWindow {
 		}
 
 		GuiUtils.centerAndShowWindow(searchInWorkspaceDialog);
+
+		if ((workspaceSearchField.getText() == null) || "".equals(workspaceSearchField.getText())) {
+			workspaceSearchField.setText(getSearchFieldText());
+			searchInWorkspaceFor(workspaceSearchField.getText());
+		}
 	}
 
 	private void openFile() {
