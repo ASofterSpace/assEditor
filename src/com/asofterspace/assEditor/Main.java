@@ -16,19 +16,18 @@ import javax.swing.SwingUtilities;
 public class Main {
 
 	public final static String PROGRAM_TITLE = "A Softer Space Editor";
-	public final static String VERSION_NUMBER = "0.0.2.1(" + Utils.TOOLBOX_VERSION_NUMBER + ")";
-	public final static String VERSION_DATE = "18. December 2018 - 11. October 2019";
+	public final static String VERSION_NUMBER = "0.0.2.2(" + Utils.TOOLBOX_VERSION_NUMBER + ")";
+	public final static String VERSION_DATE = "18. December 2018 - 14. November 2019";
 
 
 	/**
 	 * TODO:
+	 * do not constantly save the settings file (currently, when having it open in n++, we are again and again asked to refresh)
 	 * converters inbuilt
 	 * enable stats at the bottom
 	 * add highlighting for datex
 	 * increase / decrease font size
-	 * cut, copy, paste
 	 * enable hex view
-	 * enable [Ctrl]+function name to jump to its declaration
 	 * add compiler call, and report results
 	 * ask to save before closing if files are unsaved
 	 * replace also including newlines etc.!
@@ -40,13 +39,12 @@ public class Main {
 	 * show "changemark *" at the top also
 	 * disable "reorganize imports" in the menu when the highlighter does not support it
 	 * add git diff as another file type (for .diff and .patch)
-	 * add a popup to the AugFileTab's code editor (e.g. for undo + redo also there)
+	 * add a context menu popup to the AugFileTab's code editor (e.g. for undo + redo also there, cut copy paste, etc.)
 	 * only show undo and redo enabled when undoing / redoing curly possible
-	 * get redo to actually work properly ;)
+	 * get redo to actually work 100% properly ;)
 	 * when showing functions on the right, highlight whichever one we are curly inside
 	 * when we are saving the test_rest.sh file, if there is no trailing newline, a " is added ON SAVE... fix that!
 	 * show (and allow us to change) whether Windows or Unix line endings are used
-	 * add ISO-Latin-1 encoding as option
 	 */
 	public static void main(String[] args) {
 
