@@ -138,11 +138,15 @@ public class AugFileCtrl {
 
 		for (Record recWorkspace : recWorkspaces) {
 			if ((workspace == null) ||
-				 workspace.equals(recWorkspace.getString("name"))) {
+				workspace.equals(recWorkspace.getString("name"))) {
 				switchToJsonWorkspace(recWorkspace);
 				return;
 			}
 		}
+	}
+
+	public Record getActiveWorkspace() {
+		return activeWorkspace;
 	}
 
 	private void switchToJsonWorkspace(Record workspace) {

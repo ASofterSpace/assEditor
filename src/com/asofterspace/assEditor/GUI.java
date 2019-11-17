@@ -17,6 +17,7 @@ import com.asofterspace.toolbox.gui.GuiUtils;
 import com.asofterspace.toolbox.gui.MainWindow;
 import com.asofterspace.toolbox.io.Directory;
 import com.asofterspace.toolbox.io.File;
+import com.asofterspace.toolbox.io.Record;
 import com.asofterspace.toolbox.io.SimpleFile;
 import com.asofterspace.toolbox.utils.Callback;
 import com.asofterspace.toolbox.utils.StrUtils;
@@ -1519,16 +1520,7 @@ public class GUI extends MainWindow {
 				@Override
 				public void actionPerformed(ActionEvent e) {
 
-					uncheckWorkspaces();
-
-					workspace.setSelected(true);
-
-					// set the current tab to null such that we automagically open the latest one of the newly opened workspace
-					setCurrentlyShownTab(null);
-
-					augFileCtrl.switchToWorkspace(workspaceName);
-
-					reloadAllAugFileTabs();
+					switchToWorkspace(workspace, workspaceName);
 				}
 			});
 			if (workspaceName.equals(augFileCtrl.getWorkspaceName())) {
@@ -2123,6 +2115,11 @@ public class GUI extends MainWindow {
 
 		removeTrailingWhitespaceOnSave = setTo;
 
+		Record activeWorkspace = augFileCtrl.getActiveWorkspace();
+		if (activeWorkspace != null) {
+			activeWorkspace.set(CONFIG_KEY_REMOVE_TRAILING_WHITESPACE_ON_SAVE, removeTrailingWhitespaceOnSave);
+		}
+
 		configuration.set(CONFIG_KEY_REMOVE_TRAILING_WHITESPACE_ON_SAVE, removeTrailingWhitespaceOnSave);
 
 		removeTrailingWhitespaceOnSaveItem.setSelected(removeTrailingWhitespaceOnSave);
@@ -2135,6 +2132,11 @@ public class GUI extends MainWindow {
 		}
 
 		replaceWhitespacesWithTabsOnSave = setTo;
+
+		Record activeWorkspace = augFileCtrl.getActiveWorkspace();
+		if (activeWorkspace != null) {
+			activeWorkspace.set(CONFIG_KEY_REPLACE_WHITESPACES_WITH_TABS_ON_SAVE, replaceWhitespacesWithTabsOnSave);
+		}
 
 		configuration.set(CONFIG_KEY_REPLACE_WHITESPACES_WITH_TABS_ON_SAVE, replaceWhitespacesWithTabsOnSave);
 
@@ -2149,6 +2151,11 @@ public class GUI extends MainWindow {
 
 		reorganizeImportsOnSave = setTo;
 
+		Record activeWorkspace = augFileCtrl.getActiveWorkspace();
+		if (activeWorkspace != null) {
+			activeWorkspace.set(CONFIG_KEY_REORGANIZE_IMPORTS_ON_SAVE, reorganizeImportsOnSave);
+		}
+
 		configuration.set(CONFIG_KEY_REORGANIZE_IMPORTS_ON_SAVE, reorganizeImportsOnSave);
 
 		reorganizeImportsOnSaveItem.setSelected(reorganizeImportsOnSave);
@@ -2161,6 +2168,11 @@ public class GUI extends MainWindow {
 		}
 
 		removeUnusedImportsOnSave = setTo;
+
+		Record activeWorkspace = augFileCtrl.getActiveWorkspace();
+		if (activeWorkspace != null) {
+			activeWorkspace.set(CONFIG_KEY_REMOVE_UNUSED_IMPORTS_ON_SAVE, removeUnusedImportsOnSave);
+		}
 
 		configuration.set(CONFIG_KEY_REMOVE_UNUSED_IMPORTS_ON_SAVE, removeUnusedImportsOnSave);
 
@@ -2986,4 +2998,34 @@ public class GUI extends MainWindow {
 	}
 	*/
 
+	private void switchToWorkspace(JCheckBoxMenuItem workspaceItem, String workspaceName) {
+
+		uncheckWorkspaces();
+
+		workspaceItem.setSelected(true);
+
+		// set the current tab to null such that we automagically open the latest one of the newly opened workspace
+		setCurrentlyShownTab(null);
+
+		augFileCtrl.switchToWorkspace(workspaceName);
+
+		reloadAllAugFileTabs();
+
+		Record activeWorkspace = augFileCtrl.getActiveWorkspace();
+
+		/*
+		removeTrailingWhitespaceOnSave = activeWorkspace.getBoolean(CONFIG_KEY_REMOVE_TRAILING_WHITESPACE_ON_SAVE, removeTrailingWhitespaceOnSave);
+
+		replaceWhitespacesWithTabsOnSave = activeWorkspace.getBoolean(CONFIG_KEY_REPLACE_WHITESPACES_WITH_TABS_ON_SAVE, replaceWhitespacesWithTabsOnSave);
+
+		reorganizeImportsOnSave = activeWorkspace.getBoolean(CONFIG_KEY_REORGANIZE_IMPORTS_ON_SAVE, reorganizeImportsOnSave);
+
+		removeUnusedImportsOnSave = activeWorkspace.getBoolean(CONFIG_KEY_REMOVE_UNUSED_IMPORTS_ON_SAVE, removeUnusedImportsOnSave);
+		*/
+
+		setRemoveTrailingWhitespaceOnSave(activeWorkspace.getBoolean(CONFIG_KEY_REMOVE_TRAILING_WHITESPACE_ON_SAVE, removeTrailingWhitespaceOnSave));
+		setReplaceWhitespacesWithTabsOnSave(activeWorkspace.getBoolean(CONFIG_KEY_REPLACE_WHITESPACES_WITH_TABS_ON_SAVE, replaceWhitespacesWithTabsOnSave));
+		setReorganizeImportsOnSave(activeWorkspace.getBoolean(CONFIG_KEY_REORGANIZE_IMPORTS_ON_SAVE, reorganizeImportsOnSave));
+		setRemoveUnusedImportsOnSave(activeWorkspace.getBoolean(CONFIG_KEY_REMOVE_UNUSED_IMPORTS_ON_SAVE, removeUnusedImportsOnSave));
+	}
 }
