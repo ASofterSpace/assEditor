@@ -16,8 +16,8 @@ import javax.swing.SwingUtilities;
 public class Main {
 
 	public final static String PROGRAM_TITLE = "A Softer Space Editor";
-	public final static String VERSION_NUMBER = "0.0.2.2(" + Utils.TOOLBOX_VERSION_NUMBER + ")";
-	public final static String VERSION_DATE = "18. December 2018 - 14. November 2019";
+	public final static String VERSION_NUMBER = "0.0.2.3(" + Utils.TOOLBOX_VERSION_NUMBER + ")";
+	public final static String VERSION_DATE = "18. December 2018 - 11. December 2019";
 
 
 	/**
@@ -30,7 +30,7 @@ public class Main {
 	 * enable hex view
 	 * add compiler call, and report results
 	 * ask to save before closing if files are unsaved
-	 * replace also including newlines etc.!
+	 * replace also including newlines etc.! (so have a little button next to the search bar which shows either "text matching" or "extended (\n, \r, \t)")
 	 * let user add and remove workspaces
 	 * create a better opening dialog (e.g. one in which we can enter a path at the top, and where we can
 	 *   automagically descend into Java-madness without having to click through src>main>java>com>ass>...)
@@ -45,6 +45,8 @@ public class Main {
 	 * when showing functions on the right, highlight whichever one we are curly inside
 	 * when we are saving the test_rest.sh file, if there is no trailing newline, a " is added ON SAVE... fix that!
 	 * show (and allow us to change) whether Windows or Unix line endings are used
+	 * enable creating new files (possibly also through the right-click popup in the tree)
+	 * enable renaming files (possibly also through the right-click popup in the tree, and [F2])
 	 */
 	public static void main(String[] args) {
 

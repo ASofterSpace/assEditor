@@ -11,6 +11,7 @@ import com.asofterspace.toolbox.gui.Arrangement;
 import com.asofterspace.toolbox.gui.FileTab;
 import com.asofterspace.toolbox.gui.FileTree;
 import com.asofterspace.toolbox.gui.FileTreeFile;
+import com.asofterspace.toolbox.gui.FileTreeFolder;
 import com.asofterspace.toolbox.gui.FileTreeModel;
 import com.asofterspace.toolbox.gui.FileTreeNode;
 import com.asofterspace.toolbox.gui.GuiUtils;
@@ -26,7 +27,6 @@ import com.asofterspace.toolbox.utils.TextEncoding;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Color;
-import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -40,7 +40,6 @@ import java.awt.event.MouseListener;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Point;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -415,6 +414,17 @@ public class GUI extends MainWindow {
 			}
 		});
 		file.add(closeAllFiles);
+
+		file.addSeparator();
+
+		JMenuItem openFolder = new JMenuItem("Open Highlighted Folder");
+		openFolder.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				openHighlightedFolder();
+			}
+		});
+		file.add(openFolder);
 
 		/*
 		addPerson = new JMenuItem("Add Person");
@@ -1226,11 +1236,7 @@ public class GUI extends MainWindow {
 		openBackupPath.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				try {
-					Desktop.getDesktop().open(new java.io.File(AugFileTab.getBackupPath()));
-				} catch (IOException ex) {
-					// do nothing
-				}
+				GuiUtils.openFolder(AugFileTab.getBackupPath());
 			}
 		});
 		huh.add(openBackupPath);
@@ -1257,7 +1263,7 @@ public class GUI extends MainWindow {
 
 		fileListPopup = new JPopupMenu();
 
-		saveFilePopup = new JMenuItem("Save These Files");
+		saveFilePopup = new JMenuItem("Save Selected Files");
 		saveFilePopup.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, ActionEvent.CTRL_MASK));
 		saveFilePopup.addActionListener(new ActionListener() {
 			@Override
@@ -1267,7 +1273,7 @@ public class GUI extends MainWindow {
 		});
 		fileListPopup.add(saveFilePopup);
 
-		deleteFilePopup = new JMenuItem("Delete These Files");
+		deleteFilePopup = new JMenuItem("Delete Selected Files");
 		deleteFilePopup.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -1276,7 +1282,7 @@ public class GUI extends MainWindow {
 		});
 		fileListPopup.add(deleteFilePopup);
 
-		closeFilePopup = new JMenuItem("Close These Files");
+		closeFilePopup = new JMenuItem("Close Selected Files");
 		closeFilePopup.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -1285,41 +1291,16 @@ public class GUI extends MainWindow {
 		});
 		fileListPopup.add(closeFilePopup);
 
-		/*
-		addPersonPopup = new JMenuItem("Add Person");
-		addPersonPopup.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				openAddNewPersonDialog();
-			}
-		});
-		fileListPopup.add(addPersonPopup);
-		addCompanyPopup = new JMenuItem("Add Company");
-		addCompanyPopup.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				openAddNewCompanyDialog();
-			}
-		});
-		fileListPopup.add(addCompanyPopup);
 		fileListPopup.addSeparator();
-		renameCurAugFilePopup = new JMenuItem("Rename Current AugFile");
-		renameCurAugFilePopup.addActionListener(new ActionListener() {
+
+		JMenuItem openFolder = new JMenuItem("Open Folder");
+		openFolder.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				openRenameCurrentAugFileDialog();
+				openHighlightedFolder();
 			}
 		});
-		fileListPopup.add(renameCurAugFilePopup);
-		deleteCurAugFilePopup = new JMenuItem("Delete Current AugFile");
-		deleteCurAugFilePopup.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				openDeleteCurrentAugFileDialog();
-			}
-		});
-		fileListPopup.add(deleteCurAugFilePopup);
-		*/
+		fileListPopup.add(openFolder);
 
 		// don't do the following:
 		//   fileListComponent.setComponentPopupMenu(popupMenu);
@@ -1887,6 +1868,24 @@ public class GUI extends MainWindow {
 		return result;
 	}
 
+	private List<FileTreeFolder> getHighlightedFolders() {
+
+		List<FileTreeFolder> result = new ArrayList<>();
+
+		if (showFilesInTree) {
+			TreePath[] selectedPaths = fileTreeComponent.getSelectionPaths();
+
+			for (TreePath path : selectedPaths) {
+				FileTreeNode node = fileTreeModel.getChild(path);
+				if (node instanceof FileTreeFolder) {
+					result.add((FileTreeFolder) node);
+				}
+			}
+		}
+
+		return result;
+	}
+
 	private List<AugFileTab> getHighlightedTabs() {
 
 		if (showFilesInTree) {
@@ -2003,6 +2002,8 @@ public class GUI extends MainWindow {
 				replaceField.setBackground(Color.white);
 				fileListComponent.setForeground(Color.black);
 				fileListComponent.setBackground(Color.white);
+				GuiUtils.setCornerColor(augFileListScroller, JScrollPane.LOWER_RIGHT_CORNER, Color.white);
+				GuiUtils.setCornerColor(augFileTreeScroller, JScrollPane.LOWER_RIGHT_CORNER, Color.white);
 				break;
 			case GuiUtils.DARK_SCHEME:
 				Code.setDarkSchemeForAllEditors();
@@ -2014,6 +2015,8 @@ public class GUI extends MainWindow {
 				replaceField.setBackground(Color.black);
 				fileListComponent.setForeground(Color.white);
 				fileListComponent.setBackground(Color.black);
+				GuiUtils.setCornerColor(augFileListScroller, JScrollPane.LOWER_RIGHT_CORNER, Color.black);
+				GuiUtils.setCornerColor(augFileTreeScroller, JScrollPane.LOWER_RIGHT_CORNER, Color.black);
 				break;
 		}
 
@@ -3028,4 +3031,24 @@ public class GUI extends MainWindow {
 		setReorganizeImportsOnSave(activeWorkspace.getBoolean(CONFIG_KEY_REORGANIZE_IMPORTS_ON_SAVE, reorganizeImportsOnSave));
 		setRemoveUnusedImportsOnSave(activeWorkspace.getBoolean(CONFIG_KEY_REMOVE_UNUSED_IMPORTS_ON_SAVE, removeUnusedImportsOnSave));
 	}
+
+	private void openHighlightedFolder() {
+
+		// first of all, try to open a folder that we right-clicked on...
+		List<FileTreeFolder> folders = getHighlightedFolders();
+
+		if (folders.size() > 0) {
+			GuiUtils.openFolder(folders.get(0).getDirectoryName());
+
+		} else {
+
+			// ... or, if there is none, open a file's parent directory
+			List<AugFileTab> tabs = getHighlightedTabs();
+
+			if (tabs.size() > 0) {
+				GuiUtils.openFolder(tabs.get(0).getFile().getParentDirectory().getAbsoluteDirname());
+			}
+		}
+	}
+
 }

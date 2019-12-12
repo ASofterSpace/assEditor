@@ -380,12 +380,16 @@ public class AugFileTab implements FileTab {
 				tab.setBackground(new Color(235, 215, 255));
 				nameLabel.setForeground(Color.black);
 				nameLabel.setBackground(new Color(235, 215, 255));
+				GuiUtils.setCornerColor(sourceCodeScroller, JScrollPane.LOWER_RIGHT_CORNER, new Color(235, 215, 255));
+				GuiUtils.setCornerColor(sideScrollPane, JScrollPane.LOWER_RIGHT_CORNER, new Color(235, 215, 255));
 				break;
 			case GuiUtils.DARK_SCHEME:
 				tab.setForeground(new Color(255, 245, 255));
-				tab.setBackground(new Color(0, 0, 0));
+				tab.setBackground(Color.black);
 				nameLabel.setForeground(new Color(255, 245, 255));
-				nameLabel.setBackground(new Color(0, 0, 0));
+				nameLabel.setBackground(Color.black);
+				GuiUtils.setCornerColor(sourceCodeScroller, JScrollPane.LOWER_RIGHT_CORNER, Color.black);
+				GuiUtils.setCornerColor(sideScrollPane, JScrollPane.LOWER_RIGHT_CORNER, Color.black);
 				break;
 		}
 

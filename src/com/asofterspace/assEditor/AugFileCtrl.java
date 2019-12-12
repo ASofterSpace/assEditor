@@ -29,7 +29,7 @@ public class AugFileCtrl {
 
 	private ConfigFile configuration;
 
-	private List<AugFile> files;
+	private List<AugFile> files = new ArrayList<>();
 
 	private Record activeWorkspace;
 
@@ -142,6 +142,11 @@ public class AugFileCtrl {
 				switchToJsonWorkspace(recWorkspace);
 				return;
 			}
+		}
+		
+		// if none are found, just use the first one...
+		if (recWorkspaces.size() > 0) {
+			switchToJsonWorkspace(recWorkspaces.get(0));
 		}
 	}
 
