@@ -863,6 +863,11 @@ public class AugFileTab implements FileTab {
 			contentText = replaceLeadingWhitespacesWithTabs(contentText);
 		}
 
+		if (gui.replaceTabsWithWhitespacesOnSave) {
+
+			contentText = replaceLeadingTabsWithWhitespaces(contentText);
+		}
+
 		if (gui.removeTrailingWhitespaceOnSave) {
 
 			contentText = removeTrailingWhitespace(contentText);
@@ -979,6 +984,58 @@ public class AugFileTab implements FileTab {
 				}
 				curcAmount = 0;
 			}
+			result.append(c);
+			startOfLine = false;
+		}
+
+		return result.toString();
+	}
+
+	public void replaceLeadingTabsWithWhitespaces() {
+
+		String contentText = fileContentMemo.getText();
+
+		origCaretPos = fileContentMemo.getCaretPosition();
+
+		newCaretPos = origCaretPos;
+
+		contentText = replaceLeadingTabsWithWhitespaces(contentText);
+
+		fileContentMemo.setText(contentText);
+
+		fileContentMemo.setCaretPosition(newCaretPos);
+	}
+
+	private String replaceLeadingTabsWithWhitespaces(String contentText) {
+
+		StringBuilder result = new StringBuilder();
+
+		boolean startOfLine = true;
+
+		for (int i = 0; i < contentText.length(); i++) {
+
+			char c = contentText.charAt(i);
+
+			if ((c == '\n') || (c == '\r')) {
+				result.append(c);
+				startOfLine = true;
+				continue;
+			}
+
+			if (startOfLine) {
+				if (c == '\t') {
+					result.append("    ");
+					continue;
+				}
+
+				// in case of a space, do not set startOfLine to false, as we want
+				// newline + space + tab to transform also!
+				if (c == ' ') {
+					result.append(' ');
+					continue;
+				}
+			}
+
 			result.append(c);
 			startOfLine = false;
 		}

@@ -89,6 +89,7 @@ public class GUI extends MainWindow {
 	private final static String CONFIG_KEY_SCHEME = "scheme";
 	private final static String CONFIG_KEY_REMOVE_TRAILING_WHITESPACE_ON_SAVE = "onSaveRemoveTrailingWhitespace";
 	private final static String CONFIG_KEY_REPLACE_WHITESPACES_WITH_TABS_ON_SAVE = "onSaveReplaceWhitespacesWithTabs";
+	private final static String CONFIG_KEY_REPLACE_TABS_WITH_WHITESPACES_ON_SAVE = "onSaveReplaceTabsWithWhitespaces";
 	private final static String CONFIG_KEY_REORGANIZE_IMPORTS_ON_SAVE = "onSaveReorganizeImports";
 	private final static String CONFIG_KEY_REMOVE_UNUSED_IMPORTS_ON_SAVE = "onSaveRemoveUnusedImports";
 	private final static String CONFIG_KEY_COPY_ON_ENTER = "copyOnEnter";
@@ -117,6 +118,7 @@ public class GUI extends MainWindow {
 	private JCheckBoxMenuItem setDarkSchemeItem;
 	private JCheckBoxMenuItem removeTrailingWhitespaceOnSaveItem;
 	private JCheckBoxMenuItem replaceWhitespacesWithTabsOnSaveItem;
+	private JCheckBoxMenuItem replaceTabsWithWhitespacesOnSaveItem;
 	private JCheckBoxMenuItem reorganizeImportsOnSaveItem;
 	private JCheckBoxMenuItem removeUnusedImportsOnSaveItem;
 	private JCheckBoxMenuItem copyOnEnterItem;
@@ -156,6 +158,7 @@ public class GUI extends MainWindow {
 	String currentScheme;
 	Boolean removeTrailingWhitespaceOnSave;
 	Boolean replaceWhitespacesWithTabsOnSave;
+	Boolean replaceTabsWithWhitespacesOnSave;
 	Boolean reorganizeImportsOnSave;
 	Boolean removeUnusedImportsOnSave;
 	Boolean copyOnEnter;
@@ -186,6 +189,8 @@ public class GUI extends MainWindow {
 		removeTrailingWhitespaceOnSave = configuration.getBoolean(CONFIG_KEY_REMOVE_TRAILING_WHITESPACE_ON_SAVE, true);
 
 		replaceWhitespacesWithTabsOnSave = configuration.getBoolean(CONFIG_KEY_REPLACE_WHITESPACES_WITH_TABS_ON_SAVE, true);
+
+		replaceTabsWithWhitespacesOnSave = configuration.getBoolean(CONFIG_KEY_REPLACE_TABS_WITH_WHITESPACES_ON_SAVE, false);
 
 		reorganizeImportsOnSave = configuration.getBoolean(CONFIG_KEY_REORGANIZE_IMPORTS_ON_SAVE, true);
 
@@ -860,6 +865,17 @@ public class GUI extends MainWindow {
 		});
 		edit.add(repWhitespacesWithTabs);
 
+		JMenuItem repTabsWithWhitespaces = new JMenuItem("Replace Leading Tabs with Whitespaces");
+		repTabsWithWhitespaces.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (currentlyShownTab != null) {
+					currentlyShownTab.replaceLeadingTabsWithWhitespaces();
+				}
+			}
+		});
+		edit.add(repTabsWithWhitespaces);
+
 		JMenuItem reorgImports = new JMenuItem("Reorganize Imports");
 		reorgImports.addActionListener(new ActionListener() {
 			@Override
@@ -1147,8 +1163,19 @@ public class GUI extends MainWindow {
 				setReplaceWhitespacesWithTabsOnSave(!replaceWhitespacesWithTabsOnSave);
 			}
 		});
-		setReplaceWhitespacesWithTabsOnSave(replaceWhitespacesWithTabsOnSave);
 		settings.add(replaceWhitespacesWithTabsOnSaveItem);
+
+		replaceTabsWithWhitespacesOnSaveItem = new JCheckBoxMenuItem("Replace Leading Tabs with Whitespaces on Save");
+		replaceTabsWithWhitespacesOnSaveItem.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				setReplaceTabsWithWhitespacesOnSave(!replaceTabsWithWhitespacesOnSave);
+			}
+		});
+		settings.add(replaceTabsWithWhitespacesOnSaveItem);
+
+		setReplaceWhitespacesWithTabsOnSave(replaceWhitespacesWithTabsOnSave);
+		setReplaceTabsWithWhitespacesOnSave(replaceTabsWithWhitespacesOnSave);
 
 		reorganizeImportsOnSaveItem = new JCheckBoxMenuItem("Reorganize Imports on Save");
 		reorganizeImportsOnSaveItem.addActionListener(new ActionListener() {
@@ -1170,13 +1197,14 @@ public class GUI extends MainWindow {
 		setRemoveUnusedImportsOnSave(removeUnusedImportsOnSave);
 		settings.add(removeUnusedImportsOnSaveItem);
 
-		JMenuItem toggleAllSwitchesInGroup = new JMenuItem("Toggle All Switches In Group");
+		JMenuItem toggleAllSwitchesInGroup = new JMenuItem("Toggle All Switches On / Off");
 		toggleAllSwitchesInGroup.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				boolean toggleTo = !removeTrailingWhitespaceOnSave;
 				setRemoveTrailingWhitespaceOnSave(toggleTo);
 				setReplaceWhitespacesWithTabsOnSave(toggleTo);
+				setReplaceTabsWithWhitespacesOnSave(false);
 				setReorganizeImportsOnSave(toggleTo);
 				setRemoveUnusedImportsOnSave(toggleTo);
 			}
@@ -2144,6 +2172,32 @@ public class GUI extends MainWindow {
 		configuration.set(CONFIG_KEY_REPLACE_WHITESPACES_WITH_TABS_ON_SAVE, replaceWhitespacesWithTabsOnSave);
 
 		replaceWhitespacesWithTabsOnSaveItem.setSelected(replaceWhitespacesWithTabsOnSave);
+
+		if (setTo) {
+			setReplaceTabsWithWhitespacesOnSave(false);
+		}
+	}
+
+	private void setReplaceTabsWithWhitespacesOnSave(Boolean setTo) {
+
+		if (setTo == null) {
+			setTo = true;
+		}
+
+		replaceTabsWithWhitespacesOnSave = setTo;
+
+		Record activeWorkspace = augFileCtrl.getActiveWorkspace();
+		if (activeWorkspace != null) {
+			activeWorkspace.set(CONFIG_KEY_REPLACE_TABS_WITH_WHITESPACES_ON_SAVE, replaceTabsWithWhitespacesOnSave);
+		}
+
+		configuration.set(CONFIG_KEY_REPLACE_TABS_WITH_WHITESPACES_ON_SAVE, replaceTabsWithWhitespacesOnSave);
+
+		replaceTabsWithWhitespacesOnSaveItem.setSelected(replaceTabsWithWhitespacesOnSave);
+
+		if (setTo) {
+			setReplaceWhitespacesWithTabsOnSave(false);
+		}
 	}
 
 	private void setReorganizeImportsOnSave(Boolean setTo) {
@@ -3016,18 +3070,9 @@ public class GUI extends MainWindow {
 
 		Record activeWorkspace = augFileCtrl.getActiveWorkspace();
 
-		/*
-		removeTrailingWhitespaceOnSave = activeWorkspace.getBoolean(CONFIG_KEY_REMOVE_TRAILING_WHITESPACE_ON_SAVE, removeTrailingWhitespaceOnSave);
-
-		replaceWhitespacesWithTabsOnSave = activeWorkspace.getBoolean(CONFIG_KEY_REPLACE_WHITESPACES_WITH_TABS_ON_SAVE, replaceWhitespacesWithTabsOnSave);
-
-		reorganizeImportsOnSave = activeWorkspace.getBoolean(CONFIG_KEY_REORGANIZE_IMPORTS_ON_SAVE, reorganizeImportsOnSave);
-
-		removeUnusedImportsOnSave = activeWorkspace.getBoolean(CONFIG_KEY_REMOVE_UNUSED_IMPORTS_ON_SAVE, removeUnusedImportsOnSave);
-		*/
-
 		setRemoveTrailingWhitespaceOnSave(activeWorkspace.getBoolean(CONFIG_KEY_REMOVE_TRAILING_WHITESPACE_ON_SAVE, removeTrailingWhitespaceOnSave));
 		setReplaceWhitespacesWithTabsOnSave(activeWorkspace.getBoolean(CONFIG_KEY_REPLACE_WHITESPACES_WITH_TABS_ON_SAVE, replaceWhitespacesWithTabsOnSave));
+		setReplaceTabsWithWhitespacesOnSave(activeWorkspace.getBoolean(CONFIG_KEY_REPLACE_TABS_WITH_WHITESPACES_ON_SAVE, replaceTabsWithWhitespacesOnSave));
 		setReorganizeImportsOnSave(activeWorkspace.getBoolean(CONFIG_KEY_REORGANIZE_IMPORTS_ON_SAVE, reorganizeImportsOnSave));
 		setRemoveUnusedImportsOnSave(activeWorkspace.getBoolean(CONFIG_KEY_REMOVE_UNUSED_IMPORTS_ON_SAVE, removeUnusedImportsOnSave));
 	}
