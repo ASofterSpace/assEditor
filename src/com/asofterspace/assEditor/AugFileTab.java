@@ -57,6 +57,10 @@ public class AugFileTab implements FileTab {
 
 	private Callback onChangeCallback;
 
+	// has the file been loaded from the drive?
+	private boolean loaded = false;
+
+	// has the file been changed since loading?
 	private boolean changed = false;
 
 	// graphical components
@@ -84,19 +88,6 @@ public class AugFileTab implements FileTab {
 		this.augFileCtrl = augFileCtrl;
 
 		this.gui = gui;
-
-		this.onChangeCallback = new Callback() {
-			public void call() {
-				if (!changed) {
-					changed = true;
-					gui.regenerateAugFileList();
-				}
-			}
-		};
-
-		visualPanel = createVisualPanel();
-
-		setCodeLanguageAndCreateHighlighter();
 	}
 
 	private JPanel createVisualPanel() {
@@ -125,9 +116,6 @@ public class AugFileTab implements FileTab {
 		lineMemo = new CodeEditorLineMemo();
 		lineNumbers = new LineNumbering(lineMemo, fileContentMemo);
 
-		String content = augFile.getContent();
-		fileContentMemo.setText(content);
-
 		scrolledPanel.add(lineMemo, new Arrangement(0, 0, 0.0, 1.0));
 		scrolledPanel.add(fileContentMemo, new Arrangement(1, 0, 1.0, 1.0));
 
@@ -135,17 +123,6 @@ public class AugFileTab implements FileTab {
 		sourceCodeScroller.setPreferredSize(new Dimension(1, 1));
 		sourceCodeScroller.setBorder(BorderFactory.createEmptyBorder());
 		tab.add(sourceCodeScroller, new Arrangement(0, 1, 1.0, 0.8));
-
-		Integer origCaretPos = augFile.getInitialCaretPos();
-
-		if (origCaretPos == null) {
-			// scroll to the top
-			fileContentMemo.setCaretPosition(0);
-		} else {
-			// scroll to the last stored position
-			origCaretPos = Math.min(origCaretPos, content.length());
-			fileContentMemo.setCaretPosition(origCaretPos);
-		}
 
 
 		functionMemo = new CodeEditor();
@@ -182,6 +159,8 @@ public class AugFileTab implements FileTab {
 			}
 
 			private void scrollToFunction(MouseEvent e) {
+
+				ensureLoaded();
 
 				List<CodeSnippetWithLocation> functions = highlighter.getFunctions();
 
@@ -323,6 +302,8 @@ public class AugFileTab implements FileTab {
 
 	public void show() {
 
+		ensureLoaded();
+
 		visualPanel.setVisible(true);
 
 		resizeNameLabel();
@@ -330,7 +311,9 @@ public class AugFileTab implements FileTab {
 
 	public void hide() {
 
-		visualPanel.setVisible(false);
+		if (visualPanel != null) {
+			visualPanel.setVisible(false);
+		}
 	}
 
 	public void setCodeLanguageAndCreateHighlighter(CodeLanguage codeKind) {
@@ -439,6 +422,9 @@ public class AugFileTab implements FileTab {
 	}
 
 	public Integer getCaretPos() {
+		if (fileContentMemo == null) {
+			return augFile.getInitialCaretPos();
+		}
 		return fileContentMemo.getCaretPosition();
 	}
 
@@ -448,6 +434,8 @@ public class AugFileTab implements FileTab {
 	}
 
 	public void applyGit() {
+
+		ensureLoaded();
 
 		String[] codeLines = fileContentMemo.getText().split("\n");
 
@@ -475,6 +463,8 @@ public class AugFileTab implements FileTab {
 
 	public void removeDebugLines() {
 
+		ensureLoaded();
+
 		String[] codeLines = fileContentMemo.getText().split("\n");
 
 		StringBuilder sourceCode = new StringBuilder();
@@ -501,6 +491,8 @@ public class AugFileTab implements FileTab {
 
 	public void writeLineNumbers() {
 
+		ensureLoaded();
+
 		String[] codeLines = fileContentMemo.getText().split("\n");
 
 		StringBuilder sourceCode = new StringBuilder();
@@ -519,6 +511,8 @@ public class AugFileTab implements FileTab {
 	}
 
 	public void removeLineNumbers() {
+
+		ensureLoaded();
 
 		String[] codeLines = fileContentMemo.getText().split("\n");
 
@@ -550,6 +544,8 @@ public class AugFileTab implements FileTab {
 
 	public void duplicateCurrentLine() {
 
+		ensureLoaded();
+
 		String sourceCode = fileContentMemo.getText();
 
 		int carPos = fileContentMemo.getCaretPosition();
@@ -570,6 +566,8 @@ public class AugFileTab implements FileTab {
 	}
 
 	public void deleteCurrentLine() {
+
+		ensureLoaded();
 
 		String sourceCode = fileContentMemo.getText();
 
@@ -596,6 +594,8 @@ public class AugFileTab implements FileTab {
 
 	public void lowCurSel() {
 
+		ensureLoaded();
+
 		String sourceCode = fileContentMemo.getText();
 
 		int carPos = fileContentMemo.getCaretPosition();
@@ -612,6 +612,8 @@ public class AugFileTab implements FileTab {
 	}
 
 	public void upCurSel() {
+
+		ensureLoaded();
 
 		String sourceCode = fileContentMemo.getText();
 
@@ -630,6 +632,8 @@ public class AugFileTab implements FileTab {
 
 	public void lowCurWord() {
 
+		ensureLoaded();
+
 		String sourceCode = fileContentMemo.getText();
 
 		int carPos = fileContentMemo.getCaretPosition();
@@ -647,6 +651,8 @@ public class AugFileTab implements FileTab {
 	}
 
 	public void upCurWord() {
+
+		ensureLoaded();
 
 		String sourceCode = fileContentMemo.getText();
 
@@ -683,6 +689,8 @@ public class AugFileTab implements FileTab {
 
 	public void selectAll() {
 
+		ensureLoaded();
+
 		int newSelStart = 0;
 		int newSelEnd = fileContentMemo.getText().length();
 
@@ -691,6 +699,8 @@ public class AugFileTab implements FileTab {
 
 	public void selectFromHere() {
 
+		ensureLoaded();
+
 		int newSelStart = fileContentMemo.getCaretPosition();
 		int newSelEnd = fileContentMemo.getText().length();
 
@@ -698,6 +708,8 @@ public class AugFileTab implements FileTab {
 	}
 
 	public void selectToHere() {
+
+		ensureLoaded();
 
 		int newSelStart = 0;
 		int newSelEnd = fileContentMemo.getCaretPosition();
@@ -708,6 +720,8 @@ public class AugFileTab implements FileTab {
 	private String lastSearched = null;
 
 	public void search(String searchFor) {
+
+		ensureLoaded();
 
 		String text = fileContentMemo.getText();
 
@@ -752,6 +766,8 @@ public class AugFileTab implements FileTab {
 	 * Also outputs the amount of matches as returned int
 	 */
 	public int searchAndAddResultTo(String searchFor, StringBuilder result) {
+
+		ensureLoaded();
 
 		int matchAmount = 0;
 
@@ -818,6 +834,8 @@ public class AugFileTab implements FileTab {
 
 	public void replaceAll(String searchFor, String replaceWith) {
 
+		ensureLoaded();
+
 		String text = fileContentMemo.getText();
 
 		text = text.replace(searchFor, replaceWith);
@@ -833,6 +851,8 @@ public class AugFileTab implements FileTab {
 
 	public void backup(int backupNum) {
 
+		ensureLoaded();
+
 		// set the backup file location relative to the class path to always
 		// get the same location, even when we are called from somewhere else
 		SimpleFile backupFile = new SimpleFile(getBackupPath() + StrUtils.leftPad0(backupNum, 4) + ".txt");
@@ -843,6 +863,8 @@ public class AugFileTab implements FileTab {
 	}
 
 	public void save() {
+
+		ensureLoaded();
 
 		String contentText = fileContentMemo.getText();
 
@@ -916,6 +938,8 @@ public class AugFileTab implements FileTab {
 	}
 
 	public void replaceLeadingWhitespacesWithTabs() {
+
+		ensureLoaded();
 
 		String contentText = fileContentMemo.getText();
 
@@ -993,6 +1017,8 @@ public class AugFileTab implements FileTab {
 
 	public void replaceLeadingTabsWithWhitespaces() {
 
+		ensureLoaded();
+
 		String contentText = fileContentMemo.getText();
 
 		origCaretPos = fileContentMemo.getCaretPosition();
@@ -1044,6 +1070,8 @@ public class AugFileTab implements FileTab {
 	}
 
 	public void removeTrailingWhitespace() {
+
+		ensureLoaded();
 
 		String contentText = fileContentMemo.getText();
 
@@ -1133,8 +1161,9 @@ public class AugFileTab implements FileTab {
 	}
 
 	public void remove() {
-
-		parent.remove(visualPanel);
+		if ((parent != null) && (visualPanel != null)) {
+			parent.remove(visualPanel);
+		}
 	}
 
 	public void delete() {
@@ -1142,6 +1171,45 @@ public class AugFileTab implements FileTab {
 		augFile.delete();
 
 		remove();
+	}
+
+	/**
+	 * Ensure the tab (and the file content) has actually been loaded
+	 */
+	private void ensureLoaded() {
+
+		if (!loaded) {
+
+			visualPanel = createVisualPanel();
+
+			String content = augFile.getContent();
+
+			fileContentMemo.setText(content);
+
+			loaded = true;
+
+			Integer origCaretPos = augFile.getInitialCaretPos();
+
+			if (origCaretPos == null) {
+				// scroll to the top
+				fileContentMemo.setCaretPosition(0);
+			} else {
+				// scroll to the last stored position
+				origCaretPos = Math.min(origCaretPos, content.length());
+				fileContentMemo.setCaretPosition(origCaretPos);
+			}
+
+			this.onChangeCallback = new Callback() {
+				public void call() {
+					if (!changed) {
+						changed = true;
+						gui.regenerateAugFileList();
+					}
+				}
+			};
+
+			setCodeLanguageAndCreateHighlighter();
+		}
 	}
 
 	@Override
