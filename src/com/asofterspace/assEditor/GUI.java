@@ -1197,7 +1197,7 @@ public class GUI extends MainWindow {
 		setRemoveUnusedImportsOnSave(removeUnusedImportsOnSave);
 		settings.add(removeUnusedImportsOnSaveItem);
 
-		JMenuItem toggleAllSwitchesInGroup = new JMenuItem("Toggle All Switches On / Off");
+		JMenuItem toggleAllSwitchesInGroup = new JMenuItem("Toggle All 'On Save' Switches On / Off");
 		toggleAllSwitchesInGroup.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -1660,6 +1660,8 @@ public class GUI extends MainWindow {
 				infiles++;
 			}
 		}
+
+		regenerateAugFileList();
 
 		searchInWorkspaceOutputMemo.setText(result.toString());
 

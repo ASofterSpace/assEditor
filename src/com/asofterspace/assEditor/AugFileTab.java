@@ -63,6 +63,10 @@ public class AugFileTab implements FileTab {
 	// has the file been changed since loading?
 	private boolean changed = false;
 
+	// has the file been highlighted? (we highlighted it when it appears in the search results
+	// while searching through the workspace)
+	private boolean highlighted = false;
+
 	// graphical components
 	private JPanel tab;
 	private JLabel nameLabel;
@@ -253,6 +257,12 @@ public class AugFileTab implements FileTab {
 		}
 
 		return item.equals(augFile.getName());
+	}
+
+	@Override
+	public boolean isHighlighted() {
+
+		return highlighted;
 	}
 
 	@Override
@@ -776,8 +786,14 @@ public class AugFileTab implements FileTab {
 		int nextpos = text.indexOf(searchFor);
 
 		if (nextpos < 0) {
+			// un-highlight, nothing was found
+			this.highlighted = false;
+
 			return matchAmount;
 		}
+
+		// highlight, as something was found in this file!
+		this.highlighted = true;
 
 		result.append(getFilePath());
 		result.append(":\n\n");
@@ -1135,6 +1151,7 @@ public class AugFileTab implements FileTab {
 		augFile.setEncoding(encoding);
 
 		changed = true;
+
 		gui.regenerateAugFileList();
 	}
 
