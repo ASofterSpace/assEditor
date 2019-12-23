@@ -955,6 +955,69 @@ public class GUI extends MainWindow {
 		edit.add(searchInWorkspace);
 
 
+		JMenu operations = new JMenu("Operations");
+		menu.add(operations);
+
+/*
+		JMenuItem count100Up = new JMenuItem("Count 100 Up");
+		count100Up.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (currentlyShownTab != null) {
+					currentlyShownTab.count100Up();
+				}
+			}
+		});
+		operations.add(count100Up);
+
+		operations.addSeparator();
+*/
+
+		JMenuItem delAllContText = new JMenuItem("Delete All Lines Containing Text In Search Field");
+		delAllContText.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (currentlyShownTab != null) {
+					currentlyShownTab.deleteAllLinesContainingText(getSearchFieldText(), false);
+				}
+			}
+		});
+		operations.add(delAllContText);
+
+		JMenuItem delAllStartText = new JMenuItem("Delete All Lines Starting With Text In Search Field");
+		delAllStartText.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (currentlyShownTab != null) {
+					currentlyShownTab.deleteAllLinesStartingWithText(getSearchFieldText(), false);
+				}
+			}
+		});
+		operations.add(delAllStartText);
+
+		JMenuItem delAllNotContText = new JMenuItem("Delete All Lines Not Containing Text In Search Field");
+		delAllNotContText.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (currentlyShownTab != null) {
+					currentlyShownTab.deleteAllLinesContainingText(getSearchFieldText(), true);
+				}
+			}
+		});
+		operations.add(delAllNotContText);
+
+		JMenuItem delAllNotStartText = new JMenuItem("Delete All Lines Not Starting With Text In Search Field");
+		delAllNotStartText.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (currentlyShownTab != null) {
+					currentlyShownTab.deleteAllLinesStartingWithText(getSearchFieldText(), true);
+				}
+			}
+		});
+		operations.add(delAllNotStartText);
+
+
 		JMenu encodings = new JMenu("Encodings");
 		menu.add(encodings);
 
