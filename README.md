@@ -39,13 +39,28 @@ Or under Linux:
 ./assEditor.sh
 ```
 
+## Commandline Options
+
+You can use the following commandline options:
+
+```
+--standalone .. the editor will be started with an empty workspace with only one empty file loaded, rather than loading the last opened workspace
+--version .. display the version of the assEditor, then exit
+--version_for_zip .. display the version of the assEditor (in short form), then exit
+```
+
+Other commandline arguments will be interpreted as the names of files which you want to open in the current workspace.
+
 ## Alias
 
 You can add an alias to bash under Linux to call this more easily, e.g.:
 
+```
 alias ae='/absolute/path/to/assEditor/assEditor.sh'
+alias aes='/absolute/path/to/assEditor/assEditor.sh --standalone'
+```
 
-If you put this line into ~/.bashrc, it the alias ae will be available in every bash session.
+If you put this line into ~/.bashrc, the aliasses ae and aes will be available in every bash session.
 
 ## License
 

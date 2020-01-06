@@ -26,6 +26,7 @@ public class AugFileCtrl {
 	private final static String CONF_CARET_POS = "caretPos";
 	private final static String CONF_LANGUAGE = "language";
 	private final static String CONF_ACCESS_TIME = "accessTime";
+	private final static String STANDALONE_WORKSPACE_NAME = "Standalone Non-Persistent Workspace";
 
 	private ConfigFile configuration;
 
@@ -36,11 +37,30 @@ public class AugFileCtrl {
 	private Thread saveConfigThread;
 
 
-	public AugFileCtrl(ConfigFile configuration) {
+	public AugFileCtrl(ConfigFile configuration, boolean standalone) {
 
 		this.configuration = configuration;
 
 		String activeWorkspaceName = configuration.getValue("activeWorkspace");
+
+		if (standalone) {
+			activeWorkspaceName = STANDALONE_WORKSPACE_NAME;
+
+			removeWorkspace(activeWorkspaceName);
+
+			Record standaloneWorkspace = addWorkspace(activeWorkspaceName);
+
+			List<Record> recFiles = standaloneWorkspace.getArray("files");
+
+			Record recFile = new Record();
+
+			recFile.set(CONF_FILENAME, "untitled");
+			recFile.set(CONF_CARET_POS, 0);
+			recFile.set(CONF_LANGUAGE, CodeLanguage.PLAINTEXT.toString());
+			recFile.set(CONF_ACCESS_TIME, DateUtils.serializeDateTime(null));
+
+			recFiles.add(recFile);
+		}
 
 		switchToWorkspace(activeWorkspaceName);
 
@@ -88,14 +108,36 @@ public class AugFileCtrl {
 		return workspaces;
 	}
 
-	public void addWorkspace(String workspace) {
+	public void removeWorkspace(String workspace) {
+
+		Record recWorkspaceHolder = configuration.getAllContents().get("workspaces");
+		List<Record> recWorkspaces = recWorkspaceHolder.getValues();
+
+		int i = 0;
+		int foundAt = -1;
+		for (Record recWorkspace : recWorkspaces) {
+			if (workspace.equals(recWorkspace.getString("name"))) {
+				foundAt = i;
+			}
+			i++;
+		}
+		if (foundAt >= 0) {
+			recWorkspaceHolder.removeIndex(foundAt);
+		}
+	}
+
+	/**
+	 * Tries to add a new workspace and returns the added workspace if one was added,
+	 * or null if none was added as it already existed
+	 */
+	public Record addWorkspace(String workspace) {
 
 		List<String> workspacesSoFar = getWorkspaces();
 		if (workspacesSoFar != null) {
 			for (String workspaceSoFar : workspacesSoFar) {
 				if (workspace.equals(workspaceSoFar)) {
 					// there is already a workspace with this name!
-					return;
+					return null;
 				}
 			}
 		}
@@ -114,6 +156,8 @@ public class AugFileCtrl {
 		recWorkspaces.append(newWorkspace);
 
 		configuration.create();
+
+		return newWorkspace;
 	}
 
 	public void sortWorkspaces() {
@@ -143,7 +187,7 @@ public class AugFileCtrl {
 				return;
 			}
 		}
-		
+
 		// if none are found, just use the first one...
 		if (recWorkspaces.size() > 0) {
 			switchToJsonWorkspace(recWorkspaces.get(0));

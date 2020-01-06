@@ -10,14 +10,17 @@ import com.asofterspace.toolbox.io.JSON;
 import com.asofterspace.toolbox.io.JsonParseException;
 import com.asofterspace.toolbox.Utils;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.swing.SwingUtilities;
 
 
 public class Main {
 
 	public final static String PROGRAM_TITLE = "A Softer Space Editor";
-	public final static String VERSION_NUMBER = "0.0.2.4(" + Utils.TOOLBOX_VERSION_NUMBER + ")";
-	public final static String VERSION_DATE = "18. December 2018 - 13. December 2019";
+	public final static String VERSION_NUMBER = "0.0.2.5(" + Utils.TOOLBOX_VERSION_NUMBER + ")";
+	public final static String VERSION_DATE = "18. December 2018 - 6. January 2020";
 
 
 	/**
@@ -55,19 +58,28 @@ public class Main {
 		Utils.setVersionNumber(VERSION_NUMBER);
 		Utils.setVersionDate(VERSION_DATE);
 
-		if (args.length > 0) {
-			if (args[0].equals("--version")) {
+		ConfigFile config = null;
+		boolean standalone = false;
+
+		List<String> openFilenames = new ArrayList<>();
+
+		for (String arg : args) {
+			if ("--version".equals(arg)) {
 				System.out.println(Utils.getFullProgramIdentifierWithDate());
 				return;
 			}
-
-			if (args[0].equals("--version_for_zip")) {
+			if ("--version_for_zip".equals(arg)) {
 				System.out.println("version " + Utils.getVersionNumber());
 				return;
 			}
+			if ("--standalone".equals(arg)) {
+				standalone = true;
+				break;
+			}
+			// if this argument was not one of the predefined startup arguments,
+			// then just open it as a file ;)
+			openFilenames.add(arg);
 		}
-
-		ConfigFile config = null;
 
 		try {
 			// we get a config file based on the classpath, such that we know that this is always the
@@ -84,10 +96,10 @@ public class Main {
 			System.exit(1);
 		}
 
-		AugFileCtrl augFileCtrl = new AugFileCtrl(config);
+		AugFileCtrl augFileCtrl = new AugFileCtrl(config, standalone);
 
-		for (String arg : args) {
-			augFileCtrl.loadAnotherFileWithoutSaving(new File(arg));
+		for (String filename : openFilenames) {
+			augFileCtrl.loadAnotherFileWithoutSaving(new File(filename));
 		}
 
 		augFileCtrl.saveConfigFileList();
