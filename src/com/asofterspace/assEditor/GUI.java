@@ -1889,6 +1889,12 @@ public class GUI extends MainWindow {
 
 		SimpleFile fileToOpen = new SimpleFile("data/new.txt");
 
+		String curDir = getCurrentDirName();
+
+		if (curDir != null) {
+			fileToOpen = new SimpleFile(curDir + "/new.txt");
+		}
+
 		fileToOpen.create();
 
 		AugFile newFile = augFileCtrl.loadAnotherFile(fileToOpen);
@@ -3142,22 +3148,34 @@ public class GUI extends MainWindow {
 		setRemoveUnusedImportsOnSave(activeWorkspace.getBoolean(CONFIG_KEY_REMOVE_UNUSED_IMPORTS_ON_SAVE, removeUnusedImportsOnSave));
 	}
 
-	private void openHighlightedFolder() {
+	private String getCurrentDirName() {
 
-		// first of all, try to open a folder that we right-clicked on...
+		// first of all, try to return a folder that we right-clicked on...
 		List<FileTreeFolder> folders = getHighlightedFolders();
 
 		if (folders.size() > 0) {
-			GuiUtils.openFolder(folders.get(0).getDirectoryName());
+
+			return folders.get(0).getDirectoryName();
 
 		} else {
 
-			// ... or, if there is none, open a file's parent directory
+			// ... or, if there is none, return an open file's parent directory
 			List<AugFileTab> tabs = getHighlightedTabs();
 
 			if (tabs.size() > 0) {
-				GuiUtils.openFolder(tabs.get(0).getFile().getParentDirectory().getAbsoluteDirname());
+				return tabs.get(0).getFile().getParentDirectory().getAbsoluteDirname();
 			}
+		}
+
+		return null;
+	}
+
+	private void openHighlightedFolder() {
+
+		String curDir = getCurrentDirName();
+
+		if (curDir != null) {
+			GuiUtils.openFolder(curDir);
 		}
 	}
 
