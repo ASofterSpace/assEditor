@@ -1586,22 +1586,63 @@ public class GUI extends MainWindow {
 		switchWorkspace.removeAll();
 
 		workspaces = new ArrayList<>();
-		for (final String workspaceName : augFileCtrl.getWorkspaces()) {
+		List<String> workspaceNames = augFileCtrl.getWorkspaces();
+		for (int i = 0; i < workspaceNames.size(); i++) {
+			final String workspaceName = workspaceNames.get(i);
+			if (i + 1 < workspaceNames.size()) {
+				final String nextWorkspaceName = workspaceNames.get(i + 1);
+				int wNIndex = workspaceName.indexOf(" ");
+				int nextWNIndex = nextWorkspaceName.indexOf(" ");
+				// we want to check that " " was found (>= 0) and is not in the first position (therefore > 0)
+				if ((wNIndex > 0) && (nextWNIndex > 0)) {
+					String workspaceNamePrefix = workspaceName.substring(0, wNIndex);
+					String nextWorkspaceNamePrefix = nextWorkspaceName.substring(0, nextWNIndex);
+					if (workspaceNamePrefix.equals(nextWorkspaceNamePrefix)) {
+						// actually group the workspaces together!
+						JMenu submenu = new JMenu(workspaceNamePrefix);
+
+						for (int j = i; j < workspaceNames.size(); j++) {
+							final String innerWorkspaceName = workspaceNames.get(j);
+							if (!innerWorkspaceName.startsWith(workspaceNamePrefix + " ")) {
+								// we break the inner for, then continue the outer for,
+								// so we do a ++ before the next outer for loop,
+								// so we do a -1 here to undo that
+								i = j - 1;
+								break;
+							}
+							final JCheckBoxMenuItem workspace = new JCheckBoxMenuItem(innerWorkspaceName);
+							workspace.addActionListener(new ActionListener() {
+								@Override
+								public void actionPerformed(ActionEvent e) {
+									switchToWorkspace(workspace, innerWorkspaceName);
+								}
+							});
+							submenu.add(workspace);
+							workspaces.add(workspace);
+						}
+
+						switchWorkspace.add(submenu);
+						continue;
+					}
+				}
+			}
 			final JCheckBoxMenuItem workspace = new JCheckBoxMenuItem(workspaceName);
 			workspace.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
-
 					switchToWorkspace(workspace, workspaceName);
 				}
 			});
-			if (workspaceName.equals(augFileCtrl.getWorkspaceName())) {
+			switchWorkspace.add(workspace);
+			workspaces.add(workspace);
+		}
+
+		for (JCheckBoxMenuItem workspace : workspaces) {
+			if (workspace.getText().equals(augFileCtrl.getWorkspaceName())) {
 				workspace.setSelected(true);
 			} else {
 				workspace.setSelected(false);
 			}
-			switchWorkspace.add(workspace);
-			workspaces.add(workspace);
 		}
 
 		switchWorkspace.addSeparator();
