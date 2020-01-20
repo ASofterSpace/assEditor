@@ -48,8 +48,11 @@ import java.util.List;
 import java.util.Set;
 
 import javax.swing.BorderFactory;
+import javax.swing.DefaultCellEditor;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import javax.swing.event.TreeModelEvent;
+import javax.swing.event.TreeModelListener;
 import javax.swing.JButton;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JComboBox;
@@ -70,6 +73,7 @@ import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 import javax.swing.plaf.basic.BasicScrollBarUI;
 import javax.swing.SwingUtilities;
+import javax.swing.tree.TreeCellEditor;
 import javax.swing.tree.TreePath;
 
 
@@ -143,6 +147,7 @@ public class GUI extends MainWindow {
 	private FileTree fileTreeComponent;
 	private JPopupMenu fileListPopup;
 	private FileTreeModel fileTreeModel;
+	private JTextField fileTreeEditField;
 	private JScrollPane augFileListScroller;
 	private JScrollPane augFileTreeScroller;
 	private JTextArea noteArea;
@@ -177,6 +182,42 @@ public class GUI extends MainWindow {
 
 		augFileTabArray = new AugFileTab[0];
 		fileTreeModel = new FileTreeModel();
+		fileTreeModel.addTreeModelListener(new TreeModelListener() {
+			public void treeNodesChanged(TreeModelEvent e) {
+				FileTreeNode node = fileTreeModel.getChild(e.getTreePath());
+				if (node instanceof FileTreeFile) {
+					FileTreeFile file = (FileTreeFile) node;
+					FileTab fileTab = file.getTab();
+					if (fileTab instanceof AugFileTab) {
+						AugFileTab tab = (AugFileTab) fileTab;
+
+						// save tab
+						tab.save();
+						String origFilePath = tab.getFilePath();
+
+						// close tab
+						List<AugFileTab> tabs = new ArrayList<>();
+						tabs.add(tab);
+						closeFiles(tabs);
+
+						// rename file on disk
+						File renameFile = new File(origFilePath);
+						renameFile.rename(fileTreeEditField.getText());
+
+						// open renamed file as new tab
+						AugFileTab latestTab = openFilesRecursively(renameFile.getJavaFile());
+						if (latestTab != null) {
+							setCurrentlyShownTab(latestTab);
+						}
+						regenerateAugFileList();
+						reEnableDisableMenuItems();
+					}
+				}
+			}
+			public void treeNodesInserted(TreeModelEvent e) {}
+			public void treeNodesRemoved(TreeModelEvent e) {}
+			public void treeStructureChanged(TreeModelEvent e) {}
+		});
 
 		augFileTabs = new ArrayList<>();
 
@@ -1384,6 +1425,53 @@ public class GUI extends MainWindow {
 
 		fileListPopup.addSeparator();
 
+		JMenuItem renameFilePopup = new JMenuItem("Rename Selected File");
+		// renameFilePopup.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F2));
+		renameFilePopup.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+
+				if (showFilesInTree) {
+
+					TreePath[] selectedPaths = fileTreeComponent.getSelectionPaths();
+					if (selectedPaths.length > 0) {
+						FileTreeNode node = fileTreeModel.getChild(selectedPaths[0]);
+						if (node instanceof FileTreeFile) {
+							FileTreeFile file = (FileTreeFile) node;
+
+							fileTreeComponent.startEditingAtPath(selectedPaths[0]);
+
+							/*
+							FileTab fileTab = file.getTab();
+							if (fileTab instanceof AugFileTab) {
+								AugFileTab tab = (AugFileTab) fileTab;
+
+								// get the location of this tab
+								Rectangle editAt = fileTreeModel.getPathBounds(selectedPaths[0]);
+
+								// TODO :: show edit field at this location
+								JTextField nameEdit = new JTextField(tab.getName());
+								fileTreeComponent.getParent().add(nameEdit);
+							}
+							*/
+						}
+					}
+
+				} else {
+
+					List<AugFileTab> tabs = fileListComponent.getSelectedValuesList();
+					if (tabs.size() > 0) {
+						AugFileTab tab = tabs.get(0);
+
+						// TODO :: show edit field at the location of this tab
+					}
+				}
+			}
+		});
+		fileListPopup.add(renameFilePopup);
+
+		fileListPopup.addSeparator();
+
 		JMenuItem openFolder = new JMenuItem("Open Folder");
 		openFolder.addActionListener(new ActionListener() {
 			@Override
@@ -1419,6 +1507,10 @@ public class GUI extends MainWindow {
 
 		fileListComponent = new JList<AugFileTab>(augFileTabArray);
 		fileTreeComponent = new FileTree(fileTreeModel);
+		fileTreeEditField = new JTextField();
+		TreeCellEditor fileTreeEditor = new DefaultCellEditor(fileTreeEditField);
+		fileTreeComponent.setEditable(true);
+		fileTreeComponent.setCellEditor(fileTreeEditor);
 		augFileTabs = new ArrayList<>();
 
 		fileListComponent.addMouseListener(new MouseListener() {
@@ -1880,7 +1972,7 @@ public class GUI extends MainWindow {
 		AugFileTab result = null;
 
 		if (parent.isDirectory()) {
-			// when opening entires directories...
+			// when opening entire directories...
 			java.io.File[] curFiles = parent.listFiles();
 
 			for (java.io.File curFile : curFiles) {
