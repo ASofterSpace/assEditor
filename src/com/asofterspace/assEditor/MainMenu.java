@@ -148,6 +148,17 @@ public class MainMenu {
 
 		file.addSeparator();
 
+		JMenuItem renameFile = new JMenuItem("Rename Current File");
+		renameFile.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				mainGUI.renameSelectedFile();
+			}
+		});
+		file.add(renameFile);
+
+		file.addSeparator();
+
 		deleteFile = new JMenuItem("Delete Current File");
 		deleteFile.addActionListener(new ActionListener() {
 			@Override
