@@ -53,7 +53,7 @@ public class AugFileTab implements FileTab {
 	private Code highlighter;
 	private Code lineNumbers;
 
-	private GUI gui;
+	private MainGUI mainGUI;
 
 	private Callback onChangeCallback;
 
@@ -82,7 +82,7 @@ public class AugFileTab implements FileTab {
 	private int newCaretPos;
 
 
-	public AugFileTab(JPanel parentPanel, AugFile augFile, final GUI gui, AugFileCtrl augFileCtrl) {
+	public AugFileTab(JPanel parentPanel, AugFile augFile, final MainGUI mainGUI, AugFileCtrl augFileCtrl) {
 
 		this.parent = parentPanel;
 
@@ -91,7 +91,7 @@ public class AugFileTab implements FileTab {
 
 		this.augFileCtrl = augFileCtrl;
 
-		this.gui = gui;
+		this.mainGUI = mainGUI;
 	}
 
 	private JPanel createVisualPanel() {
@@ -360,7 +360,7 @@ public class AugFileTab implements FileTab {
 
 		highlighter.setCodeEditorLineMemo(lineMemo);
 
-		highlighter.setFontSize(gui.getFontSize());
+		highlighter.setFontSize(mainGUI.getFontSize());
 
 		updateHighlighterConfig();
 	}
@@ -386,16 +386,16 @@ public class AugFileTab implements FileTab {
 				break;
 		}
 
-		GUI.setScheme(scheme, sideScrollPane);
-		GUI.setScheme(scheme, sourceCodeScroller);
+		MainGUI.setScheme(scheme, sideScrollPane);
+		MainGUI.setScheme(scheme, sourceCodeScroller);
 	}
 
 	public void updateHighlighterConfig() {
 
 		// update color scheme
-		setComponentScheme(gui.currentScheme);
+		setComponentScheme(mainGUI.currentScheme);
 
-		switch (gui.currentScheme) {
+		switch (mainGUI.currentScheme) {
 			case GuiUtils.LIGHT_SCHEME:
 				highlighter.setLightScheme();
 				lineNumbers.setLightScheme();
@@ -411,11 +411,11 @@ public class AugFileTab implements FileTab {
 
 		/*
 		// update copy on enter behavior
-		highlighter.setCopyOnCtrlEnter(gui.copyOnEnter);
+		highlighter.setCopyOnCtrlEnter(mainGUI.copyOnEnter);
 		*/
 
 		// update block tab behavior
-		highlighter.setTabEntireBlocks(gui.tabEntireBlocks);
+		highlighter.setTabEntireBlocks(mainGUI.tabEntireBlocks);
 	}
 
 	public void setFileContent(String newContent) {
@@ -886,27 +886,27 @@ public class AugFileTab implements FileTab {
 
 		origCaretPos = fileContentMemo.getCaretPosition();
 
-		if (gui.removeUnusedImportsOnSave) {
+		if (mainGUI.removeUnusedImportsOnSave) {
 
 			contentText = highlighter.removeUnusedImports(contentText);
 		}
 
-		if (gui.reorganizeImportsOnSave) {
+		if (mainGUI.reorganizeImportsOnSave) {
 
 			contentText = highlighter.reorganizeImports(contentText);
 		}
 
-		if (gui.replaceWhitespacesWithTabsOnSave) {
+		if (mainGUI.replaceWhitespacesWithTabsOnSave) {
 
 			contentText = replaceLeadingWhitespacesWithTabs(contentText);
 		}
 
-		if (gui.replaceTabsWithWhitespacesOnSave) {
+		if (mainGUI.replaceTabsWithWhitespacesOnSave) {
 
 			contentText = replaceLeadingTabsWithWhitespaces(contentText);
 		}
 
-		if (gui.removeTrailingWhitespaceOnSave) {
+		if (mainGUI.removeTrailingWhitespaceOnSave) {
 
 			contentText = removeTrailingWhitespace(contentText);
 		}
@@ -925,7 +925,7 @@ public class AugFileTab implements FileTab {
 
 		augFile.save();
 
-		gui.regenerateAugFileList();
+		mainGUI.regenerateAugFileList();
 	}
 
 	public void reorganizeImports() {
@@ -1198,7 +1198,7 @@ public class AugFileTab implements FileTab {
 
 		changed = true;
 
-		gui.regenerateAugFileList();
+		mainGUI.regenerateAugFileList();
 	}
 
 	public void undo() {
@@ -1266,7 +1266,7 @@ public class AugFileTab implements FileTab {
 				public void call() {
 					if (!changed) {
 						changed = true;
-						gui.regenerateAugFileList();
+						mainGUI.regenerateAugFileList();
 					}
 				}
 			};

@@ -24,18 +24,22 @@ import javax.swing.JTextField;
 
 public class WorkspaceGUI {
 
-	private GUI gui;
+	private MainGUI mainGUI;
 
 	private AugFileCtrl augFileCtrl;
+
+	private MainMenu mainMenu;
 
 	private JDialog editWorkitemsDialog;
 
 
-	public WorkspaceGUI(GUI gui, AugFileCtrl augFileCtrl) {
+	public WorkspaceGUI(MainGUI mainGUI, AugFileCtrl augFileCtrl, MainMenu mainMenu) {
 
-		this.gui = gui;
+		this.mainGUI = mainGUI;
 
 		this.augFileCtrl = augFileCtrl;
+
+		this.mainMenu = mainMenu;
 
 		this.editWorkitemsDialog = createGUI();
 	}
@@ -46,7 +50,7 @@ public class WorkspaceGUI {
 		// TODO :: and existing ones can be moved up and down
 
 		// Create the window
-		final JDialog editWorkitemsDialog = new JDialog(gui.getMainFrame(), "Edit Workspaces", true);
+		final JDialog editWorkitemsDialog = new JDialog(mainGUI.getMainFrame(), "Edit Workspaces", true);
 		GridLayout editWorkitemsDialogLayout = new GridLayout(4, 1);
 		editWorkitemsDialogLayout.setVgap(8);
 		editWorkitemsDialog.setLayout(editWorkitemsDialogLayout);
@@ -116,7 +120,7 @@ public class WorkspaceGUI {
 	}
 
 	private void refreshWorkspaces() {
-		gui.refreshWorkspaces();
+		mainMenu.refreshWorkspaces();
 	}
 
 }

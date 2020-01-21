@@ -19,8 +19,8 @@ import javax.swing.SwingUtilities;
 public class Main {
 
 	public final static String PROGRAM_TITLE = "A Softer Space Editor";
-	public final static String VERSION_NUMBER = "0.0.2.5(" + Utils.TOOLBOX_VERSION_NUMBER + ")";
-	public final static String VERSION_DATE = "18. December 2018 - 6. January 2020";
+	public final static String VERSION_NUMBER = "0.0.2.6(" + Utils.TOOLBOX_VERSION_NUMBER + ")";
+	public final static String VERSION_DATE = "18. December 2018 - 21. January 2020";
 
 
 	/**
@@ -34,9 +34,10 @@ public class Main {
 	 * add compiler call, and report results
 	 * ask to save before closing if files are unsaved
 	 * replace also including newlines etc.! (so have a little button next to the search bar which shows either "text matching" or "extended (\n, \r, \t)")
-	 * let user add and remove workspaces
+	 * let user remove and reorder workspaces
 	 * create a better opening dialog (e.g. one in which we can enter a path at the top, and where we can
-	 *   automagically descend into Java-madness without having to click through src>main>java>com>ass>...)
+	 *   automagically descend into Java-madness without having to click through src>main>java>com>ass>..., and where we do not
+	 *   auto-open entire folders upon [Enter] but only when explicitly asking to open all files in the folder!)
 	 * increase scroll speed while scrolling through code files
 	 * not only call resizeNameLabel() in the AugFileTab.show(), but also in an onResize event!
 	 * show "changemark *" at the top also
@@ -48,8 +49,6 @@ public class Main {
 	 * when showing functions on the right, highlight whichever one we are curly inside
 	 * when we are saving the test_rest.sh file, if there is no trailing newline, a " is added ON SAVE... fix that!
 	 * show (and allow us to change) whether Windows or Unix line endings are used
-	 * enable creating new files (possibly also through the right-click popup in the tree)
-	 * enable renaming files (possibly also through the right-click popup in the tree, and [F2])
 	 */
 	public static void main(String[] args) {
 
@@ -104,7 +103,7 @@ public class Main {
 
 		augFileCtrl.saveConfigFileList();
 
-		SwingUtilities.invokeLater(new GUI(augFileCtrl, config));
+		SwingUtilities.invokeLater(new MainGUI(augFileCtrl, config));
 	}
 
 }
