@@ -680,7 +680,6 @@ public class MainMenu {
 		JMenu operations = new JMenu("Operations");
 		menu.add(operations);
 
-/*
 		JMenuItem count100Up = new JMenuItem("Count 100 Up");
 		count100Up.addActionListener(new ActionListener() {
 			@Override
@@ -693,7 +692,6 @@ public class MainMenu {
 		operations.add(count100Up);
 
 		operations.addSeparator();
-*/
 
 		JMenuItem delAllContText = new JMenuItem("Delete All Lines Containing Text In Search Field");
 		delAllContText.addActionListener(new ActionListener() {

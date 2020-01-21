@@ -1142,6 +1142,47 @@ public class AugFileTab implements FileTab {
 		return newContent.toString();
 	}
 
+	public void count100Up() {
+
+		ensureLoaded();
+
+		StringBuilder result = new StringBuilder();
+
+		String contentText = fileContentMemo.getText();
+
+		origCaretPos = fileContentMemo.getCaretPosition();
+
+		String[] lines = contentText.split("\n");
+
+		for (String line : lines) {
+			result.append(line);
+			result.append("\n");
+		}
+
+		String lastLine = "";
+		int count = lines.length;
+		if (count-1 >= 0) {
+			lastLine = lines[count-1];
+		}
+		if (lastLine.equals("") && (count-2 >= 0)) {
+			lastLine = lines[count-2];
+		}
+		int startNum = 0;
+		try {
+			startNum = Integer.valueOf(lastLine);
+		} catch (NumberFormatException e) {
+			// just start at 0
+		}
+		for (int i = startNum + 1; i <= startNum + 100; i++) {
+			result.append(i);
+			result.append("\n");
+		}
+
+		fileContentMemo.setText(result.toString());
+
+		fileContentMemo.setCaretPosition(origCaretPos);
+	}
+
 	public void deleteAllLinesContainingText(String needle, boolean invert) {
 
 		ensureLoaded();
