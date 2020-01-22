@@ -635,6 +635,29 @@ public class MainGUI extends MainWindow {
 		return result;
 	}
 
+	public void loadFile(File fileToOpen) {
+
+		AugFile newFile = augFileCtrl.loadAnotherFile(fileToOpen);
+
+		// if the file was already opened before...
+		if (newFile == null) {
+			// ... then load this existing tab!
+			String newFilename = fileToOpen.getCanonicalFilename();
+			for (AugFileTab tab : augFileTabs) {
+				if (newFilename.equals(tab.getFilePath())) {
+					setCurrentlyShownTab(tab);
+				}
+			}
+		} else {
+			// ... if not, add a tab for it
+			augFileTabs.add(new AugFileTab(mainPanelRight, newFile, this, augFileCtrl));
+		}
+
+		regenerateAugFileList();
+
+		reEnableDisableMenuItems();
+	}
+
 	public void newFile() {
 
 		SimpleFile fileToOpen = new SimpleFile("data/new.txt");
@@ -647,15 +670,7 @@ public class MainGUI extends MainWindow {
 
 		fileToOpen.create();
 
-		AugFile newFile = augFileCtrl.loadAnotherFile(fileToOpen);
-
-		if (newFile != null) {
-			augFileTabs.add(new AugFileTab(mainPanelRight, newFile, this, augFileCtrl));
-
-			regenerateAugFileList();
-
-			reEnableDisableMenuItems();
-		}
+		loadFile(fileToOpen);
 	}
 
 	public void saveFiles(List<AugFileTab> tabs) {
