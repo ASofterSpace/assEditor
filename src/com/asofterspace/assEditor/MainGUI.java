@@ -637,6 +637,8 @@ public class MainGUI extends MainWindow {
 
 	public void loadFile(File fileToOpen) {
 
+		AugFileTab loadedTab = null;
+
 		AugFile newFile = augFileCtrl.loadAnotherFile(fileToOpen);
 
 		// if the file was already opened before...
@@ -645,17 +647,23 @@ public class MainGUI extends MainWindow {
 			String newFilename = fileToOpen.getCanonicalFilename();
 			for (AugFileTab tab : augFileTabs) {
 				if (newFilename.equals(tab.getFilePath())) {
-					setCurrentlyShownTab(tab);
+					loadedTab = tab;
+					break;
 				}
 			}
 		} else {
 			// ... if not, add a tab for it
-			augFileTabs.add(new AugFileTab(mainPanelRight, newFile, this, augFileCtrl));
+			loadedTab = new AugFileTab(mainPanelRight, newFile, this, augFileCtrl);
+			augFileTabs.add(loadedTab);
 		}
 
-		regenerateAugFileList();
+		if (loadedTab != null) {
+			showTab(loadedTab);
 
-		reEnableDisableMenuItems();
+			regenerateAugFileList();
+
+			reEnableDisableMenuItems();
+		}
 	}
 
 	public void newFile() {
