@@ -1319,6 +1319,13 @@ public class AugFileTab implements FileTab {
 		}
 	}
 
+	public String getContent() {
+
+		ensureLoaded();
+
+		return fileContentMemo.getText();
+	}
+
 	@Override
 	public String toString() {
 		if (hasBeenChanged()) {

@@ -1204,6 +1204,8 @@ public class MainGUI extends MainWindow {
 		tabToShow.show();
 		setCurrentlyShownTab(tabToShow);
 		mainMenu.reSelectCurrentCodeLanguageItem(currentlyShownTab.getSourceLanguage().toString());
+
+		highlightTabInLeftListOrTree(currentlyShownTab);
 	}
 
 	private void setCurrentlyShownTab(AugFileTab tab) {
@@ -1312,8 +1314,6 @@ public class MainGUI extends MainWindow {
 
 		// show the last shown tab
 		showTab(currentlyShownTab);
-
-		highlightTabInLeftListOrTree(currentlyShownTab);
 	}
 
 	public void highlightTabInLeftListOrTree(AugFileTab tab) {
