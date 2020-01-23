@@ -26,8 +26,19 @@ public class AugFileOpenCallback implements OpenFileCallback {
 		this.mainGUI = mainGUI;
 	}
 
-	public void openFileRelativeToThis(String relativePath, CodeLanguage language, String extraInfo) {
+	public boolean openFileRelativeToThis(String relativePath, CodeLanguage language, String extraInfo) {
 
+		// if we know nothing about the package, then just try to open the file directly
+		if (extraInfo == null) {
+			File newFile = new File(baseDirectory.getAbsoluteDirname() + "/" + relativePath);
+			if (newFile.exists()) {
+				mainGUI.loadFile(newFile);
+				return true;
+			}
+			return false;
+		}
+
+		// oh! we know stuff about the package - so we can be much more clever! :D
 		String localName = relativePath.substring(relativePath.lastIndexOf("/") + 1);
 
 		// first of all, let's try to jump to the file if it is already open
@@ -46,13 +57,13 @@ public class AugFileOpenCallback implements OpenFileCallback {
 							// in this case, extraInfo is the original import statement content, so e.g. foo.bar.Classname
 							if ((packageLine + "." + localName).equals(extraInfo + ".java")) {
 								mainGUI.showTab(tab);
-								return;
+								return true;
 							}
 						}
 					}
 				} else {
 					mainGUI.showTab(tab);
-					return;
+					return true;
 				}
 			}
 		}
@@ -73,9 +84,14 @@ public class AugFileOpenCallback implements OpenFileCallback {
 			while ((newFile == null) && (maxUpDirs > 0)) {
 				baseDirectory = new Directory(baseDirectory.getAbsoluteDirname() + "/..");
 				newFile = baseDirectory.findFile(localName);
+				maxUpDirs--;
 			}
 		}
 
-		mainGUI.loadFile(newFile);
+		if ((newFile != null) && newFile.exists()) {
+			mainGUI.loadFile(newFile);
+			return true;
+		}
+		return false;
 	}
 }
