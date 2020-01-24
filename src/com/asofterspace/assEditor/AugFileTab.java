@@ -461,8 +461,11 @@ public class AugFileTab implements FileTab {
 				continue;
 			}
 
-			// remove the + from lines starting with it
-			if (line.startsWith("+")) {
+			// remove the + from lines starting with it,
+			// and remove the space from lines starting with it, if then a tab follows
+			// (if we have spacespacespace, then it is unclear if the space should be removed,
+			// as we could just be indenting with spaces anyway...)
+			if (line.startsWith("+") || line.startsWith(" \t")) {
 				line = line.substring(1);
 			}
 

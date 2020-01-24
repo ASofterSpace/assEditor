@@ -26,6 +26,7 @@ public class AugFileOpenCallback implements OpenFileCallback {
 		this.mainGUI = mainGUI;
 	}
 
+	@Override
 	public boolean openFileRelativeToThis(String basePath, String relativePath, CodeLanguage language, String extraInfo) {
 
 		Directory baseDirectory = new Directory(localDirectory.getAbsoluteDirname() + "/" + basePath);
