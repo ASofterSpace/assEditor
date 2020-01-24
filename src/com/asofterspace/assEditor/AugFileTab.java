@@ -69,6 +69,11 @@ public class AugFileTab implements FileTab {
 
 	// graphical components
 	private JPanel tab;
+	private JPanel topHUD;
+	private JLabel goBackLabel;
+	private JLabel goForwardLabel;
+	private boolean goBackEnabled = true;
+	private boolean goForwardEnabled = true;
 	private JLabel nameLabel;
 	private JTextPane lineMemo;
 	private JTextPane fileContentMemo;
@@ -99,10 +104,33 @@ public class AugFileTab implements FileTab {
 		tab = new JPanel();
 		tab.setLayout(new GridBagLayout());
 
+		topHUD = new JPanel();
+		topHUD.setLayout(new GridBagLayout());
+
+		goBackLabel = new JLabel("  < ");
+		topHUD.add(goBackLabel, new Arrangement(0, 0, 0.0, 0.0));
+
+		goBackLabel.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				mainGUI.goToPreviousTab();
+			}
+		});
+
+		goForwardLabel = new JLabel(" > ");
+		topHUD.add(goForwardLabel, new Arrangement(1, 0, 0.0, 0.0));
+
+		goForwardLabel.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				mainGUI.goToNextTab();
+			}
+		});
+
 		nameLabel = new JLabel(getFilePath());
 		nameLabel.setPreferredSize(new Dimension(0, nameLabel.getPreferredSize().height*2));
 		nameLabel.setHorizontalAlignment(JLabel.CENTER);
-		tab.add(nameLabel, new Arrangement(0, 0, 1.0, 0.0));
+		topHUD.add(nameLabel, new Arrangement(2, 0, 1.0, 1.0));
 
 		nameLabel.addMouseListener(new MouseAdapter() {
 			@Override
@@ -112,6 +140,11 @@ public class AugFileTab implements FileTab {
 				clipboard.setContents(selection, selection);
 			}
 		});
+
+		tab.add(topHUD, new Arrangement(0, 0, 1.0, 0.0));
+
+		JPanel mainPart = new JPanel();
+		mainPart.setLayout(new GridBagLayout());
 
 		JPanel scrolledPanel = new JPanel();
 		scrolledPanel.setLayout(new GridBagLayout());
@@ -126,7 +159,7 @@ public class AugFileTab implements FileTab {
 		sourceCodeScroller = new JScrollPane(scrolledPanel);
 		sourceCodeScroller.setPreferredSize(new Dimension(1, 1));
 		sourceCodeScroller.setBorder(BorderFactory.createEmptyBorder());
-		tab.add(sourceCodeScroller, new Arrangement(0, 1, 1.0, 0.8));
+		mainPart.add(sourceCodeScroller, new Arrangement(0, 1, 1.0, 0.8));
 
 
 		functionMemo = new CodeEditor();
@@ -135,7 +168,7 @@ public class AugFileTab implements FileTab {
 		sideScrollPane.setBorder(BorderFactory.createEmptyBorder());
 		sideScrollPane.setPreferredSize(new Dimension(1, 1));
 
-		tab.add(sideScrollPane, new Arrangement(1, 1, 0.2, 1.0));
+		mainPart.add(sideScrollPane, new Arrangement(1, 1, 0.2, 1.0));
 
 		functionMemo.addMouseListener(new MouseListener() {
 
@@ -202,6 +235,8 @@ public class AugFileTab implements FileTab {
 				}).start();
 			}
 		});
+
+		tab.add(mainPart, new Arrangement(0, 1, 1.0, 1.0));
 
 		tab.setVisible(false);
 
@@ -388,6 +423,14 @@ public class AugFileTab implements FileTab {
 				GuiUtils.setCornerColor(sideScrollPane, JScrollPane.LOWER_RIGHT_CORNER, Color.black);
 				break;
 		}
+
+		topHUD.setForeground(tab.getForeground());
+		topHUD.setBackground(tab.getBackground());
+
+		showGoBack(goBackEnabled);
+		goBackLabel.setBackground(nameLabel.getBackground());
+		showGoForward(goForwardEnabled);
+		goForwardLabel.setBackground(nameLabel.getBackground());
 
 		MainGUI.setScheme(scheme, sideScrollPane);
 		MainGUI.setScheme(scheme, sourceCodeScroller);
@@ -1319,6 +1362,28 @@ public class AugFileTab implements FileTab {
 			};
 
 			setCodeLanguageAndCreateHighlighter();
+		}
+	}
+
+	public void showGoBack(boolean doShow) {
+
+		goBackEnabled = doShow;
+
+		if (doShow) {
+			goBackLabel.setForeground(nameLabel.getForeground());
+		} else {
+			goBackLabel.setForeground(new Color(128, 128, 128));
+		}
+	}
+
+	public void showGoForward(boolean doShow) {
+
+		goForwardEnabled = doShow;
+
+		if (doShow) {
+			goForwardLabel.setForeground(nameLabel.getForeground());
+		} else {
+			goForwardLabel.setForeground(new Color(128, 128, 128));
 		}
 	}
 

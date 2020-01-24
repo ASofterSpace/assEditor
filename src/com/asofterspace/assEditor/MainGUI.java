@@ -129,6 +129,11 @@ public class MainGUI extends MainWindow {
 	Boolean tabEntireBlocks;
 	Boolean showFilesInTree;
 
+	// this keeps track of the tabs we opened, and in which order we did so
+	private List<AugFileTab> listOfPreviousTabs;
+	// this keeps track of the tabs we intend to open in the future if we go to the next tab
+	private List<AugFileTab> listOfFutureTabs;
+
 
 	public MainGUI(AugFileCtrl augFileCtrl, ConfigFile config) {
 
@@ -189,6 +194,8 @@ public class MainGUI extends MainWindow {
 		});
 
 		augFileTabs = new ArrayList<>();
+		listOfPreviousTabs = new ArrayList<>();
+		listOfFutureTabs = new ArrayList<>();
 
 		currentScheme = configuration.getValue(CONFIG_KEY_SCHEME);
 
@@ -701,27 +708,32 @@ public class MainGUI extends MainWindow {
 
 	public void deleteFiles(List<AugFileTab> tabs) {
 
-		for (AugFileTab tab : tabs) {
-
-			augFileCtrl.removeFile(tab.getFile());
-
-			tab.delete();
-
-			augFileTabs.remove(tab);
-		}
-
-		setCurrentlyShownTab(null);
-
-		regenerateAugFileList();
+		deleteOrCloseFiles(tabs, true);
 	}
 
 	public void closeFiles(List<AugFileTab> tabs) {
 
+		deleteOrCloseFiles(tabs, false);
+	}
+
+	private void deleteOrCloseFiles(List<AugFileTab> tabs, boolean delete) {
+
 		for (AugFileTab tab : tabs) {
+
+			while (listOfPreviousTabs.contains(tab)) {
+				listOfPreviousTabs.remove(tab);
+			}
+			while (listOfFutureTabs.contains(tab)) {
+				listOfFutureTabs.remove(tab);
+			}
 
 			augFileCtrl.removeFile(tab.getFile());
 
-			tab.remove();
+			if (delete) {
+				tab.delete();
+			} else {
+				tab.remove();
+			}
 
 			augFileTabs.remove(tab);
 		}
@@ -1197,6 +1209,52 @@ public class MainGUI extends MainWindow {
 
 	public void showTab(AugFileTab tabToShow) {
 
+		// only add the current tab to the list of previous ones...
+		if (currentlyShownTab != null) {
+			// ... if that list is empty ...
+			if (listOfPreviousTabs.size() > 0) {
+				// ... or has a different tab at its end (such that the same one does not get added twice in a row)
+				if (currentlyShownTab != listOfPreviousTabs.get(listOfPreviousTabs.size() - 1)) {
+					listOfPreviousTabs.add(currentlyShownTab);
+				}
+			} else {
+				listOfPreviousTabs.add(currentlyShownTab);
+			}
+		}
+
+		listOfFutureTabs = new ArrayList<>();
+
+		showTabInternal(tabToShow);
+	}
+
+	public void goToPreviousTab() {
+
+		int listSize = listOfPreviousTabs.size();
+
+		if (listSize > 0) {
+			AugFileTab tabToShow = listOfPreviousTabs.get(listSize - 1);
+			listOfPreviousTabs.remove(listSize - 1);
+			listOfFutureTabs.add(currentlyShownTab);
+
+			showTabInternal(tabToShow);
+		}
+	}
+
+	public void goToNextTab() {
+
+		int listSize = listOfFutureTabs.size();
+
+		if (listSize > 0) {
+			AugFileTab tabToShow = listOfFutureTabs.get(listSize - 1);
+			listOfFutureTabs.remove(listSize - 1);
+			listOfPreviousTabs.add(currentlyShownTab);
+
+			showTabInternal(tabToShow);
+		}
+	}
+
+	private void showTabInternal(AugFileTab tabToShow) {
+
 		for (AugFileTab tab : augFileTabs) {
 			tab.hide();
 		}
@@ -1206,6 +1264,9 @@ public class MainGUI extends MainWindow {
 		mainMenu.reSelectCurrentCodeLanguageItem(currentlyShownTab.getSourceLanguage().toString());
 
 		highlightTabInLeftListOrTree(currentlyShownTab);
+
+		tabToShow.showGoBack(listOfPreviousTabs.size() > 0);
+		tabToShow.showGoForward(listOfFutureTabs.size() > 0);
 	}
 
 	private void setCurrentlyShownTab(AugFileTab tab) {
