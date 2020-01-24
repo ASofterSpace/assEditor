@@ -14,19 +14,21 @@ import java.util.List;
 
 public class AugFileOpenCallback implements OpenFileCallback {
 
-	private Directory baseDirectory;
+	private Directory localDirectory;
 
 	private MainGUI mainGUI;
 
 
 	public AugFileOpenCallback(Directory directory, MainGUI mainGUI) {
 
-		this.baseDirectory = directory;
+		this.localDirectory = directory;
 
 		this.mainGUI = mainGUI;
 	}
 
-	public boolean openFileRelativeToThis(String relativePath, CodeLanguage language, String extraInfo) {
+	public boolean openFileRelativeToThis(String basePath, String relativePath, CodeLanguage language, String extraInfo) {
+
+		Directory baseDirectory = new Directory(localDirectory.getAbsoluteDirname() + "/" + basePath);
 
 		// if we know nothing about the package, then just try to open the file directly
 		if (extraInfo == null) {
@@ -39,7 +41,8 @@ public class AugFileOpenCallback implements OpenFileCallback {
 		}
 
 		// oh! we know stuff about the package - so we can be much more clever! :D
-		String localName = relativePath.substring(relativePath.lastIndexOf("/") + 1);
+		// firstly, we get the local name - so instead of foo/bar/Blubb.java, we get Blubb.java
+		String localName = relativePath.substring(("/" + relativePath).lastIndexOf("/"));
 
 		// first of all, let's try to jump to the file if it is already open
 		List<AugFileTab> tabs = mainGUI.getTabs();
@@ -75,15 +78,16 @@ public class AugFileOpenCallback implements OpenFileCallback {
 		if (!newFile.exists()) {
 			// sooo try to go further up and check some other directories...
 			// basically, we have to search for the file everywhere xD
-			newFile = baseDirectory.findFile(localName);
+			newFile = null;
 
 			// we here specify how many directories we are willing to go up at most to search for the file
 			// (if this is too small, we will not find the file; if this is too large, we will take forever and crash the application...
 			// TODO :: put this into a thread?)
 			int maxUpDirs = 4;
+			Directory currentBaseDir = baseDirectory;
 			while ((newFile == null) && (maxUpDirs > 0)) {
-				baseDirectory = new Directory(baseDirectory.getAbsoluteDirname() + "/..");
-				newFile = baseDirectory.findFile(localName);
+				currentBaseDir = new Directory(currentBaseDir.getAbsoluteDirname() + "/..");
+				newFile = currentBaseDir.findFile(localName);
 				maxUpDirs--;
 			}
 		}
