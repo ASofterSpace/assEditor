@@ -1549,6 +1549,10 @@ public class MainGUI extends MainWindow {
 		// set the current tab to null such that we automagically open the latest one of the newly opened workspace
 		setCurrentlyShownTab(null);
 
+		// clear the back- and forward-lists when switching workspaces, as the old tabs are now invalid jump targets anyway
+		listOfPreviousTabs = new ArrayList<>();
+		listOfFutureTabs = new ArrayList<>();
+
 		augFileCtrl.switchToWorkspace(workspaceName);
 
 		reloadAllAugFileTabs();
