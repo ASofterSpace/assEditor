@@ -103,6 +103,11 @@ public class Main {
 
 		augFileCtrl.saveConfigFileList();
 
+		// enable anti-aliasing for swing and awt components (seems to mostly make
+		// a difference for swing - that is, the main menu - though)
+		System.setProperty("swing.aatext", "true");
+		System.setProperty("awt.useSystemAAFontSettings", "on");
+
 		SwingUtilities.invokeLater(new MainGUI(augFileCtrl, config));
 	}
 
