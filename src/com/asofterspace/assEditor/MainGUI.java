@@ -1420,19 +1420,7 @@ public class MainGUI extends MainWindow {
 
 	private void refreshTitleBar() {
 
-		// TODO :: get current file name
-
-		/*
-		Directory lastLoadedDir = augFileCtrl.getLastLoadedDirectory();
-
-		if (lastLoadedDir == null) {
-			mainFrame.setTitle(Main.PROGRAM_TITLE);
-		} else {
-			mainFrame.setTitle(Main.PROGRAM_TITLE + " - " + lastLoadedDir.getDirname());
-		}
-		*/
-
-		mainFrame.setTitle(Main.PROGRAM_TITLE);
+		mainFrame.setTitle(Main.PROGRAM_TITLE + " - " + augFileCtrl.getWorkspaceName());
 	}
 
 	public void reloadAllAugFileTabs() {
@@ -1564,6 +1552,8 @@ public class MainGUI extends MainWindow {
 		setReplaceTabsWithWhitespacesOnSave(activeWorkspace.getBoolean(CONFIG_KEY_REPLACE_TABS_WITH_WHITESPACES_ON_SAVE, replaceTabsWithWhitespacesOnSave));
 		setReorganizeImportsOnSave(activeWorkspace.getBoolean(CONFIG_KEY_REORGANIZE_IMPORTS_ON_SAVE, reorganizeImportsOnSave));
 		setRemoveUnusedImportsOnSave(activeWorkspace.getBoolean(CONFIG_KEY_REMOVE_UNUSED_IMPORTS_ON_SAVE, removeUnusedImportsOnSave));
+
+		refreshTitleBar();
 	}
 
 	private String getCurrentDirName() {
