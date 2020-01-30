@@ -50,6 +50,7 @@ public class MainMenu {
 	private JMenuItem closeAllFiles;
 	JCheckBoxMenuItem setLightSchemeItem;
 	JCheckBoxMenuItem setDarkSchemeItem;
+	JCheckBoxMenuItem useAntiAliasingItem;
 	JCheckBoxMenuItem removeTrailingWhitespaceOnSaveItem;
 	JCheckBoxMenuItem replaceWhitespacesWithTabsOnSaveItem;
 	JCheckBoxMenuItem replaceTabsWithWhitespacesOnSaveItem;
@@ -920,6 +921,16 @@ public class MainMenu {
 		});
 		showFilesInTreeItem.setSelected(mainGUI.getShowFilesInTree());
 		settings.add(showFilesInTreeItem);
+
+		useAntiAliasingItem = new JCheckBoxMenuItem("Use Anti-Aliasing for Smoother Fonts (requires editor restart)");
+		useAntiAliasingItem.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				mainGUI.toggleUseAntiAliasing();
+			}
+		});
+		useAntiAliasingItem.setSelected(mainGUI.getUseAntiAliasing());
+		settings.add(useAntiAliasingItem);
 
 		settings.addSeparator();
 

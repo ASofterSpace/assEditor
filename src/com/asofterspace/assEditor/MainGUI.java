@@ -84,6 +84,7 @@ public class MainGUI extends MainWindow {
 
 	private final static String CONFIG_KEY_LAST_DIRECTORY = "lastDirectory";
 	private final static String CONFIG_KEY_SCHEME = "scheme";
+	private final static String CONFIG_KEY_ANTI_ALIASING = "antiAliasing";
 	private final static String CONFIG_KEY_REMOVE_TRAILING_WHITESPACE_ON_SAVE = "onSaveRemoveTrailingWhitespace";
 	private final static String CONFIG_KEY_REPLACE_WHITESPACES_WITH_TABS_ON_SAVE = "onSaveReplaceWhitespacesWithTabs";
 	private final static String CONFIG_KEY_REPLACE_TABS_WITH_WHITESPACES_ON_SAVE = "onSaveReplaceTabsWithWhitespaces";
@@ -120,6 +121,7 @@ public class MainGUI extends MainWindow {
 	private int fontSize;
 
 	String currentScheme;
+	Boolean useAntiAliasing;
 	Boolean removeTrailingWhitespaceOnSave;
 	Boolean replaceWhitespacesWithTabsOnSave;
 	Boolean replaceTabsWithWhitespacesOnSave;
@@ -196,6 +198,9 @@ public class MainGUI extends MainWindow {
 		augFileTabs = new ArrayList<>();
 		listOfPreviousTabs = new ArrayList<>();
 		listOfFutureTabs = new ArrayList<>();
+
+		useAntiAliasing = configuration.getBoolean(CONFIG_KEY_ANTI_ALIASING, true);
+		updateUseAntiAliasing();
 
 		currentScheme = configuration.getValue(CONFIG_KEY_SCHEME);
 
@@ -864,6 +869,36 @@ public class MainGUI extends MainWindow {
 		if (currentlyShownTab != null) {
 			highlightTabInLeftListOrTree(currentlyShownTab);
 		}
+	}
+
+	public void toggleUseAntiAliasing() {
+
+		useAntiAliasing = !useAntiAliasing;
+
+		mainMenu.useAntiAliasingItem.setSelected(useAntiAliasing);
+
+		updateUseAntiAliasing();
+
+		configuration.set(CONFIG_KEY_ANTI_ALIASING, useAntiAliasing);
+	}
+
+	private void updateUseAntiAliasing() {
+
+		if (useAntiAliasing) {
+			// enable anti-aliasing for swing
+			System.setProperty("swing.aatext", "true");
+			// enable anti-aliasing for awt
+			System.setProperty("awt.useSystemAAFontSettings", "on");
+		} else {
+			// disable anti-aliasing for swing
+			System.clearProperty("swing.aatext");
+			// disable anti-aliasing for awt
+			System.clearProperty("awt.useSystemAAFontSettings");
+		}
+	}
+
+	public Boolean getUseAntiAliasing() {
+		return useAntiAliasing;
 	}
 
 	public void toggleSearchBar() {
