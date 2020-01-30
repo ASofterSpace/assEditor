@@ -405,6 +405,12 @@ public class AugFileTab implements FileTab {
 
 	public void setComponentScheme(String scheme) {
 
+		// a tab might be pre-loaded but not yet shown in which case it will receive a scheme
+		// update... and just ignore it ^^
+		if (tab == null) {
+			return;
+		}
+
 		switch (scheme) {
 			case GuiUtils.LIGHT_SCHEME:
 				tab.setForeground(Color.black);
