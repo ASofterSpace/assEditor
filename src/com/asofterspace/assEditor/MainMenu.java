@@ -1085,8 +1085,14 @@ public class MainMenu {
 			if (i + 1 < workspaceNames.size()) {
 				final String nextWorkspaceName = workspaceNames.get(i + 1);
 				int wNIndex = workspaceName.indexOf(" ");
+				if (wNIndex < 0) {
+					wNIndex = workspaceName.length();
+				}
 				int nextWNIndex = nextWorkspaceName.indexOf(" ");
-				// we want to check that " " was found (>= 0) and is not in the first position (therefore > 0)
+				if (nextWNIndex < 0) {
+					nextWNIndex = nextWorkspaceName.length();
+				}
+				// we want to check that " " is not in the first position (therefore > 0)
 				if ((wNIndex > 0) && (nextWNIndex > 0)) {
 					String workspaceNamePrefix = workspaceName.substring(0, wNIndex);
 					String nextWorkspaceNamePrefix = nextWorkspaceName.substring(0, nextWNIndex);
@@ -1096,7 +1102,7 @@ public class MainMenu {
 
 						for (; i < workspaceNames.size(); i++) {
 							final String innerWorkspaceName = workspaceNames.get(i);
-							if (!innerWorkspaceName.startsWith(workspaceNamePrefix + " ")) {
+							if (!(innerWorkspaceName + " ").startsWith(workspaceNamePrefix + " ")) {
 								break;
 							}
 							final JCheckBoxMenuItem workspace = new JCheckBoxMenuItem(innerWorkspaceName);
