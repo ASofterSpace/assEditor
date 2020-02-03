@@ -420,7 +420,7 @@ public class MainGUI extends MainWindow {
 					FileTreeFile file = (FileTreeFile) node;
 					FileTab tab = file.getTab();
 					if (tab instanceof AugFileTab) {
-						showTab((AugFileTab) tab);
+						showTab((AugFileTab) tab, false);
 					}
 				}
 			}
@@ -670,7 +670,7 @@ public class MainGUI extends MainWindow {
 		}
 
 		if (loadedTab != null) {
-			showTab(loadedTab);
+			showTab(loadedTab, true);
 
 			regenerateAugFileList();
 
@@ -1222,7 +1222,7 @@ public class MainGUI extends MainWindow {
 
 		for (AugFileTab tab : augFileTabs) {
 			if (i == selectedItem) {
-				showTab(tab);
+				showTab(tab, false);
 				return;
 			}
 			i++;
@@ -1242,14 +1242,21 @@ public class MainGUI extends MainWindow {
 		return fontSize;
 	}
 
-	public void showTab(AugFileTab tabToShow) {
+	/**
+	 * Show a tab and optionally also highlight it
+	 * (do NOT highlight it if it is already highlighted, such that
+	 * other selected files do not lose their selection - but DO
+	 * highlight it if it is not yet, that is, when this is initiated
+	 * by the backend!)
+	 */
+	public void showTab(AugFileTab tabToShow, boolean highlightTab) {
 
 		// only add the current tab to the list of previous ones...
 		if (currentlyShownTab != null) {
 			// ... if that list is empty ...
 			if (listOfPreviousTabs.size() > 0) {
 				// ... or has a different tab at its end (such that the same one does not get added twice in a row)
-				if (currentlyShownTab != listOfPreviousTabs.get(listOfPreviousTabs.size() - 1)) {
+				if (!currentlyShownTab.equals(listOfPreviousTabs.get(listOfPreviousTabs.size() - 1))) {
 					listOfPreviousTabs.add(currentlyShownTab);
 				}
 			} else {
@@ -1259,7 +1266,7 @@ public class MainGUI extends MainWindow {
 
 		listOfFutureTabs = new ArrayList<>();
 
-		showTabInternal(tabToShow);
+		showTabInternal(tabToShow, highlightTab);
 	}
 
 	public void goToPreviousTab() {
@@ -1271,7 +1278,7 @@ public class MainGUI extends MainWindow {
 			listOfPreviousTabs.remove(listSize - 1);
 			listOfFutureTabs.add(currentlyShownTab);
 
-			showTabInternal(tabToShow);
+			showTabInternal(tabToShow, true);
 		}
 	}
 
@@ -1284,11 +1291,11 @@ public class MainGUI extends MainWindow {
 			listOfFutureTabs.remove(listSize - 1);
 			listOfPreviousTabs.add(currentlyShownTab);
 
-			showTabInternal(tabToShow);
+			showTabInternal(tabToShow, true);
 		}
 	}
 
-	private void showTabInternal(AugFileTab tabToShow) {
+	private void showTabInternal(AugFileTab tabToShow, boolean highlightTab) {
 
 		for (AugFileTab tab : augFileTabs) {
 			tab.hide();
@@ -1298,7 +1305,9 @@ public class MainGUI extends MainWindow {
 		setCurrentlyShownTab(tabToShow);
 		mainMenu.reSelectCurrentCodeLanguageItem(currentlyShownTab.getSourceLanguage().toString());
 
-		highlightTabInLeftListOrTree(currentlyShownTab);
+		if (highlightTab) {
+			highlightTabInLeftListOrTree(currentlyShownTab);
+		}
 
 		tabToShow.showGoBack(listOfPreviousTabs.size() > 0);
 		tabToShow.showGoForward(listOfFutureTabs.size() > 0);
@@ -1409,7 +1418,7 @@ public class MainGUI extends MainWindow {
 		}
 
 		// show the last shown tab
-		showTab(currentlyShownTab);
+		showTab(currentlyShownTab, true);
 	}
 
 	public void highlightTabInLeftListOrTree(AugFileTab tab) {

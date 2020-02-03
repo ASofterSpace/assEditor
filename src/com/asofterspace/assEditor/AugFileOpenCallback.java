@@ -60,13 +60,13 @@ public class AugFileOpenCallback implements OpenFileCallback {
 							packageLine = packageLine.substring(0, packageLine.length() - 1).trim();
 							// in this case, extraInfo is the original import statement content, so e.g. foo.bar.Classname
 							if ((packageLine + "." + localName).equals(extraInfo + ".java")) {
-								mainGUI.showTab(tab);
+								mainGUI.showTab(tab, true);
 								return true;
 							}
 						}
 					}
 				} else {
-					mainGUI.showTab(tab);
+					mainGUI.showTab(tab, true);
 					return true;
 				}
 			}
