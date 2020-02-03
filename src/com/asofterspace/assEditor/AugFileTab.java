@@ -371,6 +371,11 @@ public class AugFileTab implements FileTab {
 
 	public void setCodeLanguageAndCreateHighlighter() {
 
+		// do nothing if this tab has not yet been initialized
+		if (lineMemo == null) {
+			return;
+		}
+
 		if (highlighter != null) {
 			highlighter.discard();
 		}
