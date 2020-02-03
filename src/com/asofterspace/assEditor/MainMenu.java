@@ -180,6 +180,21 @@ public class MainMenu {
 		});
 		file.add(closeFile);
 
+		JMenuItem closeAllRemovedFiles = new JMenuItem("Close All Non-Existing Files");
+		closeAllRemovedFiles.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				List<AugFileTab> removedFiles = new ArrayList<>();
+				for (AugFileTab tab : mainGUI.getTabs()) {
+					if (tab.isMissing()) {
+						removedFiles.add(tab);
+					}
+				}
+				mainGUI.closeFiles(removedFiles);
+			}
+		});
+		file.add(closeAllRemovedFiles);
+
 		closeAllFiles = new JMenuItem("Close All Files");
 		closeAllFiles.addActionListener(new ActionListener() {
 			@Override
