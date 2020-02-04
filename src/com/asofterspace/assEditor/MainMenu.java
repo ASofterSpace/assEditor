@@ -699,14 +699,16 @@ public class MainMenu {
 		});
 		edit.add(search);
 
-		JMenuItem searchInWorkspace = new JMenuItem("Search in Workspace");
-		searchInWorkspace.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				showSearchWindow();
-			}
-		});
-		edit.add(searchInWorkspace);
+		if (!standalone) {
+			JMenuItem searchInWorkspace = new JMenuItem("Search in Workspace");
+			searchInWorkspace.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					showSearchWindow();
+				}
+			});
+			edit.add(searchInWorkspace);
+		}
 
 
 		JMenu operations = new JMenu("Operations");
