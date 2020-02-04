@@ -102,7 +102,9 @@ public class AugFileCtrl {
 		List<Record> recWorkspaces = configuration.getAllContents().getArray("workspaces");
 
 		for (Record recWorkspace : recWorkspaces) {
-			workspaces.add(recWorkspace.getString("name"));
+			if (!STANDALONE_WORKSPACE_NAME.equals(recWorkspace.getString("name"))) {
+				workspaces.add(recWorkspace.getString("name"));
+			}
 		}
 
 		return workspaces;
@@ -202,7 +204,9 @@ public class AugFileCtrl {
 
 		activeWorkspace = workspace;
 
-		configuration.getAllContents().setString("activeWorkspace", workspace.getString("name"));
+		if (!STANDALONE_WORKSPACE_NAME.equals(workspace.getString("name"))) {
+			configuration.getAllContents().setString("activeWorkspace", workspace.getString("name"));
+		}
 
 		files = new ArrayList<>();
 

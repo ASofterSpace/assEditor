@@ -130,6 +130,8 @@ public class MainGUI extends MainWindow {
 	Boolean copyOnEnter;
 	Boolean tabEntireBlocks;
 	Boolean showFilesInTree;
+	boolean showFiles;
+	boolean standalone;
 
 	// this keeps track of the tabs we opened, and in which order we did so
 	private List<AugFileTab> listOfPreviousTabs;
@@ -137,11 +139,15 @@ public class MainGUI extends MainWindow {
 	private List<AugFileTab> listOfFutureTabs;
 
 
-	public MainGUI(AugFileCtrl augFileCtrl, ConfigFile config) {
+	public MainGUI(AugFileCtrl augFileCtrl, ConfigFile config, boolean standalone) {
 
 		this.augFileCtrl = augFileCtrl;
 
 		this.configuration = config;
+
+		this.standalone = standalone;
+
+		this.showFiles = !standalone;
 
 		augFileTabArray = new AugFileTab[0];
 		fileTreeModel = new FileTreeModel();
@@ -265,7 +271,7 @@ public class MainGUI extends MainWindow {
 		super.create();
 
 		// Add content to the window
-		this.mainMenu = new MainMenu(this, mainFrame, augFileCtrl);
+		this.mainMenu = new MainMenu(this, mainFrame, augFileCtrl, standalone);
 		this.mainPopupMenu = new MainPopupMenu(this, mainFrame);
 
 		mainMenu.createMenu();
@@ -860,13 +866,13 @@ public class MainGUI extends MainWindow {
 			showFilesInTree = true;
 		}
 
-		augFileListScroller.setVisible(!showFilesInTree);
+		augFileListScroller.setVisible(showFiles && !showFilesInTree);
 
-		augFileTreeScroller.setVisible(showFilesInTree);
+		augFileTreeScroller.setVisible(showFiles && showFilesInTree);
 
 		mainFrame.pack();
 
-		if (currentlyShownTab != null) {
+		if (showFiles && (currentlyShownTab != null)) {
 			highlightTabInLeftListOrTree(currentlyShownTab);
 		}
 	}
@@ -909,6 +915,13 @@ public class MainGUI extends MainWindow {
 	public void toggleNoteArea() {
 		noteAreaScroller.setVisible(!noteAreaScroller.isVisible());
 		mainFrame.pack();
+	}
+
+	public void toggleFileArea() {
+
+		showFiles = !showFiles;
+
+		updateShowFilesInTree();
 	}
 
 	public void setOrUnsetCurrentCodeLanguage(CodeLanguage codeKind) {
@@ -1253,14 +1266,17 @@ public class MainGUI extends MainWindow {
 
 		// only add the current tab to the list of previous ones...
 		if (currentlyShownTab != null) {
-			// ... if that list is empty ...
-			if (listOfPreviousTabs.size() > 0) {
-				// ... or has a different tab at its end (such that the same one does not get added twice in a row)
-				if (!currentlyShownTab.equals(listOfPreviousTabs.get(listOfPreviousTabs.size() - 1))) {
+			// ... if the current tab is not also the new one ...
+			if (!currentlyShownTab.equals(tabToShow)) {
+				// ... and if that list is empty ...
+				if (listOfPreviousTabs.size() > 0) {
+					// ... or has a different tab at its end (such that the same one does not get added twice in a row)
+					if (!currentlyShownTab.equals(listOfPreviousTabs.get(listOfPreviousTabs.size() - 1))) {
+						listOfPreviousTabs.add(currentlyShownTab);
+					}
+				} else {
 					listOfPreviousTabs.add(currentlyShownTab);
 				}
-			} else {
-				listOfPreviousTabs.add(currentlyShownTab);
 			}
 		}
 

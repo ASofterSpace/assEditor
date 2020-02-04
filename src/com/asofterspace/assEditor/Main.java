@@ -103,7 +103,7 @@ public class Main {
 
 		augFileCtrl.saveConfigFileList();
 
-		SwingUtilities.invokeLater(new MainGUI(augFileCtrl, config));
+		SwingUtilities.invokeLater(new MainGUI(augFileCtrl, config, standalone));
 	}
 
 }

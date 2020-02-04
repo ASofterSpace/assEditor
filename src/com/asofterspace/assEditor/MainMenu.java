@@ -38,6 +38,8 @@ public class MainMenu {
 
 	private AugFileCtrl augFileCtrl;
 
+	private boolean standalone;
+
 	private WorkspaceGUI workspaceGUI;
 	private WorkspaceSearchGUI workspaceSearchGUI;
 
@@ -68,13 +70,15 @@ public class MainMenu {
 	private List<JCheckBoxMenuItem> workspaces;
 
 
-	public MainMenu(MainGUI mainGUI, JFrame mainFrame, AugFileCtrl augFileCtrl) {
+	public MainMenu(MainGUI mainGUI, JFrame mainFrame, AugFileCtrl augFileCtrl, boolean standalone) {
 
 		this.mainGUI = mainGUI;
 
 		this.mainFrame = mainFrame;
 
 		this.augFileCtrl = augFileCtrl;
+
+		this.standalone = standalone;
 	}
 
 	public JMenuBar createMenu() {
@@ -84,17 +88,19 @@ public class MainMenu {
 		JMenu file = new JMenu("File");
 		menu.add(file);
 
-		JMenuItem newFile = new JMenuItem("New File");
-		newFile.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, ActionEvent.CTRL_MASK));
-		newFile.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				mainGUI.newFile();
-			}
-		});
-		file.add(newFile);
+		if (!standalone) {
+			JMenuItem newFile = new JMenuItem("New File");
+			newFile.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, ActionEvent.CTRL_MASK));
+			newFile.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					mainGUI.newFile();
+				}
+			});
+			file.add(newFile);
+		}
 
-		JMenuItem openFile = new JMenuItem("Open Files");
+		JMenuItem openFile = new JMenuItem("Open File" + (standalone ? "" : "s"));
 		openFile.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, ActionEvent.CTRL_MASK));
 		openFile.addActionListener(new ActionListener() {
 			@Override
@@ -104,18 +110,20 @@ public class MainMenu {
 		});
 		file.add(openFile);
 
-		refreshFiles = new JMenuItem("Refresh All Files From Disk (Discard All Unsaved Changes)");
-		refreshFiles.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				// ifAllowedToLeaveCurrentDirectory(new Callback() {
-					// public void call() {
-						mainGUI.reloadAllAugFileTabs();
-					// }
-				// });
-			}
-		});
-		file.add(refreshFiles);
+		if (!standalone) {
+			refreshFiles = new JMenuItem("Refresh All Files From Disk (Discard All Unsaved Changes)");
+			refreshFiles.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					// ifAllowedToLeaveCurrentDirectory(new Callback() {
+						// public void call() {
+							mainGUI.reloadAllAugFileTabs();
+						// }
+					// });
+				}
+			});
+			file.add(refreshFiles);
+		}
 
 		file.addSeparator();
 
@@ -129,14 +137,16 @@ public class MainMenu {
 		});
 		file.add(saveFile);
 
-		saveAllFiles = new JMenuItem("Save All Files");
-		saveAllFiles.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				mainGUI.saveFiles(mainGUI.getTabs());
-			}
-		});
-		file.add(saveAllFiles);
+		if (!standalone) {
+			saveAllFiles = new JMenuItem("Save All Files");
+			saveAllFiles.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					mainGUI.saveFiles(mainGUI.getTabs());
+				}
+			});
+			file.add(saveAllFiles);
+		}
 
 		JMenuItem saveNotes = new JMenuItem("Save Notes");
 		saveNotes.addActionListener(new ActionListener() {
@@ -149,16 +159,18 @@ public class MainMenu {
 
 		file.addSeparator();
 
-		JMenuItem renameFile = new JMenuItem("Rename Current File");
-		renameFile.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				mainGUI.renameSelectedFile();
-			}
-		});
-		file.add(renameFile);
+		if (!standalone) {
+			JMenuItem renameFile = new JMenuItem("Rename Current File");
+			renameFile.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					mainGUI.renameSelectedFile();
+				}
+			});
+			file.add(renameFile);
 
-		file.addSeparator();
+			file.addSeparator();
+		}
 
 		deleteFile = new JMenuItem("Delete Current File");
 		deleteFile.addActionListener(new ActionListener() {
@@ -171,42 +183,44 @@ public class MainMenu {
 
 		file.addSeparator();
 
-		closeFile = new JMenuItem("Close Current File");
-		closeFile.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				mainGUI.closeFiles(mainGUI.getCurrentTabAsList());
-			}
-		});
-		file.add(closeFile);
-
-		JMenuItem closeAllRemovedFiles = new JMenuItem("Close All Non-Existing Files");
-		closeAllRemovedFiles.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				List<AugFileTab> removedFiles = new ArrayList<>();
-				for (AugFileTab tab : mainGUI.getTabs()) {
-					if (tab.isMissing()) {
-						removedFiles.add(tab);
-					}
+		if (!standalone) {
+			closeFile = new JMenuItem("Close Current File");
+			closeFile.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					mainGUI.closeFiles(mainGUI.getCurrentTabAsList());
 				}
-				mainGUI.closeFiles(removedFiles);
-			}
-		});
-		file.add(closeAllRemovedFiles);
+			});
+			file.add(closeFile);
 
-		closeAllFiles = new JMenuItem("Close All Files");
-		closeAllFiles.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				mainGUI.closeFiles(mainGUI.getTabs());
-			}
-		});
-		file.add(closeAllFiles);
+			JMenuItem closeAllRemovedFiles = new JMenuItem("Close All Non-Existing Files");
+			closeAllRemovedFiles.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					List<AugFileTab> removedFiles = new ArrayList<>();
+					for (AugFileTab tab : mainGUI.getTabs()) {
+						if (tab.isMissing()) {
+							removedFiles.add(tab);
+						}
+					}
+					mainGUI.closeFiles(removedFiles);
+				}
+			});
+			file.add(closeAllRemovedFiles);
 
-		file.addSeparator();
+			closeAllFiles = new JMenuItem("Close All Files");
+			closeAllFiles.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					mainGUI.closeFiles(mainGUI.getTabs());
+				}
+			});
+			file.add(closeAllFiles);
 
-		JMenuItem openFolder = new JMenuItem("Open Highlighted Folder");
+			file.addSeparator();
+		}
+
+		JMenuItem openFolder = new JMenuItem("Open " + (standalone ? "Current" : "Highlighted") + " Folder");
 		openFolder.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -233,10 +247,12 @@ public class MainMenu {
 		file.add(close);
 
 
-		switchWorkspace = new JMenu("Workspace");
-		menu.add(switchWorkspace);
+		if (!standalone) {
+			switchWorkspace = new JMenu("Workspace");
+			menu.add(switchWorkspace);
 
-		refreshWorkspaces();
+			refreshWorkspaces();
+		}
 
 
 		JMenu edit = new JMenu("Edit");
@@ -790,43 +806,45 @@ public class MainMenu {
 		usingISOLatin1.setSelected(false);
 		encodings.add(usingISOLatin1);
 
-		encodings.addSeparator();
+		if (!standalone) {
+			encodings.addSeparator();
 
-		JMenuItem allUsingUTF8WithoutBOM = new JMenuItem("Set All Files to Default UTF-8 (without BOM)");
-		allUsingUTF8WithoutBOM.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				for (AugFileTab tab : mainGUI.getTabs()) {
-					tab.setEncoding(TextEncoding.UTF8_WITHOUT_BOM);
+			JMenuItem allUsingUTF8WithoutBOM = new JMenuItem("Set All Files to Default UTF-8 (without BOM)");
+			allUsingUTF8WithoutBOM.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					for (AugFileTab tab : mainGUI.getTabs()) {
+						tab.setEncoding(TextEncoding.UTF8_WITHOUT_BOM);
+					}
+					setEncoding(TextEncoding.UTF8_WITHOUT_BOM);
 				}
-				setEncoding(TextEncoding.UTF8_WITHOUT_BOM);
-			}
-		});
-		encodings.add(allUsingUTF8WithoutBOM);
+			});
+			encodings.add(allUsingUTF8WithoutBOM);
 
-		JMenuItem allUsingUTF8WithBOM = new JMenuItem("Set All Files to UTF-8 with BOM");
-		allUsingUTF8WithBOM.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				for (AugFileTab tab : mainGUI.getTabs()) {
-					tab.setEncoding(TextEncoding.UTF8_WITH_BOM);
+			JMenuItem allUsingUTF8WithBOM = new JMenuItem("Set All Files to UTF-8 with BOM");
+			allUsingUTF8WithBOM.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					for (AugFileTab tab : mainGUI.getTabs()) {
+						tab.setEncoding(TextEncoding.UTF8_WITH_BOM);
+					}
+					setEncoding(TextEncoding.UTF8_WITH_BOM);
 				}
-				setEncoding(TextEncoding.UTF8_WITH_BOM);
-			}
-		});
-		encodings.add(allUsingUTF8WithBOM);
+			});
+			encodings.add(allUsingUTF8WithBOM);
 
-		JMenuItem allUsingISOLatin1 = new JMenuItem("Set All Files to ISO-Latin-1");
-		allUsingISOLatin1.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				for (AugFileTab tab : mainGUI.getTabs()) {
-					tab.setEncoding(TextEncoding.ISO_LATIN_1);
+			JMenuItem allUsingISOLatin1 = new JMenuItem("Set All Files to ISO-Latin-1");
+			allUsingISOLatin1.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					for (AugFileTab tab : mainGUI.getTabs()) {
+						tab.setEncoding(TextEncoding.ISO_LATIN_1);
+					}
+					setEncoding(TextEncoding.ISO_LATIN_1);
 				}
-				setEncoding(TextEncoding.ISO_LATIN_1);
-			}
-		});
-		encodings.add(allUsingISOLatin1);
+			});
+			encodings.add(allUsingISOLatin1);
+		}
 
 
 		JMenu settings = new JMenu("Settings");
@@ -880,72 +898,6 @@ public class MainMenu {
 			}
 		});
 		language.add(ckDefault);
-
-		JMenu scheme = new JMenu("Editor Color Scheme");
-		settings.add(scheme);
-		setLightSchemeItem = new JCheckBoxMenuItem("Light");
-		setLightSchemeItem.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				mainGUI.setScheme(GuiUtils.LIGHT_SCHEME);
-			}
-		});
-		scheme.add(setLightSchemeItem);
-		setDarkSchemeItem = new JCheckBoxMenuItem("Dark");
-		setDarkSchemeItem.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				mainGUI.setScheme(GuiUtils.DARK_SCHEME);
-			}
-		});
-		scheme.add(setDarkSchemeItem);
-
-		JMenu fontSizeItem = new JMenu("Editor Font Size");
-		settings.add(fontSizeItem);
-		JMenuItem fontSizePlusItem = new JMenuItem("Increase");
-		fontSizePlusItem.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				mainGUI.setFontSize(mainGUI.getFontSize() + 1);
-			}
-		});
-		fontSizeItem.add(fontSizePlusItem);
-		JMenuItem fontSizeDefaultItem = new JMenuItem("Reset to Default");
-		fontSizeDefaultItem.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				mainGUI.setFontSize(MainGUI.DEFAULT_FONT_SIZE);
-			}
-		});
-		fontSizeItem.add(fontSizeDefaultItem);
-		JMenuItem fontSizeMinusItem = new JMenuItem("Decrease");
-		fontSizeMinusItem.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				mainGUI.setFontSize(mainGUI.getFontSize() - 1);
-			}
-		});
-		fontSizeItem.add(fontSizeMinusItem);
-
-		showFilesInTreeItem = new JCheckBoxMenuItem("Show Files as Tree");
-		showFilesInTreeItem.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				mainGUI.toggleShowFilesInTree();
-			}
-		});
-		showFilesInTreeItem.setSelected(mainGUI.getShowFilesInTree());
-		settings.add(showFilesInTreeItem);
-
-		useAntiAliasingItem = new JCheckBoxMenuItem("Use Anti-Aliasing for Smoother Fonts (requires editor restart)");
-		useAntiAliasingItem.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				mainGUI.toggleUseAntiAliasing();
-			}
-		});
-		useAntiAliasingItem.setSelected(mainGUI.getUseAntiAliasing());
-		settings.add(useAntiAliasingItem);
 
 		settings.addSeparator();
 
@@ -1058,6 +1010,81 @@ public class MainMenu {
 		});
 		window.add(toggleSearchBar);
 
+		JMenuItem toggleFileArea = new JMenuItem("Toggle File Area");
+		toggleFileArea.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				mainGUI.toggleFileArea();
+			}
+		});
+		window.add(toggleFileArea);
+
+		showFilesInTreeItem = new JCheckBoxMenuItem("Show Files as Tree");
+		showFilesInTreeItem.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				mainGUI.toggleShowFilesInTree();
+			}
+		});
+		showFilesInTreeItem.setSelected(mainGUI.getShowFilesInTree());
+		window.add(showFilesInTreeItem);
+
+		JMenu scheme = new JMenu("Editor Color Scheme");
+		window.add(scheme);
+		setLightSchemeItem = new JCheckBoxMenuItem("Light");
+		setLightSchemeItem.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				mainGUI.setScheme(GuiUtils.LIGHT_SCHEME);
+			}
+		});
+		scheme.add(setLightSchemeItem);
+		setDarkSchemeItem = new JCheckBoxMenuItem("Dark");
+		setDarkSchemeItem.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				mainGUI.setScheme(GuiUtils.DARK_SCHEME);
+			}
+		});
+		scheme.add(setDarkSchemeItem);
+
+		JMenu fontSizeItem = new JMenu("Editor Font Size");
+		window.add(fontSizeItem);
+		JMenuItem fontSizePlusItem = new JMenuItem("Increase");
+		fontSizePlusItem.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				mainGUI.setFontSize(mainGUI.getFontSize() + 1);
+			}
+		});
+		fontSizeItem.add(fontSizePlusItem);
+		JMenuItem fontSizeDefaultItem = new JMenuItem("Reset to Default");
+		fontSizeDefaultItem.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				mainGUI.setFontSize(MainGUI.DEFAULT_FONT_SIZE);
+			}
+		});
+		fontSizeItem.add(fontSizeDefaultItem);
+		JMenuItem fontSizeMinusItem = new JMenuItem("Decrease");
+		fontSizeMinusItem.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				mainGUI.setFontSize(mainGUI.getFontSize() - 1);
+			}
+		});
+		fontSizeItem.add(fontSizeMinusItem);
+
+		useAntiAliasingItem = new JCheckBoxMenuItem("Use Anti-Aliasing for Smoother Fonts (requires editor restart)");
+		useAntiAliasingItem.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				mainGUI.toggleUseAntiAliasing();
+			}
+		});
+		useAntiAliasingItem.setSelected(mainGUI.getUseAntiAliasing());
+		window.add(useAntiAliasingItem);
+
 		menu.add(window);
 
 		JMenu huh = new JMenu("?");
@@ -1090,6 +1117,11 @@ public class MainMenu {
 	}
 
 	public void refreshWorkspaces() {
+
+		// if we are in standalone mode, do nothing
+		if (switchWorkspace == null) {
+			return;
+		}
 
 		switchWorkspace.removeAll();
 
@@ -1190,12 +1222,24 @@ public class MainMenu {
 	}
 
 	public void reEnableDisableMenuItems(boolean augFilesExist, boolean fileIsSelected) {
-		refreshFiles.setEnabled(augFilesExist);
-		saveFile.setEnabled(fileIsSelected);
-		saveAllFiles.setEnabled(augFilesExist);
-		deleteFile.setEnabled(fileIsSelected);
-		closeFile.setEnabled(fileIsSelected);
-		closeAllFiles.setEnabled(augFilesExist);
+		if (refreshFiles != null) {
+			refreshFiles.setEnabled(augFilesExist);
+		}
+		if (saveFile != null) {
+			saveFile.setEnabled(fileIsSelected);
+		}
+		if (saveAllFiles != null) {
+			saveAllFiles.setEnabled(augFilesExist);
+		}
+		if (deleteFile != null) {
+			deleteFile.setEnabled(fileIsSelected);
+		}
+		if (closeFile != null) {
+			closeFile.setEnabled(fileIsSelected);
+		}
+		if (closeAllFiles != null) {
+			closeAllFiles.setEnabled(augFilesExist);
+		}
 	}
 
 	public void setEncoding(TextEncoding encoding) {
