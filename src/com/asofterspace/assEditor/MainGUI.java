@@ -272,9 +272,9 @@ public class MainGUI extends MainWindow {
 
 		// Add content to the window
 		this.mainMenu = new MainMenu(this, mainFrame, augFileCtrl, standalone);
-		this.mainPopupMenu = new MainPopupMenu(this, mainFrame);
-
 		mainMenu.createMenu();
+
+		this.mainPopupMenu = new MainPopupMenu(this, mainFrame, standalone);
 		mainPopupMenu.createPopupMenu();
 
 		createMainPanel(mainFrame);
@@ -1647,8 +1647,16 @@ public class MainGUI extends MainWindow {
 		}
 	}
 
+	public AugFileCtrl getAugFileCtrl() {
+		return augFileCtrl;
+	}
+
 	public MainMenu getMainMenu() {
 		return mainMenu;
+	}
+
+	public MainPopupMenu getMainPopupMenu() {
+		return mainPopupMenu;
 	}
 
 }

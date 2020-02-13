@@ -35,10 +35,6 @@ public class WorkspaceSearchGUI {
 
 	private JFrame mainFrame;
 
-	private AugFileCtrl augFileCtrl;
-
-	private MainMenu mainMenu;
-
 	private JDialog searchInWorkspaceDialog;
 
 	private JTextArea searchInWorkspaceOutputMemo;
@@ -46,15 +42,11 @@ public class WorkspaceSearchGUI {
 	private JTextField workspaceSearchField;
 
 
-	public WorkspaceSearchGUI(MainGUI mainGUI, JFrame mainFrame, AugFileCtrl augFileCtrl, MainMenu mainMenu) {
+	public WorkspaceSearchGUI(MainGUI mainGUI, JFrame mainFrame) {
 
 		this.mainGUI = mainGUI;
 
 		this.mainFrame = mainFrame;
-
-		this.augFileCtrl = augFileCtrl;
-
-		this.mainMenu = mainMenu;
 
 		this.searchInWorkspaceDialog = createGUI();
 	}

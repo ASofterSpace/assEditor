@@ -1125,68 +1125,14 @@ public class MainMenu {
 			return;
 		}
 
-		switchWorkspace.removeAll();
+		List<JMenuItem> genericWorkspaceItems = WorkspaceUtils.createWorkspaceMenuEntries(
+			switchWorkspace, WorkspaceAction.SWITCH_TO, mainGUI);
 
 		workspaces = new ArrayList<>();
-		List<String> workspaceNames = augFileCtrl.getWorkspaces();
-		for (int i = 0; i < workspaceNames.size(); i++) {
-			final String workspaceName = workspaceNames.get(i);
-			if (i + 1 < workspaceNames.size()) {
-				final String nextWorkspaceName = workspaceNames.get(i + 1);
-				int wNIndex = workspaceName.indexOf(" ");
-				if (wNIndex < 0) {
-					wNIndex = workspaceName.length();
-				}
-				int nextWNIndex = nextWorkspaceName.indexOf(" ");
-				if (nextWNIndex < 0) {
-					nextWNIndex = nextWorkspaceName.length();
-				}
-				// we want to check that " " is not in the first position (therefore > 0)
-				if ((wNIndex > 0) && (nextWNIndex > 0)) {
-					String workspaceNamePrefix = workspaceName.substring(0, wNIndex);
-					String nextWorkspaceNamePrefix = nextWorkspaceName.substring(0, nextWNIndex);
-					if (workspaceNamePrefix.equals(nextWorkspaceNamePrefix)) {
-						// actually group the workspaces together!
-						JMenu submenu = new JMenu(workspaceNamePrefix);
-
-						for (; i < workspaceNames.size(); i++) {
-							final String innerWorkspaceName = workspaceNames.get(i);
-							if (!(innerWorkspaceName + " ").startsWith(workspaceNamePrefix + " ")) {
-								break;
-							}
-							final JCheckBoxMenuItem workspace = new JCheckBoxMenuItem(innerWorkspaceName);
-							workspace.addActionListener(new ActionListener() {
-								@Override
-								public void actionPerformed(ActionEvent e) {
-									mainGUI.switchToWorkspace(workspace, innerWorkspaceName);
-								}
-							});
-							submenu.add(workspace);
-							workspaces.add(workspace);
-						}
-
-						// we break the inner for, then continue the outer for,
-						// so we do a ++ before the next outer for loop,
-						// so we do a -- here to undo that
-						// (or think about it this way: we have two nested loops,
-						// EACH doing i++, but we only want one ++, so we do a --
-						// to counterbalance one of the ++)
-						i--;
-
-						switchWorkspace.add(submenu);
-						continue;
-					}
-				}
+		for (JMenuItem genericWorkspaceItem : genericWorkspaceItems) {
+			if (genericWorkspaceItem instanceof JCheckBoxMenuItem) {
+				workspaces.add((JCheckBoxMenuItem) genericWorkspaceItem);
 			}
-			final JCheckBoxMenuItem workspace = new JCheckBoxMenuItem(workspaceName);
-			workspace.addActionListener(new ActionListener() {
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					mainGUI.switchToWorkspace(workspace, workspaceName);
-				}
-			});
-			switchWorkspace.add(workspace);
-			workspaces.add(workspace);
 		}
 
 		for (JCheckBoxMenuItem workspace : workspaces) {
@@ -1205,7 +1151,7 @@ public class MainMenu {
 			public void actionPerformed(ActionEvent e) {
 				// show the workspace editing GUI
 				if (workspaceGUI == null) {
-					workspaceGUI = new WorkspaceGUI(mainGUI, augFileCtrl, MainMenu.this);
+					workspaceGUI = new WorkspaceGUI(mainGUI, augFileCtrl);
 				}
 				workspaceGUI.show();
 			}
@@ -1283,7 +1229,7 @@ public class MainMenu {
 
 		// show the workspace search GUI
 		if (workspaceSearchGUI == null) {
-			workspaceSearchGUI = new WorkspaceSearchGUI(mainGUI, mainFrame, augFileCtrl, MainMenu.this);
+			workspaceSearchGUI = new WorkspaceSearchGUI(mainGUI, mainFrame);
 		}
 
 		workspaceSearchGUI.show();

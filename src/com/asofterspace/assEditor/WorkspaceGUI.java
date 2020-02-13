@@ -28,18 +28,14 @@ public class WorkspaceGUI {
 
 	private AugFileCtrl augFileCtrl;
 
-	private MainMenu mainMenu;
-
 	private JDialog editWorkitemsDialog;
 
 
-	public WorkspaceGUI(MainGUI mainGUI, AugFileCtrl augFileCtrl, MainMenu mainMenu) {
+	public WorkspaceGUI(MainGUI mainGUI, AugFileCtrl augFileCtrl) {
 
 		this.mainGUI = mainGUI;
 
 		this.augFileCtrl = augFileCtrl;
-
-		this.mainMenu = mainMenu;
 
 		this.editWorkitemsDialog = createGUI();
 	}
@@ -120,7 +116,8 @@ public class WorkspaceGUI {
 	}
 
 	private void refreshWorkspaces() {
-		mainMenu.refreshWorkspaces();
+		mainGUI.getMainMenu().refreshWorkspaces();
+		mainGUI.getMainPopupMenu().refreshWorkspaces();
 	}
 
 }

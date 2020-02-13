@@ -24,18 +24,24 @@ public class MainPopupMenu {
 
 	private JFrame parent;
 
+	private boolean standalone;
+
 	private JPopupMenu popupMenu;
 
 	private JMenuItem saveFilePopup;
 	private JMenuItem deleteFilePopup;
 	private JMenuItem closeFilePopup;
+	private JMenu moveFilesToWorkspacePopup;
+	private JMenu duplicateFilesToWorkspacePopup;
 
 
-	public MainPopupMenu(MainGUI mainGUI, JFrame parent) {
+	public MainPopupMenu(MainGUI mainGUI, JFrame parent, boolean standalone) {
 
 		this.mainGUI = mainGUI;
 
 		this.parent = parent;
+
+		this.standalone = standalone;
 	}
 
 	public JPopupMenu createPopupMenu() {
@@ -100,6 +106,16 @@ public class MainPopupMenu {
 		});
 		popupMenu.add(closeFilePopup);
 
+		if (!standalone) {
+			moveFilesToWorkspacePopup = new JMenu("Move Selected Files to Workspace");
+			popupMenu.add(moveFilesToWorkspacePopup);
+
+			duplicateFilesToWorkspacePopup = new JMenu("Duplicate Selected Files in Workspace");
+			popupMenu.add(duplicateFilesToWorkspacePopup);
+
+			refreshWorkspaces();
+		}
+
 		popupMenu.addSeparator();
 
 		JMenuItem openFolder = new JMenuItem("Open Folder");
@@ -129,4 +145,12 @@ public class MainPopupMenu {
 		deleteFilePopup.setEnabled(fileIsSelected);
 		closeFilePopup.setEnabled(fileIsSelected);
 	}
+
+	public void refreshWorkspaces() {
+
+		WorkspaceUtils.createWorkspaceMenuEntries(moveFilesToWorkspacePopup, WorkspaceAction.MOVE_FILES, mainGUI);
+
+		WorkspaceUtils.createWorkspaceMenuEntries(duplicateFilesToWorkspacePopup, WorkspaceAction.DUPLICATE_FILES, mainGUI);
+	}
+
 }

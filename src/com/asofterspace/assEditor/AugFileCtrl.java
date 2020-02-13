@@ -200,6 +200,10 @@ public class AugFileCtrl {
 		return activeWorkspace;
 	}
 
+	public String getActiveWorkspaceName() {
+		return activeWorkspace.getString("name");
+	}
+
 	private void switchToJsonWorkspace(Record workspace) {
 
 		activeWorkspace = workspace;
@@ -326,28 +330,59 @@ public class AugFileCtrl {
 		saveConfigFileList();
 	}
 
+	public void addTabsToWorkspace(List<AugFileTab> tabs, String workspaceName) {
+
+		List<AugFile> augFiles = new ArrayList<>();
+
+		for (AugFileTab tab : tabs) {
+			augFiles.add(tab.getFile());
+		}
+
+		addFilesToWorkspace(augFiles, workspaceName);
+	}
+
+	public void addFilesToWorkspace(List<AugFile> augFiles, String workspaceName) {
+
+		List<Record> recWorkspaces = configuration.getAllContents().getArray("workspaces");
+
+		for (Record recWorkspace : recWorkspaces) {
+			if (workspaceName.equals(recWorkspace.getString("name"))) {
+
+				Record filesRec = recWorkspace.get("files");
+
+				addFilesToConfig(augFiles, filesRec);
+
+				return;
+			}
+		}
+	}
+
 	public void saveConfigFileList() {
 
 		StringBuilder fileListBuilder = new StringBuilder();
 
 		Record filesRec = new Record();
 
-		synchronized (files) {
-
-			for (AugFile augFile : files) {
-
-				Record curRec = new Record();
-
-				curRec.setString(CONF_FILENAME, augFile.getFilename());
-				curRec.setString(CONF_CARET_POS, augFile.getCaretPos());
-				curRec.setString(CONF_LANGUAGE, augFile.getSourceLanguage());
-				curRec.setString(CONF_ACCESS_TIME, DateUtils.serializeDateTime(augFile.getLastAccessTime()));
-
-				filesRec.append(curRec);
-			}
-		}
-
 		activeWorkspace.set("files", filesRec);
+
+		synchronized (files) {
+			addFilesToConfig(files, filesRec);
+		}
+	}
+
+	private void addFilesToConfig(List<AugFile> augFiles, Record parentElement) {
+
+		for (AugFile augFile : augFiles) {
+
+			Record curRec = new Record();
+
+			curRec.setString(CONF_FILENAME, augFile.getFilename());
+			curRec.setString(CONF_CARET_POS, augFile.getCaretPos());
+			curRec.setString(CONF_LANGUAGE, augFile.getSourceLanguage());
+			curRec.setString(CONF_ACCESS_TIME, DateUtils.serializeDateTime(augFile.getLastAccessTime()));
+
+			parentElement.append(curRec);
+		}
 
 		configuration.create();
 	}
