@@ -19,8 +19,8 @@ import javax.swing.SwingUtilities;
 public class Main {
 
 	public final static String PROGRAM_TITLE = "A Softer Space Editor";
-	public final static String VERSION_NUMBER = "0.0.2.7(" + Utils.TOOLBOX_VERSION_NUMBER + ")";
-	public final static String VERSION_DATE = "18. December 2018 - 23. January 2020";
+	public final static String VERSION_NUMBER = "0.0.2.8(" + Utils.TOOLBOX_VERSION_NUMBER + ")";
+	public final static String VERSION_DATE = "18. December 2018 - 13. February 2020";
 
 
 	/**
@@ -49,6 +49,7 @@ public class Main {
 	 * when showing functions on the right, highlight whichever one we are curly inside
 	 * when we are saving the test_rest.sh file, if there is no trailing newline, a " is added ON SAVE... fix that!
 	 * show (and allow us to change) whether Windows or Unix line endings are used
+	 * make scroll speed configurable (currently set to 99 in the AugFileTab)
 	 */
 	public static void main(String[] args) {
 

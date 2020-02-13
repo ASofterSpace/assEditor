@@ -157,6 +157,10 @@ public class AugFileTab implements FileTab {
 		scrolledPanel.add(fileContentMemo, new Arrangement(1, 0, 1.0, 1.0));
 
 		sourceCodeScroller = new JScrollPane(scrolledPanel);
+
+		// scroll blazingly fast! :D
+		sourceCodeScroller.getVerticalScrollBar().setUnitIncrement(99);
+
 		sourceCodeScroller.setPreferredSize(new Dimension(1, 1));
 		sourceCodeScroller.setBorder(BorderFactory.createEmptyBorder());
 		mainPart.add(sourceCodeScroller, new Arrangement(0, 1, 1.0, 0.8));
