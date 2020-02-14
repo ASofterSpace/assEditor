@@ -1157,6 +1157,20 @@ public class MainMenu {
 			}
 		});
 		switchWorkspace.add(editWorkspaces);
+
+		JMenuItem exportWorkspace = new JMenuItem("Export Current Workspace");
+		exportWorkspace.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// show the workspace export GUI
+				if (workspaceExportGUI == null) {
+					workspaceExportGUI = new WorkspaceExportGUI(mainGUI, augFileCtrl);
+				}
+				workspaceExportGUI.show();
+				workspaceExportGUI.displayCurrentWorkspace();
+			}
+		});
+		switchWorkspace.add(exportWorkspace);
 	}
 
 	public void uncheckWorkspaces() {
