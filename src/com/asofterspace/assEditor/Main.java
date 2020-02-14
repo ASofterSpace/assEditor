@@ -50,6 +50,7 @@ public class Main {
 	 * when we are saving the test_rest.sh file, if there is no trailing newline, a " is added ON SAVE... fix that!
 	 * show (and allow us to change) whether Windows or Unix line endings are used
 	 * make scroll speed configurable (currently set to 99 in the AugFileTab)
+	 * when opening file through ctrl click, first search in all currently open folders - not just the folder of the current AugFileTab (so that we get Toolbox stuff more likely e.g.)
 	 */
 	public static void main(String[] args) {
 

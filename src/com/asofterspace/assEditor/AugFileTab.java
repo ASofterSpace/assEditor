@@ -160,6 +160,7 @@ public class AugFileTab implements FileTab {
 
 		// scroll blazingly fast! :D
 		sourceCodeScroller.getVerticalScrollBar().setUnitIncrement(99);
+		sourceCodeScroller.getHorizontalScrollBar().setUnitIncrement(48);
 
 		sourceCodeScroller.setPreferredSize(new Dimension(1, 1));
 		sourceCodeScroller.setBorder(BorderFactory.createEmptyBorder());
@@ -203,24 +204,15 @@ public class AugFileTab implements FileTab {
 
 				ensureLoaded();
 
-				List<CodeSnippetWithLocation> functions = highlighter.getFunctions();
+				CodeSnippetWithLocation curFunction = highlighter.getClickedFunction();
 
-				if ((functions == null) || (functions.size() < 1)) {
+				if (curFunction == null) {
 					return;
 				}
 
-				int pressedLine = -1;
-				int caretPos = functionMemo.getCaretPosition();
+				highlighter.stopFunctionHighlighting();
 
-				for (CodeSnippetWithLocation codeLoc : functions) {
-					pressedLine++;
-					caretPos -= codeLoc.getCode().length() + 1;
-					if (caretPos < 0) {
-						break;
-					}
-				}
-
-				final int targetCaretPos = functions.get(pressedLine).getCaretPos();
+				final int targetCaretPos = curFunction.getCaretPos();
 
 				// jump to the end...
 				fileContentMemo.setCaretPosition(fileContentMemo.getText().length());
@@ -235,6 +227,8 @@ public class AugFileTab implements FileTab {
 						// ... jump to the actual location (such that the
 						// location is definitely at the TOP of the screen)
 						fileContentMemo.setCaretPosition(targetCaretPos);
+
+						highlighter.startFunctionHighlighting();
 					}
 				}).start();
 			}
