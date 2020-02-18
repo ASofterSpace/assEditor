@@ -41,6 +41,7 @@ public class MainMenu {
 	private boolean standalone;
 
 	private WorkspaceGUI workspaceGUI;
+	private WorkspaceExportGUI workspaceExportGUI;
 	private WorkspaceSearchGUI workspaceSearchGUI;
 
 	private JMenu switchWorkspace;
