@@ -120,6 +120,8 @@ public class MainGUI extends MainWindow {
 
 	private int fontSize;
 
+	private boolean regenerateAugFileListEnabled = true;
+
 	String currentScheme;
 	Boolean useAntiAliasing;
 	Boolean removeTrailingWhitespaceOnSave;
@@ -1382,6 +1384,11 @@ public class MainGUI extends MainWindow {
 	 */
 	public void regenerateAugFileList() {
 
+		// we want to be able to temporarily disable this, if we know that we will call it often in a tight loop
+		if (!regenerateAugFileListEnabled) {
+			return;
+		}
+
 		// if there is no last shown tab...
 		if (currentlyShownTab == null) {
 			// ... show some random tab explicitly - this is fun, and the tabbed layout otherwise shows it anyway, so may as well...
@@ -1435,6 +1442,18 @@ public class MainGUI extends MainWindow {
 
 		// show the last shown tab
 		showTab(currentlyShownTab, true);
+	}
+
+	public void disableRegenerateAugFileList() {
+
+		regenerateAugFileListEnabled = false;
+	}
+
+	public void reenableRegenerateAugFileList() {
+
+		regenerateAugFileListEnabled = true;
+
+		regenerateAugFileList();
 	}
 
 	public void highlightTabInLeftListOrTree(AugFileTab tab) {

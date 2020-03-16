@@ -163,12 +163,38 @@ public class WorkspaceSearchGUI {
 			return;
 		}
 
+		mainGUI.disableRegenerateAugFileList();
+
+		int foundFileAmount = 0;
+		int totalFileAmount = 0;
+
+		StringBuilder result = new StringBuilder();
+		result.append("Replaced ");
+		result.append(searchFor);
+		result.append(" with ");
+		result.append(replaceWith);
+		result.append(" in the following files:\n");
+
 		for (AugFileTab curTab : mainGUI.getTabs()) {
-			curTab.replaceAll(searchFor, replaceWith);
-			curTab.saveIfChanged();
+			if (curTab.replaceAll(searchFor, replaceWith)) {
+				result.append("\n" + curTab.getFilePath());
+				foundFileAmount++;
+				curTab.save();
+			}
+			totalFileAmount++;
 		}
 
-		searchInWorkspaceOutputMemo.setText("All occurrences of " + searchFor + " replaced with " + replaceWith + "!");
+		mainGUI.reenableRegenerateAugFileList();
+
+		searchInWorkspaceOutputMemo.setText(result.toString());
+
+		searchInWorkspaceOutputLabel.setText(
+			"All occurrences of " + searchFor + " (found in " +
+			StrUtils.thingOrThings(foundFileAmount, "file") +
+			" out of " +
+			StrUtils.thingOrThings(totalFileAmount, "file") +
+			" in total) replaced with " + replaceWith + "!"
+		);
 	}
 
 	/**

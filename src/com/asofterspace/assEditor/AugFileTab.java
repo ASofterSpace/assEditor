@@ -97,6 +97,15 @@ public class AugFileTab implements FileTab {
 		this.augFileCtrl = augFileCtrl;
 
 		this.mainGUI = mainGUI;
+
+		this.onChangeCallback = new Callback() {
+			public void call() {
+				if (!changed) {
+					changed = true;
+					mainGUI.regenerateAugFileList();
+				}
+			}
+		};
 	}
 
 	private JPanel createVisualPanel() {
@@ -332,7 +341,7 @@ public class AugFileTab implements FileTab {
 
 		nameLabel.setText("Name: " + newName);
 
-		changed = true;
+		this.onChangeCallback.call();
 
 		augFile.setName(newName);
 	}
@@ -906,17 +915,29 @@ public class AugFileTab implements FileTab {
 		}
 	}
 
-	public void replaceAll(String searchFor, String replaceWith) {
+	/**
+	 * Searches for a text and replaces it with a different text
+	 * Returns true if at least one match was found
+	 */
+	public boolean replaceAll(String searchFor, String replaceWith) {
 
 		ensureLoaded();
 
 		String text = fileContentMemo.getText();
 
-		text = text.replace(searchFor, replaceWith);
+		boolean foundIt = text.contains(searchFor);
 
-		fileContentMemo.setText(text);
+		if (foundIt) {
+			text = text.replace(searchFor, replaceWith);
 
-		highlighter.setSearchStr("");
+			fileContentMemo.setText(text);
+
+			highlighter.setSearchStr("");
+
+			this.onChangeCallback.call();
+		}
+
+		return foundIt;
 	}
 
 	public static String getBackupPath() {
@@ -1293,11 +1314,13 @@ public class AugFileTab implements FileTab {
 
 	public void setEncoding(TextEncoding encoding) {
 
+		boolean changed = augFile.getEncoding() != encoding;
+
 		augFile.setEncoding(encoding);
 
-		changed = true;
-
-		mainGUI.regenerateAugFileList();
+		if (changed) {
+			this.onChangeCallback.call();
+		}
 	}
 
 	public void undo() {
@@ -1360,15 +1383,6 @@ public class AugFileTab implements FileTab {
 				origCaretPos = Math.min(origCaretPos, content.length());
 				fileContentMemo.setCaretPosition(origCaretPos);
 			}
-
-			this.onChangeCallback = new Callback() {
-				public void call() {
-					if (!changed) {
-						changed = true;
-						mainGUI.regenerateAugFileList();
-					}
-				}
-			};
 
 			setCodeLanguageAndCreateHighlighter();
 		}
