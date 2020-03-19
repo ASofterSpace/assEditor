@@ -995,6 +995,18 @@ public class MainMenu {
 
 		JMenu window = new JMenu("Window");
 
+		JMenuItem jumpToFile = new JMenuItem("Jump to File...");
+		jumpToFile.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_J, ActionEvent.CTRL_MASK));
+		jumpToFile.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				mainGUI.showJumpToFileBar();
+			}
+		});
+		window.add(jumpToFile);
+
+		window.addSeparator();
+
 		JMenuItem toggleNoteArea = new JMenuItem("Toggle Note Area");
 		toggleNoteArea.addActionListener(new ActionListener() {
 			@Override
@@ -1022,6 +1034,8 @@ public class MainMenu {
 		});
 		window.add(toggleFileArea);
 
+		window.addSeparator();
+
 		showFilesInTreeItem = new JCheckBoxMenuItem("Show Files as Tree");
 		showFilesInTreeItem.addActionListener(new ActionListener() {
 			@Override
@@ -1031,6 +1045,8 @@ public class MainMenu {
 		});
 		showFilesInTreeItem.setSelected(mainGUI.getShowFilesInTree());
 		window.add(showFilesInTreeItem);
+
+		window.addSeparator();
 
 		JMenu scheme = new JMenu("Editor Color Scheme");
 		window.add(scheme);
@@ -1078,7 +1094,7 @@ public class MainMenu {
 		});
 		fontSizeItem.add(fontSizeMinusItem);
 
-		useAntiAliasingItem = new JCheckBoxMenuItem("Use Anti-Aliasing for Smoother Fonts (requires editor restart)");
+		useAntiAliasingItem = new JCheckBoxMenuItem("Use Anti-Aliasing for Smoother Fonts (requires program restart)");
 		useAntiAliasingItem.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {

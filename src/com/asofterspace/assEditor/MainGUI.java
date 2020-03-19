@@ -80,6 +80,10 @@ public class MainGUI extends MainWindow {
 	private JTextField searchField;
 	private JTextField replaceField;
 
+	private JPanel jumpToFilePanel;
+	private JTextField jumpToFileField;
+	private AugFileTab jumpToTab;
+
 	private AugFileTab currentlyShownTab;
 
 	private final static String CONFIG_KEY_LAST_DIRECTORY = "lastDirectory";
@@ -352,6 +356,9 @@ public class MainGUI extends MainWindow {
 		mainPanelRight.setLayout(new CardLayout());
 		mainPanelRight.setPreferredSize(new Dimension(8, 8));
 
+
+		// create file list and tree
+
 		fileListComponent = new JList<AugFileTab>(augFileTabArray);
 		fileTreeComponent = new FileTree(fileTreeModel);
 		fileTreeEditField = new JTextField();
@@ -444,6 +451,55 @@ public class MainGUI extends MainWindow {
 
 		updateShowFilesInTree();
 
+
+		// create jump to file panel
+
+		jumpToFilePanel = new JPanel();
+		jumpToFilePanel.setLayout(new GridBagLayout());
+		jumpToFilePanel.setVisible(false);
+
+		jumpToFileField = new JTextField();
+
+		// listen to text updates
+		jumpToFileField.getDocument().addDocumentListener(new DocumentListener() {
+			public void changedUpdate(DocumentEvent e) {
+				jump();
+			}
+			public void removeUpdate(DocumentEvent e) {
+				jump();
+			}
+			public void insertUpdate(DocumentEvent e) {
+				jump();
+			}
+			private void jump() {
+				String jumpTo = jumpToFileField.getText().toLowerCase();
+
+				for (AugFileTab tab : augFileTabs) {
+					if (tab.getName().toLowerCase().startsWith(jumpTo)) {
+						jumpToTab = tab;
+						showTab(tab, false);
+						return;
+					}
+				}
+			}
+		});
+
+		// listen to the enter key being pressed (which does not create text updates)
+		jumpToFileField.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if (jumpToTab != null) {
+					showTab(jumpToTab, true);
+				}
+				jumpToFilePanel.setVisible(false);
+			}
+		});
+
+		jumpToFilePanel.add(jumpToFileField, new Arrangement(0, 0, 1.0, 1.0));
+
+
+
+		// create search panel
+
 		searchPanel = new JPanel();
 		searchPanel.setLayout(new GridBagLayout());
 		searchPanel.setVisible(false);
@@ -495,6 +551,12 @@ public class MainGUI extends MainWindow {
 			}
 		});
 
+		searchPanel.add(searchField, new Arrangement(0, 0, 1.0, 1.0));
+		searchPanel.add(replaceField, new Arrangement(0, 1, 1.0, 1.0));
+
+
+		// create note area
+
 		noteArea = new JTextArea();
 
 		noteAreaScroller = new JScrollPane(noteArea);
@@ -502,11 +564,12 @@ public class MainGUI extends MainWindow {
 		noteAreaScroller.setBorder(BorderFactory.createEmptyBorder());
 		noteAreaScroller.setVisible(false);
 
-		searchPanel.add(searchField, new Arrangement(0, 0, 1.0, 1.0));
-		searchPanel.add(replaceField, new Arrangement(0, 1, 1.0, 1.0));
+
+		// add all the created components to the view
 
 		mainPanelRightOuter.add(mainPanelRight, new Arrangement(0, 0, 1.0, 1.0));
-		mainPanelRightOuter.add(searchPanel, new Arrangement(0, 1, 1.0, 0.0));
+		mainPanelRightOuter.add(jumpToFilePanel, new Arrangement(0, 1, 1.0, 0.0));
+		mainPanelRightOuter.add(searchPanel, new Arrangement(0, 2, 1.0, 0.0));
 
 		mainPanel.add(augFileListScroller, new Arrangement(0, 0, 0.2, 1.0));
 		mainPanel.add(augFileTreeScroller, new Arrangement(1, 0, 0.2, 1.0));
@@ -518,6 +581,13 @@ public class MainGUI extends MainWindow {
 		parent.add(mainPanel, BorderLayout.CENTER);
 
 		return mainPanel;
+	}
+
+	public void showJumpToFileBar() {
+
+		jumpToFilePanel.setVisible(true);
+
+		jumpToFileField.requestFocus();
 	}
 
 	public void showSearchBar() {
