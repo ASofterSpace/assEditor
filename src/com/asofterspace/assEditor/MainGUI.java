@@ -1543,7 +1543,9 @@ public class MainGUI extends MainWindow {
 				// highlight tab the tree
 				Object[] paths = fileTreeModel.getPathToRoot(tab);
 				if (paths.length > 0) {
-					fileTreeComponent.setSelectionPath(new TreePath(fileTreeModel.getPathToRoot(tab)));
+					TreePath curPath = new TreePath(fileTreeModel.getPathToRoot(tab));
+					fileTreeComponent.setSelectionPath(curPath);
+					fileTreeComponent.scrollPathToVisible(curPath);
 				}
 
 				// jump back to the actual tab
