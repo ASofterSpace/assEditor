@@ -474,6 +474,10 @@ public class MainGUI extends MainWindow {
 			private void jump() {
 				String jumpTo = jumpToFileField.getText().toLowerCase();
 
+				if ("".equals(jumpTo)) {
+					return;
+				}
+
 				for (AugFileTab tab : augFileTabs) {
 					if (tab.getName().toLowerCase().startsWith(jumpTo)) {
 						jumpToTab = tab;
@@ -584,6 +588,8 @@ public class MainGUI extends MainWindow {
 	}
 
 	public void showJumpToFileBar() {
+
+		jumpToTab = currentlyShownTab;
 
 		jumpToFilePanel.setVisible(true);
 
