@@ -1410,6 +1410,18 @@ public class AugFileTab implements FileTab {
 		}
 	}
 
+	public void addGetters() {
+		highlighter.addGetters();
+	}
+
+	public void addSetters() {
+		highlighter.addSetters();
+	}
+
+	public void addGettersAndSetters() {
+		highlighter.addGettersAndSetters();
+	}
+
 	public String getContent() {
 
 		ensureLoaded();

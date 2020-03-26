@@ -712,6 +712,43 @@ public class MainMenu {
 		}
 
 
+		JMenu code = new JMenu("Code");
+		menu.add(code);
+
+		JMenuItem addGettersJava = new JMenuItem("Add Getters for Selected Fields");
+		addGettersJava.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (mainGUI.getCurrentTab() != null) {
+					mainGUI.getCurrentTab().addGetters();
+				}
+			}
+		});
+		code.add(addGettersJava);
+
+		JMenuItem addSettersJava = new JMenuItem("Add Setters for Selected Fields");
+		addSettersJava.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (mainGUI.getCurrentTab() != null) {
+					mainGUI.getCurrentTab().addSetters();
+				}
+			}
+		});
+		code.add(addSettersJava);
+
+		JMenuItem addGettersAndSettersJava = new JMenuItem("Add Getters and Setters for Selected Fields");
+		addGettersAndSettersJava.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (mainGUI.getCurrentTab() != null) {
+					mainGUI.getCurrentTab().addGettersAndSetters();
+				}
+			}
+		});
+		code.add(addGettersAndSettersJava);
+
+
 		JMenu operations = new JMenu("Operations");
 		menu.add(operations);
 
