@@ -93,6 +93,7 @@ public class MainGUI extends MainWindow {
 	private final static String CONFIG_KEY_REPLACE_WHITESPACES_WITH_TABS_ON_SAVE = "onSaveReplaceWhitespacesWithTabs";
 	private final static String CONFIG_KEY_REPLACE_TABS_WITH_WHITESPACES_ON_SAVE = "onSaveReplaceTabsWithWhitespaces";
 	private final static String CONFIG_KEY_REORGANIZE_IMPORTS_ON_SAVE = "onSaveReorganizeImports";
+	private final static String CONFIG_KEY_REORGANIZE_IMPORTS_ON_SAVE_COMPATIBLE = "onSaveReorganizeImportsCompatible";
 	private final static String CONFIG_KEY_REMOVE_UNUSED_IMPORTS_ON_SAVE = "onSaveRemoveUnusedImports";
 	private final static String CONFIG_KEY_COPY_ON_ENTER = "copyOnEnter";
 	private final static String CONFIG_KEY_TAB_ENTIRE_BLOCKS = "tabEntireBlocks";
@@ -132,6 +133,7 @@ public class MainGUI extends MainWindow {
 	Boolean replaceWhitespacesWithTabsOnSave;
 	Boolean replaceTabsWithWhitespacesOnSave;
 	Boolean reorganizeImportsOnSave;
+	Boolean reorganizeImportsOnSaveCompatible;
 	Boolean removeUnusedImportsOnSave;
 	Boolean copyOnEnter;
 	Boolean tabEntireBlocks;
@@ -227,6 +229,8 @@ public class MainGUI extends MainWindow {
 		replaceTabsWithWhitespacesOnSave = configuration.getBoolean(CONFIG_KEY_REPLACE_TABS_WITH_WHITESPACES_ON_SAVE, false);
 
 		reorganizeImportsOnSave = configuration.getBoolean(CONFIG_KEY_REORGANIZE_IMPORTS_ON_SAVE, true);
+
+		reorganizeImportsOnSaveCompatible = configuration.getBoolean(CONFIG_KEY_REORGANIZE_IMPORTS_ON_SAVE_COMPATIBLE, true);
 
 		removeUnusedImportsOnSave = configuration.getBoolean(CONFIG_KEY_REMOVE_UNUSED_IMPORTS_ON_SAVE, true);
 
@@ -1243,6 +1247,36 @@ public class MainGUI extends MainWindow {
 		configuration.set(CONFIG_KEY_REORGANIZE_IMPORTS_ON_SAVE, reorganizeImportsOnSave);
 
 		mainMenu.reorganizeImportsOnSaveItem.setSelected(reorganizeImportsOnSave);
+
+		if (reorganizeImportsOnSave) {
+			setReorganizeImportsOnSaveCompatible(false);
+		}
+	}
+
+	public boolean getReorganizeImportsOnSaveCompatible() {
+		return reorganizeImportsOnSaveCompatible;
+	}
+
+	public void setReorganizeImportsOnSaveCompatible(Boolean setTo) {
+
+		if (setTo == null) {
+			setTo = true;
+		}
+
+		reorganizeImportsOnSaveCompatible = setTo;
+
+		Record activeWorkspace = augFileCtrl.getActiveWorkspace();
+		if (activeWorkspace != null) {
+			activeWorkspace.set(CONFIG_KEY_REORGANIZE_IMPORTS_ON_SAVE_COMPATIBLE, reorganizeImportsOnSaveCompatible);
+		}
+
+		configuration.set(CONFIG_KEY_REORGANIZE_IMPORTS_ON_SAVE_COMPATIBLE, reorganizeImportsOnSaveCompatible);
+
+		mainMenu.reorganizeImportsOnSaveCompatibleItem.setSelected(reorganizeImportsOnSaveCompatible);
+
+		if (reorganizeImportsOnSaveCompatible) {
+			setReorganizeImportsOnSave(false);
+		}
 	}
 
 	public boolean getRemoveUnusedImportsOnSave() {
@@ -1708,6 +1742,7 @@ public class MainGUI extends MainWindow {
 		setReplaceWhitespacesWithTabsOnSave(activeWorkspace.getBoolean(CONFIG_KEY_REPLACE_WHITESPACES_WITH_TABS_ON_SAVE, replaceWhitespacesWithTabsOnSave));
 		setReplaceTabsWithWhitespacesOnSave(activeWorkspace.getBoolean(CONFIG_KEY_REPLACE_TABS_WITH_WHITESPACES_ON_SAVE, replaceTabsWithWhitespacesOnSave));
 		setReorganizeImportsOnSave(activeWorkspace.getBoolean(CONFIG_KEY_REORGANIZE_IMPORTS_ON_SAVE, reorganizeImportsOnSave));
+		setReorganizeImportsOnSaveCompatible(activeWorkspace.getBoolean(CONFIG_KEY_REORGANIZE_IMPORTS_ON_SAVE_COMPATIBLE, reorganizeImportsOnSaveCompatible));
 		setRemoveUnusedImportsOnSave(activeWorkspace.getBoolean(CONFIG_KEY_REMOVE_UNUSED_IMPORTS_ON_SAVE, removeUnusedImportsOnSave));
 
 		refreshTitleBar();

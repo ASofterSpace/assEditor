@@ -975,6 +975,11 @@ public class AugFileTab implements FileTab {
 			contentText = highlighter.reorganizeImports(contentText);
 		}
 
+		if (mainGUI.reorganizeImportsOnSaveCompatible) {
+
+			contentText = highlighter.reorganizeImportsCompatible(contentText);
+		}
+
 		if (mainGUI.replaceWhitespacesWithTabsOnSave) {
 
 			contentText = replaceLeadingWhitespacesWithTabs(contentText);
@@ -1010,6 +1015,11 @@ public class AugFileTab implements FileTab {
 	public void reorganizeImports() {
 
 		highlighter.reorganizeImports();
+	}
+
+	public void reorganizeImportsCompatible() {
+
+		highlighter.reorganizeImportsCompatible();
 	}
 
 	public void removeUnusedImports() {

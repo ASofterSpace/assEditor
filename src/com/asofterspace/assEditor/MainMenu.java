@@ -58,6 +58,7 @@ public class MainMenu {
 	JCheckBoxMenuItem replaceWhitespacesWithTabsOnSaveItem;
 	JCheckBoxMenuItem replaceTabsWithWhitespacesOnSaveItem;
 	JCheckBoxMenuItem reorganizeImportsOnSaveItem;
+	JCheckBoxMenuItem reorganizeImportsOnSaveCompatibleItem;
 	JCheckBoxMenuItem removeUnusedImportsOnSaveItem;
 	JCheckBoxMenuItem copyOnEnterItem;
 	JCheckBoxMenuItem usingUTF8WithBOM;
@@ -631,7 +632,7 @@ public class MainMenu {
 		});
 		edit.add(repTabsWithWhitespaces);
 
-		JMenuItem reorgImports = new JMenuItem("Reorganize Imports");
+		JMenuItem reorgImports = new JMenuItem("Reorganize Imports (Normal)");
 		reorgImports.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -641,6 +642,17 @@ public class MainMenu {
 			}
 		});
 		edit.add(reorgImports);
+
+		JMenuItem reorgImportsCompatible = new JMenuItem("Reorganize Imports (Compatibile with Wonky IDEs)");
+		reorgImportsCompatible.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (mainGUI.getCurrentTab() != null) {
+					mainGUI.getCurrentTab().reorganizeImportsCompatible();
+				}
+			}
+		});
+		edit.add(reorgImportsCompatible);
 
 		JMenuItem removeUnusedImports = new JMenuItem("Remove Unused Imports");
 		removeUnusedImports.addActionListener(new ActionListener() {
@@ -972,15 +984,26 @@ public class MainMenu {
 		mainGUI.setReplaceWhitespacesWithTabsOnSave(mainGUI.getReplaceWhitespacesWithTabsOnSave());
 		mainGUI.setReplaceTabsWithWhitespacesOnSave(mainGUI.getReplaceTabsWithWhitespacesOnSave());
 
-		reorganizeImportsOnSaveItem = new JCheckBoxMenuItem("Reorganize Imports on Save");
+		reorganizeImportsOnSaveItem = new JCheckBoxMenuItem("Reorganize Imports on Save (Regular)");
 		reorganizeImportsOnSaveItem.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				mainGUI.setReorganizeImportsOnSave(!mainGUI.getReorganizeImportsOnSave());
 			}
 		});
-		mainGUI.setReorganizeImportsOnSave(mainGUI.getReorganizeImportsOnSave());
 		settings.add(reorganizeImportsOnSaveItem);
+
+		reorganizeImportsOnSaveCompatibleItem = new JCheckBoxMenuItem("Reorganize Imports on Save (Compatibile with Wonky IDEs)");
+		reorganizeImportsOnSaveCompatibleItem.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				mainGUI.setReorganizeImportsOnSaveCompatible(!mainGUI.getReorganizeImportsOnSaveCompatible());
+			}
+		});
+		settings.add(reorganizeImportsOnSaveCompatibleItem);
+
+		mainGUI.setReorganizeImportsOnSave(mainGUI.getReorganizeImportsOnSave());
+		mainGUI.setReorganizeImportsOnSaveCompatible(mainGUI.getReorganizeImportsOnSaveCompatible());
 
 		removeUnusedImportsOnSaveItem = new JCheckBoxMenuItem("Remove Unused Imports on Save");
 		removeUnusedImportsOnSaveItem.addActionListener(new ActionListener() {
@@ -1001,6 +1024,7 @@ public class MainMenu {
 				mainGUI.setReplaceWhitespacesWithTabsOnSave(toggleTo);
 				mainGUI.setReplaceTabsWithWhitespacesOnSave(false);
 				mainGUI.setReorganizeImportsOnSave(toggleTo);
+				mainGUI.setReorganizeImportsOnSaveCompatible(false);
 				mainGUI.setRemoveUnusedImportsOnSave(toggleTo);
 			}
 		});
