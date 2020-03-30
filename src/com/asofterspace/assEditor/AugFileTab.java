@@ -102,7 +102,11 @@ public class AugFileTab implements FileTab {
 			public void call() {
 				if (!changed) {
 					changed = true;
-					mainGUI.regenerateAugFileList();
+					// the tab is already visible, so we do not need to show it again,
+					// therefore instead of calling mainGUI.regenerateAugFileList();,
+					// we call the following two (!) lines:
+					mainGUI.regenerateAugFileListWithoutShowingAnyTabs();
+					mainGUI.highlightTabInLeftListOrTree(AugFileTab.this);
 				}
 			}
 		};

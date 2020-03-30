@@ -1487,6 +1487,37 @@ public class MainGUI extends MainWindow {
 		return "nameless";
 	}
 
+	public void regenerateAugFileListWithoutShowingAnyTabs() {
+
+		// regenerate the file tree
+		fileTreeModel.regenerate(augFileTabs);
+
+		// fully expand the file tree
+		for (int i = 0; i < fileTreeComponent.getRowCount(); i++) {
+			fileTreeComponent.expandRow(i);
+		}
+
+		Collections.sort(augFileTabs, new Comparator<AugFileTab>() {
+			public int compare(AugFileTab a, AugFileTab b) {
+				// TODO :: make it configurable whether to sort by just the name or by
+				// the full name (including the path)!
+				// return a.getName().toLowerCase().compareTo(b.getName().toLowerCase());
+				return a.getFilePath().toLowerCase().compareTo(b.getFilePath().toLowerCase());
+			}
+		});
+
+		augFileTabArray = new AugFileTab[augFileTabs.size()];
+
+		int i = 0;
+
+		for (AugFileTab augFileTab : augFileTabs) {
+			augFileTabArray[i] = augFileTab;
+			i++;
+		}
+
+		fileListComponent.setListData(augFileTabArray);
+	}
+
 	/**
 	 * Regenerate the file list on the left hand side based on the augFileTabs list,
 	 * and (if at least one file exists), select and open the current tab or, if it
@@ -1516,33 +1547,7 @@ public class MainGUI extends MainWindow {
 			}
 		}
 
-		// regenerate the file tree
-		fileTreeModel.regenerate(augFileTabs);
-
-		// fully expand the file tree
-		for (int i = 0; i < fileTreeComponent.getRowCount(); i++) {
-			fileTreeComponent.expandRow(i);
-		}
-
-		Collections.sort(augFileTabs, new Comparator<AugFileTab>() {
-			public int compare(AugFileTab a, AugFileTab b) {
-				// TODO :: make it configurable whether to sort by just the name or by
-				// the full name (including the path)!
-				// return a.getName().toLowerCase().compareTo(b.getName().toLowerCase());
-				return a.getFilePath().toLowerCase().compareTo(b.getFilePath().toLowerCase());
-			}
-		});
-
-		augFileTabArray = new AugFileTab[augFileTabs.size()];
-
-		int i = 0;
-
-		for (AugFileTab augFileTab : augFileTabs) {
-			augFileTabArray[i] = augFileTab;
-			i++;
-		}
-
-		fileListComponent.setListData(augFileTabArray);
+		regenerateAugFileListWithoutShowingAnyTabs();
 
 		// if there still is no last shown tab (e.g. we just deleted the very last one)...
 		if (currentlyShownTab == null) {
