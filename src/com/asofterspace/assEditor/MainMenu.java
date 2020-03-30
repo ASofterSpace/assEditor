@@ -555,17 +555,6 @@ public class MainMenu {
 
 		edit.addSeparator();
 
-		JMenuItem applyGit = new JMenuItem("Apply Git Markers (+/- at the beginning of lines)");
-		applyGit.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				if (mainGUI.getCurrentTab() != null) {
-					mainGUI.getCurrentTab().applyGit();
-				}
-			}
-		});
-		edit.add(applyGit);
-
 		JMenuItem removeDebugLines = new JMenuItem("Remove Lines Containing // DEBUG or # DEBUG");
 		removeDebugLines.addActionListener(new ActionListener() {
 			@Override
@@ -759,6 +748,30 @@ public class MainMenu {
 			}
 		});
 		code.add(addGettersAndSettersJava);
+
+		code.addSeparator();
+
+		JMenuItem applyGit = new JMenuItem("Apply Git Markers (+/- at the beginning of lines)");
+		applyGit.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (mainGUI.getCurrentTab() != null) {
+					mainGUI.getCurrentTab().applyGit(false);
+				}
+			}
+		});
+		code.add(applyGit);
+
+		JMenuItem applyGitInv = new JMenuItem("Apply Git Markers Inverted (+/- at the beginning of lines but - is kept)");
+		applyGitInv.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (mainGUI.getCurrentTab() != null) {
+					mainGUI.getCurrentTab().applyGit(true);
+				}
+			}
+		});
+		code.add(applyGitInv);
 
 
 		JMenu operations = new JMenu("Operations");

@@ -511,7 +511,7 @@ public class AugFileTab implements FileTab {
 		return augFile.getSourceLanguage();
 	}
 
-	public void applyGit() {
+	public void applyGit(boolean inverted) {
 
 		ensureLoaded();
 
@@ -522,7 +522,10 @@ public class AugFileTab implements FileTab {
 		for (String line : codeLines) {
 
 			// ignore lines starting with - entirely (thus removing them)
-			if (line.startsWith("-")) {
+			if ((!inverted) && line.startsWith("-")) {
+				continue;
+			}
+			if (inverted && line.startsWith("+")) {
 				continue;
 			}
 
@@ -530,7 +533,7 @@ public class AugFileTab implements FileTab {
 			// and remove the space from lines starting with it, if then a tab follows
 			// (if we have spacespacespace, then it is unclear if the space should be removed,
 			// as we could just be indenting with spaces anyway...)
-			if (line.startsWith("+") || line.startsWith(" \t")) {
+			if (line.startsWith("+") || line.startsWith("-") || line.startsWith(" \t")) {
 				line = line.substring(1);
 			}
 
