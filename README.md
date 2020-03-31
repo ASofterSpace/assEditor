@@ -2,7 +2,7 @@
 
 **Class:** A Softer Space Internal
 
-**Language:** Java
+**Language:** Java 11
 
 **Platform:** Windows or Linux Desktop
 
