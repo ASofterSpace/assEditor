@@ -1571,7 +1571,7 @@ public class MainGUI extends MainWindow {
 		regenerateAugFileList();
 	}
 
-	public void highlightTabInLeftListOrTree(AugFileTab tab) {
+	public void highlightTabInLeftListOrTree(final AugFileTab tab) {
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
 			public void run() {
