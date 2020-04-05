@@ -647,6 +647,14 @@ public class AugFileTab implements FileTab {
 			insertStr = "\n" + insertStr;
 		}
 
+		// if duplicating a package line in Java, actually duplicate as import line
+		CodeLanguage lang = augFile.getSourceLanguage();
+		if ((lang == CodeLanguage.JAVA) || (lang == CodeLanguage.GROOVY)) {
+			if (insertStr.startsWith("\npackage ")) {
+				insertStr = "\nimport " + insertStr.substring(9);
+			}
+		}
+
 		sourceCode = sourceCode.substring(0, lineEnd) + insertStr + sourceCode.substring(lineEnd);
 
 		fileContentMemo.setText(sourceCode);
