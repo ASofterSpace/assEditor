@@ -985,6 +985,11 @@ public class AugFileTab implements FileTab {
 
 		origCaretPos = fileContentMemo.getCaretPosition();
 
+		if (mainGUI.addMissingImportsOnSave) {
+
+			contentText = highlighter.addMissingImports(contentText);
+		}
+
 		if (mainGUI.removeUnusedImportsOnSave) {
 
 			contentText = highlighter.removeUnusedImports(contentText);
@@ -1030,6 +1035,11 @@ public class AugFileTab implements FileTab {
 		augFile.save();
 
 		regenerateAugFileListWhileWeAreVisible();
+	}
+
+	public void addMissingImports() {
+
+		highlighter.addMissingImports();
 	}
 
 	public void reorganizeImports() {
@@ -1450,6 +1460,10 @@ public class AugFileTab implements FileTab {
 
 	public void addGettersAndSetters() {
 		highlighter.addGettersAndSetters();
+	}
+
+	public void addEquals() {
+		highlighter.addEquals();
 	}
 
 	public String getContent() {

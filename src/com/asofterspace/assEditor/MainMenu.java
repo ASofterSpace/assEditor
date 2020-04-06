@@ -57,6 +57,7 @@ public class MainMenu {
 	JCheckBoxMenuItem removeTrailingWhitespaceOnSaveItem;
 	JCheckBoxMenuItem replaceWhitespacesWithTabsOnSaveItem;
 	JCheckBoxMenuItem replaceTabsWithWhitespacesOnSaveItem;
+	JCheckBoxMenuItem addMissingImportsOnSaveItem;
 	JCheckBoxMenuItem reorganizeImportsOnSaveItem;
 	JCheckBoxMenuItem reorganizeImportsOnSaveCompatibleItem;
 	JCheckBoxMenuItem removeUnusedImportsOnSaveItem;
@@ -555,17 +556,6 @@ public class MainMenu {
 
 		edit.addSeparator();
 
-		JMenuItem removeDebugLines = new JMenuItem("Remove Lines Containing // DEBUG or # DEBUG");
-		removeDebugLines.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				if (mainGUI.getCurrentTab() != null) {
-					mainGUI.getCurrentTab().removeDebugLines();
-				}
-			}
-		});
-		edit.add(removeDebugLines);
-
 		JMenuItem writeLineNumbers = new JMenuItem("Write Line Numbers in Front of Each Line");
 		writeLineNumbers.addActionListener(new ActionListener() {
 			@Override
@@ -620,6 +610,17 @@ public class MainMenu {
 			}
 		});
 		edit.add(repTabsWithWhitespaces);
+
+		JMenuItem addMissingImports = new JMenuItem("Add Missing Imports");
+		addMissingImports.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (mainGUI.getCurrentTab() != null) {
+					mainGUI.getCurrentTab().addMissingImports();
+				}
+			}
+		});
+		edit.add(addMissingImports);
 
 		JMenuItem reorgImports = new JMenuItem("Reorganize Imports (Normal)");
 		reorgImports.addActionListener(new ActionListener() {
@@ -748,6 +749,30 @@ public class MainMenu {
 			}
 		});
 		code.add(addGettersAndSettersJava);
+
+		JMenuItem addEquals = new JMenuItem("Add equals() and hashCode()");
+		addEquals.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (mainGUI.getCurrentTab() != null) {
+					mainGUI.getCurrentTab().addEquals();
+				}
+			}
+		});
+		code.add(addEquals);
+
+		code.addSeparator();
+
+		JMenuItem removeDebugLines = new JMenuItem("Remove Lines Containing // DEBUG or # DEBUG");
+		removeDebugLines.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (mainGUI.getCurrentTab() != null) {
+					mainGUI.getCurrentTab().removeDebugLines();
+				}
+			}
+		});
+		code.add(removeDebugLines);
 
 		code.addSeparator();
 
@@ -997,6 +1022,16 @@ public class MainMenu {
 		mainGUI.setReplaceWhitespacesWithTabsOnSave(mainGUI.getReplaceWhitespacesWithTabsOnSave());
 		mainGUI.setReplaceTabsWithWhitespacesOnSave(mainGUI.getReplaceTabsWithWhitespacesOnSave());
 
+		addMissingImportsOnSaveItem = new JCheckBoxMenuItem("Add Missing Imports on Save");
+		addMissingImportsOnSaveItem.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				mainGUI.setAddMissingImportsOnSave(!mainGUI.getAddMissingImportsOnSave());
+			}
+		});
+		mainGUI.setAddMissingImportsOnSave(mainGUI.getAddMissingImportsOnSave());
+		settings.add(addMissingImportsOnSaveItem);
+
 		reorganizeImportsOnSaveItem = new JCheckBoxMenuItem("Reorganize Imports on Save (Regular)");
 		reorganizeImportsOnSaveItem.addActionListener(new ActionListener() {
 			@Override
@@ -1036,6 +1071,7 @@ public class MainMenu {
 				mainGUI.setRemoveTrailingWhitespaceOnSave(toggleTo);
 				mainGUI.setReplaceWhitespacesWithTabsOnSave(toggleTo);
 				mainGUI.setReplaceTabsWithWhitespacesOnSave(false);
+				mainGUI.setAddMissingImportsOnSave(toggleTo);
 				mainGUI.setReorganizeImportsOnSave(toggleTo);
 				mainGUI.setReorganizeImportsOnSaveCompatible(false);
 				mainGUI.setRemoveUnusedImportsOnSave(toggleTo);
@@ -1268,10 +1304,6 @@ public class MainMenu {
 		for (JCheckBoxMenuItem workspace : workspaces) {
 			workspace.setSelected(false);
 		}
-	}
-
-	public void setRemoveUnusedImportsOnSave(boolean setTo) {
-		removeUnusedImportsOnSaveItem.setSelected(setTo);
 	}
 
 	public void reEnableDisableMenuItems(boolean augFilesExist, boolean fileIsSelected) {

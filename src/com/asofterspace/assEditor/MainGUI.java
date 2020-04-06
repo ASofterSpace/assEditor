@@ -92,6 +92,7 @@ public class MainGUI extends MainWindow {
 	private final static String CONFIG_KEY_REMOVE_TRAILING_WHITESPACE_ON_SAVE = "onSaveRemoveTrailingWhitespace";
 	private final static String CONFIG_KEY_REPLACE_WHITESPACES_WITH_TABS_ON_SAVE = "onSaveReplaceWhitespacesWithTabs";
 	private final static String CONFIG_KEY_REPLACE_TABS_WITH_WHITESPACES_ON_SAVE = "onSaveReplaceTabsWithWhitespaces";
+	private final static String CONFIG_KEY_ADD_MISSING_IMPORTS_ON_SAVE = "onSaveAddMissingImports";
 	private final static String CONFIG_KEY_REORGANIZE_IMPORTS_ON_SAVE = "onSaveReorganizeImports";
 	private final static String CONFIG_KEY_REORGANIZE_IMPORTS_ON_SAVE_COMPATIBLE = "onSaveReorganizeImportsCompatible";
 	private final static String CONFIG_KEY_REMOVE_UNUSED_IMPORTS_ON_SAVE = "onSaveRemoveUnusedImports";
@@ -132,6 +133,7 @@ public class MainGUI extends MainWindow {
 	Boolean removeTrailingWhitespaceOnSave;
 	Boolean replaceWhitespacesWithTabsOnSave;
 	Boolean replaceTabsWithWhitespacesOnSave;
+	Boolean addMissingImportsOnSave;
 	Boolean reorganizeImportsOnSave;
 	Boolean reorganizeImportsOnSaveCompatible;
 	Boolean removeUnusedImportsOnSave;
@@ -227,6 +229,8 @@ public class MainGUI extends MainWindow {
 		replaceWhitespacesWithTabsOnSave = configuration.getBoolean(CONFIG_KEY_REPLACE_WHITESPACES_WITH_TABS_ON_SAVE, true);
 
 		replaceTabsWithWhitespacesOnSave = configuration.getBoolean(CONFIG_KEY_REPLACE_TABS_WITH_WHITESPACES_ON_SAVE, false);
+
+		addMissingImportsOnSave = configuration.getBoolean(CONFIG_KEY_ADD_MISSING_IMPORTS_ON_SAVE, true);
 
 		reorganizeImportsOnSave = configuration.getBoolean(CONFIG_KEY_REORGANIZE_IMPORTS_ON_SAVE, true);
 
@@ -1227,6 +1231,28 @@ public class MainGUI extends MainWindow {
 		}
 	}
 
+	public boolean getAddMissingImportsOnSave() {
+		return addMissingImportsOnSave;
+	}
+
+	public void setAddMissingImportsOnSave(Boolean setTo) {
+
+		if (setTo == null) {
+			setTo = true;
+		}
+
+		addMissingImportsOnSave = setTo;
+
+		Record activeWorkspace = augFileCtrl.getActiveWorkspace();
+		if (activeWorkspace != null) {
+			activeWorkspace.set(CONFIG_KEY_ADD_MISSING_IMPORTS_ON_SAVE, addMissingImportsOnSave);
+		}
+
+		configuration.set(CONFIG_KEY_ADD_MISSING_IMPORTS_ON_SAVE, addMissingImportsOnSave);
+
+		mainMenu.addMissingImportsOnSaveItem.setSelected(addMissingImportsOnSave);
+	}
+
 	public boolean getReorganizeImportsOnSave() {
 		return reorganizeImportsOnSave;
 	}
@@ -1298,7 +1324,7 @@ public class MainGUI extends MainWindow {
 
 		configuration.set(CONFIG_KEY_REMOVE_UNUSED_IMPORTS_ON_SAVE, removeUnusedImportsOnSave);
 
-		mainMenu.setRemoveUnusedImportsOnSave(setTo);
+		mainMenu.removeUnusedImportsOnSaveItem.setSelected(setTo);
 	}
 
 	private void setCopyOnEnter(Boolean setTo) {
@@ -1746,6 +1772,7 @@ public class MainGUI extends MainWindow {
 		setRemoveTrailingWhitespaceOnSave(activeWorkspace.getBoolean(CONFIG_KEY_REMOVE_TRAILING_WHITESPACE_ON_SAVE, removeTrailingWhitespaceOnSave));
 		setReplaceWhitespacesWithTabsOnSave(activeWorkspace.getBoolean(CONFIG_KEY_REPLACE_WHITESPACES_WITH_TABS_ON_SAVE, replaceWhitespacesWithTabsOnSave));
 		setReplaceTabsWithWhitespacesOnSave(activeWorkspace.getBoolean(CONFIG_KEY_REPLACE_TABS_WITH_WHITESPACES_ON_SAVE, replaceTabsWithWhitespacesOnSave));
+		setAddMissingImportsOnSave(activeWorkspace.getBoolean(CONFIG_KEY_ADD_MISSING_IMPORTS_ON_SAVE, addMissingImportsOnSave));
 		setReorganizeImportsOnSave(activeWorkspace.getBoolean(CONFIG_KEY_REORGANIZE_IMPORTS_ON_SAVE, reorganizeImportsOnSave));
 		setReorganizeImportsOnSaveCompatible(activeWorkspace.getBoolean(CONFIG_KEY_REORGANIZE_IMPORTS_ON_SAVE_COMPATIBLE, reorganizeImportsOnSaveCompatible));
 		setRemoveUnusedImportsOnSave(activeWorkspace.getBoolean(CONFIG_KEY_REMOVE_UNUSED_IMPORTS_ON_SAVE, removeUnusedImportsOnSave));
