@@ -57,6 +57,15 @@ public class MainPopupMenu {
 		});
 		popupMenu.add(newFilePopup);
 
+		JMenuItem copySelectedFilePopup = new JMenuItem("Copy Selected File");
+		copySelectedFilePopup.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				mainGUI.copyFiles(mainGUI.getHighlightedTabs());
+			}
+		});
+		popupMenu.add(copySelectedFilePopup);
+
 		JMenuItem openFilePopup = new JMenuItem("Open Files");
 		openFilePopup.addActionListener(new ActionListener() {
 			@Override

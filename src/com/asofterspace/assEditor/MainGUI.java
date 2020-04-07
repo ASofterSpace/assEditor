@@ -785,6 +785,30 @@ public class MainGUI extends MainWindow {
 		loadFile(fileToOpen);
 	}
 
+	public void copyFiles(List<AugFileTab> tabs) {
+
+		for (AugFileTab tab : tabs) {
+
+			String curDir = tab.getFile().getParentDirectory().getAbsoluteDirname();
+
+			if (curDir != null) {
+				String newFileName = tab.getName();
+				if (newFileName.contains(".")) {
+					newFileName = newFileName.substring(0, newFileName.lastIndexOf(".")) + " (copy)" + newFileName.substring(newFileName.lastIndexOf("."));
+				} else {
+					newFileName = newFileName + " (copy)";
+				}
+				SimpleFile fileToOpen = new SimpleFile(curDir + "/" + newFileName);
+
+				fileToOpen.setContent(tab.getContent());
+
+				fileToOpen.create();
+
+				loadFile(fileToOpen);
+			}
+		}
+	}
+
 	public void saveFiles(List<AugFileTab> tabs) {
 
 		for (AugFileTab tab : tabs) {

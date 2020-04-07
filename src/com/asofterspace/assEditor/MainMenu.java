@@ -101,6 +101,15 @@ public class MainMenu {
 				}
 			});
 			file.add(newFile);
+
+			JMenuItem copySelectedFile = new JMenuItem("Copy Selected File");
+			copySelectedFile.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					mainGUI.copyFiles(mainGUI.getHighlightedTabs());
+				}
+			});
+			file.add(copySelectedFile);
 		}
 
 		JMenuItem openFile = new JMenuItem("Open File" + (standalone ? "" : "s"));
