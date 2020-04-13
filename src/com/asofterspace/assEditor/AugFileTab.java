@@ -738,8 +738,8 @@ public class AugFileTab implements FileTab {
 
 		int carPos = fileContentMemo.getCaretPosition();
 
-		int selStart = Code.getWordStartFromPosition(carPos, sourceCode);
-		int selEnd = Code.getWordEndFromPosition(carPos, sourceCode);
+		int selStart = Code.getWordStartFromPosition(carPos, sourceCode, true);
+		int selEnd = Code.getWordEndFromPosition(carPos, sourceCode, true);
 
 		String lowStr = sourceCode.substring(selStart, selEnd);
 		lowStr = lowStr.toLowerCase();
@@ -758,8 +758,8 @@ public class AugFileTab implements FileTab {
 
 		int carPos = fileContentMemo.getCaretPosition();
 
-		int selStart = Code.getWordStartFromPosition(carPos, sourceCode);
-		int selEnd = Code.getWordEndFromPosition(carPos, sourceCode);
+		int selStart = Code.getWordStartFromPosition(carPos, sourceCode, true);
+		int selEnd = Code.getWordEndFromPosition(carPos, sourceCode, true);
 
 		String upStr = sourceCode.substring(selStart, selEnd);
 		upStr = upStr.toUpperCase();
@@ -1467,6 +1467,16 @@ public class AugFileTab implements FileTab {
 
 	public void addEquals() {
 		highlighter.addEquals();
+	}
+
+	public void jumpToLine(int lineNum) {
+
+		ensureLoaded();
+
+		// we subtract 1, because humans start at 1, but internally we start counting lines at 0
+		int lineStart = Code.getLineStartFromNumber(lineNum - 1, fileContentMemo.getText());
+
+		fileContentMemo.setCaretPosition(lineStart);
 	}
 
 	public String getContent() {

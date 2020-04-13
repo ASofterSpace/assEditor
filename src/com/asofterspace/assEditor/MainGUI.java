@@ -480,17 +480,38 @@ public class MainGUI extends MainWindow {
 				jump();
 			}
 			private void jump() {
-				String jumpTo = jumpToFileField.getText().toLowerCase();
+				String jumpToTabStr = jumpToFileField.getText().toLowerCase();
+				String jumpToLineStr = null;
 
-				if ("".equals(jumpTo)) {
-					return;
+				if (jumpToTabStr.contains(":")) {
+					jumpToLineStr = jumpToTabStr.substring(jumpToTabStr.indexOf(":") + 1);
+					jumpToTabStr = jumpToTabStr.substring(0, jumpToTabStr.indexOf(":"));
 				}
 
-				for (AugFileTab tab : augFileTabs) {
-					if (tab.getName().toLowerCase().startsWith(jumpTo)) {
-						jumpToTab = tab;
-						showTab(tab, false);
-						return;
+				if (!"".equals(jumpToTabStr)) {
+					for (AugFileTab tab : augFileTabs) {
+						if (tab.getName().toLowerCase().startsWith(jumpToTabStr)) {
+							jumpToTab = tab;
+							showTab(tab, false);
+							if (jumpToLineStr != null) {
+								try {
+									int jumpToLineInt = Integer.parseInt(jumpToLineStr.trim());
+									tab.jumpToLine(jumpToLineInt);
+								} catch (NumberFormatException e) {
+									// whoops!
+								}
+							}
+							return;
+						}
+					}
+				}
+
+				if (jumpToLineStr != null) {
+					try {
+						int jumpToLineInt = Integer.parseInt(jumpToLineStr.trim());
+						currentlyShownTab.jumpToLine(jumpToLineInt);
+					} catch (NumberFormatException e) {
+						// whoops!
 					}
 				}
 			}
@@ -1069,6 +1090,8 @@ public class MainGUI extends MainWindow {
 				noteArea.setBackground(Color.white);
 				searchField.setForeground(Color.black);
 				searchField.setBackground(Color.white);
+				jumpToFileField.setForeground(Color.black);
+				jumpToFileField.setBackground(Color.white);
 				replaceField.setForeground(Color.black);
 				replaceField.setBackground(Color.white);
 				fileListComponent.setForeground(Color.black);
@@ -1082,6 +1105,8 @@ public class MainGUI extends MainWindow {
 				noteArea.setBackground(Color.black);
 				searchField.setForeground(Color.white);
 				searchField.setBackground(Color.black);
+				jumpToFileField.setForeground(Color.white);
+				jumpToFileField.setBackground(Color.black);
 				replaceField.setForeground(Color.white);
 				replaceField.setBackground(Color.black);
 				fileListComponent.setForeground(Color.white);
