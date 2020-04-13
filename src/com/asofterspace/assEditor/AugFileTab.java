@@ -76,7 +76,7 @@ public class AugFileTab implements FileTab {
 	private boolean goForwardEnabled = true;
 	private JLabel nameLabel;
 	private JTextPane lineMemo;
-	private JTextPane fileContentMemo;
+	private CodeEditor fileContentMemo;
 	private JScrollPane sourceCodeScroller;
 	private JTextPane functionMemo;
 	private JScrollPane sideScrollPane;
@@ -168,6 +168,7 @@ public class AugFileTab implements FileTab {
 		scrolledPanel.setLayout(new GridBagLayout());
 
 		fileContentMemo = new CodeEditor();
+		fileContentMemo.enableStartLine(true);
 		lineMemo = new CodeEditorLineMemo();
 		lineNumbers = new LineNumbering(lineMemo, fileContentMemo);
 
