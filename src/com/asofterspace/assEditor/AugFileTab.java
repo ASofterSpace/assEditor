@@ -711,6 +711,27 @@ public class AugFileTab implements FileTab {
 		fileContentMemo.setCaretPosition(carPos);
 	}
 
+	public void upLowCurSel() {
+
+		ensureLoaded();
+
+		String sourceCode = fileContentMemo.getText();
+
+		int carPos = fileContentMemo.getCaretPosition();
+		int selStart = fileContentMemo.getSelectionStart();
+		int selEnd = fileContentMemo.getSelectionEnd();
+
+		String upLowStr = sourceCode.substring(selStart, selEnd);
+		if (upLowStr.length() > 0) {
+			upLowStr = upLowStr.substring(0, 1).toUpperCase() + upLowStr.substring(1).toLowerCase();
+		}
+
+		sourceCode = sourceCode.substring(0, selStart) + upLowStr + sourceCode.substring(selEnd);
+
+		fileContentMemo.setText(sourceCode);
+		fileContentMemo.setCaretPosition(carPos);
+	}
+
 	public void upCurSel() {
 
 		ensureLoaded();
@@ -745,6 +766,28 @@ public class AugFileTab implements FileTab {
 		lowStr = lowStr.toLowerCase();
 
 		sourceCode = sourceCode.substring(0, selStart) + lowStr + sourceCode.substring(selEnd);
+
+		fileContentMemo.setText(sourceCode);
+		fileContentMemo.setCaretPosition(carPos);
+	}
+
+	public void upLowCurWord() {
+
+		ensureLoaded();
+
+		String sourceCode = fileContentMemo.getText();
+
+		int carPos = fileContentMemo.getCaretPosition();
+
+		int selStart = Code.getWordStartFromPosition(carPos, sourceCode, true);
+		int selEnd = Code.getWordEndFromPosition(carPos, sourceCode, true);
+
+		String upLowStr = sourceCode.substring(selStart, selEnd);
+		if (upLowStr.length() > 0) {
+			upLowStr = upLowStr.substring(0, 1).toUpperCase() + upLowStr.substring(1).toLowerCase();
+		}
+
+		sourceCode = sourceCode.substring(0, selStart) + upLowStr + sourceCode.substring(selEnd);
 
 		fileContentMemo.setText(sourceCode);
 		fileContentMemo.setCaretPosition(carPos);

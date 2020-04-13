@@ -17,6 +17,7 @@ import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -379,6 +380,17 @@ public class MainMenu {
 		});
 		edit.add(lowCurSel);
 
+		JMenuItem upLowCurSel = new JMenuItem("Up+lowcase Current Selection");
+		upLowCurSel.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (mainGUI.getCurrentTab() != null) {
+					mainGUI.getCurrentTab().upLowCurSel();
+				}
+			}
+		});
+		edit.add(upLowCurSel);
+
 		JMenuItem upCurSel = new JMenuItem("Upcase Current Selection");
 		upCurSel.addActionListener(new ActionListener() {
 			@Override
@@ -401,6 +413,18 @@ public class MainMenu {
 			}
 		});
 		edit.add(lowCurWord);
+
+		JMenuItem upLowCurWord = new JMenuItem("Up+lowcase Current Word");
+		upLowCurWord.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_I, ActionEvent.CTRL_MASK));
+		upLowCurWord.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (mainGUI.getCurrentTab() != null) {
+					mainGUI.getCurrentTab().upLowCurWord();
+				}
+			}
+		});
+		edit.add(upLowCurWord);
 
 		JMenuItem upCurWord = new JMenuItem("Upcase Current Word");
 		upCurWord.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_U, ActionEvent.CTRL_MASK));
