@@ -415,7 +415,11 @@ public class AugFileTab implements FileTab {
 
 		highlighter.setOnChange(onChangeCallback);
 
-		AugFileOpenCallback onOpenFileCallback = new AugFileOpenCallback(augFile.getParentDirectory(), mainGUI);
+		AugFileOpenCallback onOpenFileCallback = new AugFileOpenCallback(
+			augFile.getParentDirectory(),
+			mainGUI,
+			augFileCtrl
+		);
 		highlighter.setOnOpenFile(onOpenFileCallback);
 
 		highlighter.setCodeEditorLineMemo(lineMemo);

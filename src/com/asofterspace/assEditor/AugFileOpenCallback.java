@@ -19,12 +19,16 @@ public class AugFileOpenCallback implements OpenFileCallback {
 
 	private MainGUI mainGUI;
 
+	private AugFileCtrl augFileCtrl;
 
-	public AugFileOpenCallback(Directory directory, MainGUI mainGUI) {
+
+	public AugFileOpenCallback(Directory directory, MainGUI mainGUI, AugFileCtrl augFileCtrl) {
 
 		this.localDirectory = directory;
 
 		this.mainGUI = mainGUI;
+
+		this.augFileCtrl = augFileCtrl;
 	}
 
 	@Override
@@ -109,5 +113,27 @@ public class AugFileOpenCallback implements OpenFileCallback {
 		}
 
 		return false;
+	}
+
+	@Override
+	public List<String> getOtherFileContents(List<String> fileEndings) {
+
+		List<String> result = new ArrayList<>();
+
+		List<AugFile> augFiles = augFileCtrl.getFiles();
+
+		for (AugFile augFile : augFiles) {
+			for (String fileEnding : fileEndings) {
+				if (augFile.getFilename().endsWith(fileEnding)) {
+					String content = augFile.getContent();
+					if (content != null) {
+						result.add(content);
+					}
+					break;
+				}
+			}
+		}
+
+		return result;
 	}
 }
