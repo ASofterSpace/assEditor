@@ -914,11 +914,12 @@ public class AugFileTab implements FileTab {
 	 */
 	public int searchAndAddResultTo(String searchFor, StringBuilder result) {
 
-		ensureLoaded();
+		// do not ensure loaded, as it is enough for the file contents to be loaded,
+		// while it is NOT necessary for this tab to actually load the file contents
+
+		String text = augFile.getContent();
 
 		int matchAmount = 0;
-
-		String text = fileContentMemo.getText();
 
 		int nextpos = text.indexOf(searchFor);
 
