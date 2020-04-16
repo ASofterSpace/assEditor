@@ -4,7 +4,9 @@
  */
 package com.asofterspace.assEditor;
 
+import com.asofterspace.toolbox.codeeditor.base.Code;
 import com.asofterspace.toolbox.configuration.ConfigFile;
+import com.asofterspace.toolbox.gui.CodeEditor;
 import com.asofterspace.toolbox.io.File;
 import com.asofterspace.toolbox.io.JSON;
 import com.asofterspace.toolbox.io.JsonParseException;

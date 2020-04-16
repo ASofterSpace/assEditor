@@ -186,9 +186,13 @@ public class AugFileTab implements FileTab {
 		mainPart.add(sourceCodeScroller, new Arrangement(0, 1, 1.0, 0.8));
 
 
-		functionMemo = new CodeEditor();
+		functionMemo = new CodeEditor(true);
 
-		sideScrollPane = new JScrollPane(functionMemo);
+		JPanel scrolledFunctionPanel = new JPanel();
+		scrolledFunctionPanel.setLayout(new GridBagLayout());
+		scrolledFunctionPanel.add(functionMemo, new Arrangement(0, 0, 1.0, 1.0));
+
+		sideScrollPane = new JScrollPane(scrolledFunctionPanel);
 		sideScrollPane.setBorder(BorderFactory.createEmptyBorder());
 		sideScrollPane.setPreferredSize(new Dimension(1, 1));
 
