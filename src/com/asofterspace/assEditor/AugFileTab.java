@@ -169,6 +169,7 @@ public class AugFileTab implements FileTab {
 
 		fileContentMemo = new CodeEditor();
 		fileContentMemo.enableStartLine(true);
+		fileContentMemo.enableHorzLine(true);
 		lineMemo = new CodeEditorLineMemo();
 		lineNumbers = new LineNumbering(lineMemo, fileContentMemo);
 
@@ -450,6 +451,7 @@ public class AugFileTab implements FileTab {
 				GuiUtils.setCornerColor(sourceCodeScroller, JScrollPane.LOWER_RIGHT_CORNER, new Color(235, 215, 255));
 				GuiUtils.setCornerColor(sideScrollPane, JScrollPane.LOWER_RIGHT_CORNER, new Color(235, 215, 255));
 				fileContentMemo.setStartLineColor(Color.lightGray);
+				fileContentMemo.setHorzLineColor(Color.lightGray);
 				break;
 			case GuiUtils.DARK_SCHEME:
 				tab.setForeground(new Color(255, 245, 255));
@@ -459,6 +461,7 @@ public class AugFileTab implements FileTab {
 				GuiUtils.setCornerColor(sourceCodeScroller, JScrollPane.LOWER_RIGHT_CORNER, Color.black);
 				GuiUtils.setCornerColor(sideScrollPane, JScrollPane.LOWER_RIGHT_CORNER, Color.black);
 				fileContentMemo.setStartLineColor(Color.darkGray);
+				fileContentMemo.setHorzLineColor(Color.darkGray);
 				break;
 		}
 
