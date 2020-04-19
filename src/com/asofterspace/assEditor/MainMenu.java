@@ -8,12 +8,9 @@ import com.asofterspace.toolbox.codeeditor.base.Code;
 import com.asofterspace.toolbox.codeeditor.utils.CodeLanguage;
 import com.asofterspace.toolbox.gui.FileTab;
 import com.asofterspace.toolbox.gui.GuiUtils;
-import com.asofterspace.toolbox.io.Directory;
 import com.asofterspace.toolbox.io.File;
-import com.asofterspace.toolbox.utils.Callback;
 import com.asofterspace.toolbox.utils.TextEncoding;
 
-import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -1255,7 +1252,7 @@ public class MainMenu {
 		openBackupPath.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				GuiUtils.openFolder(AugFileTab.getBackupPath());
+				GuiUtils.openFolder(Main.getBackupPath());
 			}
 		});
 		huh.add(openBackupPath);

@@ -4,12 +4,12 @@
  */
 package com.asofterspace.assEditor;
 
-import com.asofterspace.toolbox.codeeditor.base.Code;
 import com.asofterspace.toolbox.configuration.ConfigFile;
-import com.asofterspace.toolbox.gui.CodeEditor;
 import com.asofterspace.toolbox.io.File;
 import com.asofterspace.toolbox.io.JSON;
 import com.asofterspace.toolbox.io.JsonParseException;
+import com.asofterspace.toolbox.io.SimpleFile;
+import com.asofterspace.toolbox.utils.StrUtils;
 import com.asofterspace.toolbox.Utils;
 
 import java.util.ArrayList;
@@ -24,6 +24,8 @@ public class Main {
 	public final static String VERSION_NUMBER = "0.0.3.5(" + Utils.TOOLBOX_VERSION_NUMBER + ")";
 	public final static String VERSION_DATE = "18. December 2018 - 15. April 2020";
 
+	private final static String CONFIG_KEY_BACKUP_SETTINGS_NUM = "backupSettingsNum";
+
 
 	/**
 	 * TODO:
@@ -31,7 +33,6 @@ public class Main {
 	 * converters inbuilt
 	 * enable stats at the bottom
 	 * add highlighting for datex
-	 * increase / decrease font size
 	 * enable hex view
 	 * add compiler call, and report results
 	 * ask to save before closing if files are unsaved
@@ -40,7 +41,6 @@ public class Main {
 	 * create a better opening dialog (e.g. one in which we can enter a path at the top, and where we can
 	 *   automagically descend into Java-madness without having to click through src>main>java>com>ass>..., and where we do not
 	 *   auto-open entire folders upon [Enter] but only when explicitly asking to open all files in the folder!)
-	 * increase scroll speed while scrolling through code files
 	 * not only call resizeNameLabel() in the AugFileTab.show(), but also in an onResize event!
 	 * show "changemark *" at the top also
 	 * disable "reorganize imports" in the menu when the highlighter does not support it
@@ -97,6 +97,21 @@ public class Main {
 			if (config.getAllContents().isEmpty()) {
 				config.setAllContents(new JSON("{\"workspaces\": [{\"name\": \"default\", \"files\": []}]}"));
 			}
+
+			int currentBackup = config.getInteger(CONFIG_KEY_BACKUP_SETTINGS_NUM, 0);
+
+			// backup the configuration (in the same location as the file content backups are kept)
+			SimpleFile backupFile = new SimpleFile(getBackupPath() + "settings_" + StrUtils.leftPad0(currentBackup, 4) + ".cfg");
+			backupFile.setContent(config.getAllContents().toString(false));
+			backupFile.create();
+
+			currentBackup++;
+			if (currentBackup > 9999) {
+				currentBackup = 0;
+			}
+
+			config.set(CONFIG_KEY_BACKUP_SETTINGS_NUM, currentBackup);
+
 		} catch (JsonParseException e) {
 			System.err.println("Loading the settings failed:");
 			System.err.println(e);
@@ -112,6 +127,10 @@ public class Main {
 		augFileCtrl.saveConfigFileList();
 
 		SwingUtilities.invokeLater(new MainGUI(augFileCtrl, config, standalone));
+	}
+
+	public static String getBackupPath() {
+		return System.getProperty("java.class.path") + "/../backup/";
 	}
 
 }

@@ -1018,17 +1018,13 @@ public class AugFileTab implements FileTab {
 		return foundIt;
 	}
 
-	public static String getBackupPath() {
-		return System.getProperty("java.class.path") + "/../backup/";
-	}
-
 	public void backup(int backupNum) {
 
 		ensureLoaded();
 
 		// set the backup file location relative to the class path to always
 		// get the same location, even when we are called from somewhere else
-		SimpleFile backupFile = new SimpleFile(getBackupPath() + StrUtils.leftPad0(backupNum, 4) + ".txt");
+		SimpleFile backupFile = new SimpleFile(Main.getBackupPath() + "content_" + StrUtils.leftPad0(backupNum, 4) + ".txt");
 
 		backupFile.setContent(augFile.getFilename() + "\n\n" + fileContentMemo.getText());
 
