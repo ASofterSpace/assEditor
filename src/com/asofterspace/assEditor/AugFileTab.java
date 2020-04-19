@@ -653,8 +653,8 @@ public class AugFileTab implements FileTab {
 
 		int carPos = fileContentMemo.getCaretPosition();
 
-		int lineStart = Code.getLineStartFromPosition(carPos, sourceCode);
-		int lineEnd = Code.getLineEndFromPosition(carPos, sourceCode);
+		int lineStart = StrUtils.getLineStartFromPosition(carPos, sourceCode);
+		int lineEnd = StrUtils.getLineEndFromPosition(carPos, sourceCode);
 
 		String insertStr = sourceCode.substring(lineStart, lineEnd);
 		if (!insertStr.startsWith("\n")) {
@@ -684,8 +684,8 @@ public class AugFileTab implements FileTab {
 
 		int carPos = fileContentMemo.getCaretPosition();
 
-		int lineStart = Code.getLineStartFromPosition(carPos, sourceCode);
-		int lineEnd = Code.getLineEndFromPosition(carPos, sourceCode);
+		int lineStart = StrUtils.getLineStartFromPosition(carPos, sourceCode);
+		int lineEnd = StrUtils.getLineEndFromPosition(carPos, sourceCode);
 
 		// ignore trailing newline
 		if (lineStart > 0) {
@@ -770,8 +770,8 @@ public class AugFileTab implements FileTab {
 
 		int carPos = fileContentMemo.getCaretPosition();
 
-		int selStart = Code.getWordStartFromPosition(carPos, sourceCode, true);
-		int selEnd = Code.getWordEndFromPosition(carPos, sourceCode, true);
+		int selStart = StrUtils.getWordStartFromPosition(carPos, sourceCode, true);
+		int selEnd = StrUtils.getWordEndFromPosition(carPos, sourceCode, true);
 
 		String lowStr = sourceCode.substring(selStart, selEnd);
 		lowStr = lowStr.toLowerCase();
@@ -790,8 +790,8 @@ public class AugFileTab implements FileTab {
 
 		int carPos = fileContentMemo.getCaretPosition();
 
-		int selStart = Code.getWordStartFromPosition(carPos, sourceCode, true);
-		int selEnd = Code.getWordEndFromPosition(carPos, sourceCode, true);
+		int selStart = StrUtils.getWordStartFromPosition(carPos, sourceCode, true);
+		int selEnd = StrUtils.getWordEndFromPosition(carPos, sourceCode, true);
 
 		String upLowStr = sourceCode.substring(selStart, selEnd);
 		if (upLowStr.length() > 0) {
@@ -812,8 +812,8 @@ public class AugFileTab implements FileTab {
 
 		int carPos = fileContentMemo.getCaretPosition();
 
-		int selStart = Code.getWordStartFromPosition(carPos, sourceCode, true);
-		int selEnd = Code.getWordEndFromPosition(carPos, sourceCode, true);
+		int selStart = StrUtils.getWordStartFromPosition(carPos, sourceCode, true);
+		int selEnd = StrUtils.getWordEndFromPosition(carPos, sourceCode, true);
 
 		String upStr = sourceCode.substring(selStart, selEnd);
 		upStr = upStr.toUpperCase();
@@ -948,7 +948,7 @@ public class AugFileTab implements FileTab {
 
 		while (nextpos >= 0) {
 
-			int line = Code.getLineNumberFromPosition(nextpos, text);
+			int line = StrUtils.getLineNumberFromPosition(nextpos, text);
 
 			int newfrom = line - 1;
 			int newto = line + 1;
@@ -983,7 +983,7 @@ public class AugFileTab implements FileTab {
 		for (int i = from; i < to + 1; i++) {
 			result.append(i);
 			result.append(": ");
-			result.append(Code.getLineFromNumber(i, text));
+			result.append(StrUtils.getLineFromNumber(i, text));
 			result.append("\n");
 		}
 
@@ -1525,7 +1525,7 @@ public class AugFileTab implements FileTab {
 		ensureLoaded();
 
 		// we subtract 1, because humans start at 1, but internally we start counting lines at 0
-		int lineStart = Code.getLineStartFromNumber(lineNum - 1, fileContentMemo.getText());
+		int lineStart = StrUtils.getLineStartFromNumber(lineNum - 1, fileContentMemo.getText());
 
 		fileContentMemo.setCaretPosition(lineStart);
 	}
