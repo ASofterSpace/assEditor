@@ -19,7 +19,6 @@ import com.asofterspace.toolbox.gui.MainWindow;
 import com.asofterspace.toolbox.io.Directory;
 import com.asofterspace.toolbox.io.File;
 import com.asofterspace.toolbox.io.SimpleFile;
-import com.asofterspace.toolbox.utils.Callback;
 import com.asofterspace.toolbox.utils.Record;
 
 import java.awt.BorderLayout;
@@ -36,14 +35,12 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.GridBagLayout;
-import java.awt.GridLayout;
 import java.awt.Point;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
 
 import javax.swing.BorderFactory;
 import javax.swing.DefaultCellEditor;
@@ -53,10 +50,8 @@ import javax.swing.event.TreeModelEvent;
 import javax.swing.event.TreeModelListener;
 import javax.swing.JButton;
 import javax.swing.JCheckBoxMenuItem;
-import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -167,11 +162,20 @@ public class MainGUI extends MainWindow {
 				if (node instanceof FileTreeFile) {
 					FileTreeFile file = (FileTreeFile) node;
 					FileTab fileTab = file.getTab();
-					if (fileTab instanceof AugFileTab) {
+					if (fileTab  instanceof AugFileTab) {
 						AugFileTab tab = (AugFileTab) fileTab;
 
-						String oldName = tab.getName();
+						String oldName = tab.getName().trim();
 						String newName = fileTreeEditField.getText().trim();
+
+						// if we are changing the name of a file that has not yet been saved
+						// (so still contains " *" at the end), get rid of that!
+						if (oldName.endsWith(GuiUtils.CHANGE_INDICATOR)) {
+							oldName = oldName.substring(0, oldName.length() - GuiUtils.CHANGE_INDICATOR.length());
+						}
+						if (newName.endsWith(GuiUtils.CHANGE_INDICATOR)) {
+							newName = newName.substring(0, newName.length() - GuiUtils.CHANGE_INDICATOR.length());
+						}
 
 						// only if the new name is different from the old one...
 						if (!newName.equals(oldName) && !newName.equals("")) {
