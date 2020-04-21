@@ -414,7 +414,7 @@ public class MainGUI extends MainWindow {
 			}
 		});
 
-		fileListComponent.addKeyListener(new KeyListener() {
+		KeyListener selectionKeyListener = new KeyListener() {
 
 			@Override
 			public void keyTyped(KeyEvent e) {
@@ -433,7 +433,9 @@ public class MainGUI extends MainWindow {
 						break;
 				}
 			}
-		});
+		};
+
+		fileListComponent.addKeyListener(selectionKeyListener);
 
 		fileTreeComponent.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent e) {
@@ -452,6 +454,8 @@ public class MainGUI extends MainWindow {
 				}
 			}
 		});
+
+		fileTreeComponent.addKeyListener(selectionKeyListener);
 
 		augFileListScroller = new JScrollPane(fileListComponent);
 		augFileListScroller.setPreferredSize(new Dimension(8, 8));
@@ -1416,20 +1420,10 @@ public class MainGUI extends MainWindow {
 
 	private void showSelectedTab() {
 
-		Integer selectedItem = fileListComponent.getSelectedIndex();
+		List<AugFileTab> selectedTabs = getHighlightedTabs();
 
-		if (selectedItem == null) {
-			return;
-		}
-
-		int i = 0;
-
-		for (AugFileTab tab : augFileTabs) {
-			if (i == selectedItem) {
-				showTab(tab, false);
-				return;
-			}
-			i++;
+		if (selectedTabs.size() > 0) {
+			showTab(selectedTabs.get(0), false);
 		}
 	}
 
