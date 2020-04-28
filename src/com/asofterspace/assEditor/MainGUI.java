@@ -10,6 +10,7 @@ import com.asofterspace.toolbox.configuration.ConfigFile;
 import com.asofterspace.toolbox.gui.Arrangement;
 import com.asofterspace.toolbox.gui.FileTab;
 import com.asofterspace.toolbox.gui.FileTree;
+import com.asofterspace.toolbox.gui.FileTreeCellRenderer;
 import com.asofterspace.toolbox.gui.FileTreeFile;
 import com.asofterspace.toolbox.gui.FileTreeFolder;
 import com.asofterspace.toolbox.gui.FileTreeModel;
@@ -1467,7 +1468,22 @@ public class MainGUI extends MainWindow {
 
 		listOfFutureTabs = new ArrayList<>();
 
+		for (AugFileTab tab : augFileTabs) {
+			tab.setSelectionOrder(0);
+		}
+		for (int i = listOfPreviousTabs.size() - FileTreeCellRenderer.PREV_SELECTED_TAB_AMOUNT; i < listOfPreviousTabs.size(); i++) {
+			if (i < 0) {
+				continue;
+			}
+			int selOrder = i - (listOfPreviousTabs.size() - FileTreeCellRenderer.PREV_SELECTED_TAB_AMOUNT);
+			listOfPreviousTabs.get(i).setSelectionOrder(selOrder);
+		}
+
 		showTabInternal(tabToShow, highlightTab);
+
+		if (showFilesInTree) {
+			fileTreeComponent.repaint();
+		}
 	}
 
 	public void goToPreviousTab() {

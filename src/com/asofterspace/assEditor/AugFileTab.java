@@ -86,6 +86,8 @@ public class AugFileTab implements FileTab {
 	private int origCaretPos;
 	private int newCaretPos;
 
+	private int selectionOrder = 0;
+
 
 	public AugFileTab(JPanel parentPanel, AugFile augFile, final MainGUI mainGUI, AugFileCtrl augFileCtrl) {
 
@@ -1535,6 +1537,15 @@ public class AugFileTab implements FileTab {
 		ensureLoaded();
 
 		return fileContentMemo.getText();
+	}
+
+	public void setSelectionOrder(int selOrder) {
+		this.selectionOrder = selOrder;
+	}
+
+	@Override
+	public int getSelectionOrder() {
+		return selectionOrder;
 	}
 
 	@Override
