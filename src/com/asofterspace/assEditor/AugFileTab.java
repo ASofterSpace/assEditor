@@ -194,17 +194,14 @@ public class AugFileTab implements FileTab {
 		functionMemo = new FancyCodeEditor();
 		functionMemo.setGradientBackground(true);
 		String classPath = System.getProperty("java.class.path");
-		DefaultImageFile imgFile = null;
-		int ran = (int)(Math.random() * 2);
-		switch (ran) {
-			case 1:
-				imgFile = new DefaultImageFile(classPath + "/../res/rocket_anykey_dark_white_exhaust.png");
-				break;
-			default:
-				imgFile = new DefaultImageFile(classPath + "/../res/rocket_latin_dark_white_exhaust.png");
-				break;
+		Directory stampDir = new Directory(classPath + "/../res/stamps");
+		boolean recursively = true;
+		List<File> stampFiles = stampDir.getAllFiles(recursively);
+		if (stampFiles.size() > 0) {
+			int ran = (int)(Math.random() * stampFiles.size());
+			DefaultImageFile imgFile = new DefaultImageFile(stampFiles.get(ran));
+			functionMemo.setBackgroundImage(imgFile.getImage());
 		}
-		functionMemo.setBackgroundImage(imgFile.getImage());
 
 		JPanel scrolledFunctionPanel = new JPanel();
 		scrolledFunctionPanel.setLayout(new GridBagLayout());

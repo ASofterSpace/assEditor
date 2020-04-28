@@ -101,7 +101,8 @@ public class Main {
 			int currentBackup = config.getInteger(CONFIG_KEY_BACKUP_SETTINGS_NUM, 0);
 
 			// backup the configuration (in the same location as the file content backups are kept)
-			SimpleFile backupFile = new SimpleFile(getBackupPath() + "settings_" + StrUtils.leftPad0(currentBackup, 4) + ".cfg");
+			SimpleFile backupFile = new SimpleFile(getBackupPath() + "settings_" +
+				StrUtils.leftPad0(currentBackup, 4) + ConfigFile.FILE_EXTENSION);
 			backupFile.setContent(config.getAllContents().toString(false));
 			backupFile.create();
 
