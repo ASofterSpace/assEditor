@@ -14,6 +14,8 @@ import com.asofterspace.toolbox.gui.CodeEditor;
 import com.asofterspace.toolbox.gui.CodeEditorLineMemo;
 import com.asofterspace.toolbox.gui.FileTab;
 import com.asofterspace.toolbox.gui.GuiUtils;
+import com.asofterspace.toolbox.guiImages.FancyCodeEditor;
+import com.asofterspace.toolbox.images.DefaultImageFile;
 import com.asofterspace.toolbox.io.Directory;
 import com.asofterspace.toolbox.io.File;
 import com.asofterspace.toolbox.io.SimpleFile;
@@ -78,7 +80,7 @@ public class AugFileTab implements FileTab {
 	private JTextPane lineMemo;
 	private CodeEditor fileContentMemo;
 	private JScrollPane sourceCodeScroller;
-	private JTextPane functionMemo;
+	private FancyCodeEditor functionMemo;
 	private JScrollPane sideScrollPane;
 
 	// the original caret position - as global variable such that other functions
@@ -189,7 +191,20 @@ public class AugFileTab implements FileTab {
 		mainPart.add(sourceCodeScroller, new Arrangement(0, 1, 1.0, 0.8));
 
 
-		functionMemo = new CodeEditor(true);
+		functionMemo = new FancyCodeEditor();
+		functionMemo.setGradientBackground(true);
+		String classPath = System.getProperty("java.class.path");
+		DefaultImageFile imgFile = null;
+		int ran = (int)(Math.random() * 2);
+		switch (ran) {
+			case 1:
+				imgFile = new DefaultImageFile(classPath + "/../res/rocket_anykey_dark_white_exhaust.png");
+				break;
+			default:
+				imgFile = new DefaultImageFile(classPath + "/../res/rocket_latin_dark_white_exhaust.png");
+				break;
+		}
+		functionMemo.setBackgroundImage(imgFile.getImage());
 
 		JPanel scrolledFunctionPanel = new JPanel();
 		scrolledFunctionPanel.setLayout(new GridBagLayout());

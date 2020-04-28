@@ -19,8 +19,10 @@ mkdir base
 mkdir utils
 cd ..
 mkdir configuration
-mkdir io
 mkdir gui
+mkdir guiImages
+mkdir images
+mkdir io
 mkdir utils
 
 cd ../../../..
@@ -31,8 +33,10 @@ cp ../Toolbox-Java/src/com/asofterspace/toolbox/codeeditor/*.* src/com/asoftersp
 cp ../Toolbox-Java/src/com/asofterspace/toolbox/codeeditor/base/*.* src/com/asofterspace/toolbox/codeeditor/base
 cp ../Toolbox-Java/src/com/asofterspace/toolbox/codeeditor/utils/*.* src/com/asofterspace/toolbox/codeeditor/utils
 cp ../Toolbox-Java/src/com/asofterspace/toolbox/configuration/*.* src/com/asofterspace/toolbox/configuration
-cp ../Toolbox-Java/src/com/asofterspace/toolbox/io/*.* src/com/asofterspace/toolbox/io
 cp ../Toolbox-Java/src/com/asofterspace/toolbox/gui/*.* src/com/asofterspace/toolbox/gui
+cp ../Toolbox-Java/src/com/asofterspace/toolbox/guiImages/*.* src/com/asofterspace/toolbox/guiImages
+cp ../Toolbox-Java/src/com/asofterspace/toolbox/images/*.* src/com/asofterspace/toolbox/images
+cp ../Toolbox-Java/src/com/asofterspace/toolbox/io/*.* src/com/asofterspace/toolbox/io
 cp ../Toolbox-Java/src/com/asofterspace/toolbox/utils/*.* src/com/asofterspace/toolbox/utils
 
 rm -rf bin

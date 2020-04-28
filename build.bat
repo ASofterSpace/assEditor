@@ -17,8 +17,10 @@ md base
 md utils
 cd ..
 md configuration
-md io
 md gui
+md guiImages
+md images
+md io
 md utils
 
 cd ..\..\..\..
@@ -29,8 +31,10 @@ copy "..\Toolbox-Java\src\com\asofterspace\toolbox\codeeditor\*.*" "src\com\asof
 copy "..\Toolbox-Java\src\com\asofterspace\toolbox\codeeditor\base\*.*" "src\com\asofterspace\toolbox\codeeditor\base"
 copy "..\Toolbox-Java\src\com\asofterspace\toolbox\codeeditor\utils\*.*" "src\com\asofterspace\toolbox\codeeditor\utils"
 copy "..\Toolbox-Java\src\com\asofterspace\toolbox\configuration\*.*" "src\com\asofterspace\toolbox\configuration"
-copy "..\Toolbox-Java\src\com\asofterspace\toolbox\io\*.*" "src\com\asofterspace\toolbox\io"
 copy "..\Toolbox-Java\src\com\asofterspace\toolbox\gui\*.*" "src\com\asofterspace\toolbox\gui"
+copy "..\Toolbox-Java\src\com\asofterspace\toolbox\guiImages\*.*" "src\com\asofterspace\toolbox\guiImages"
+copy "..\Toolbox-Java\src\com\asofterspace\toolbox\images\*.*" "src\com\asofterspace\toolbox\images"
+copy "..\Toolbox-Java\src\com\asofterspace\toolbox\io\*.*" "src\com\asofterspace\toolbox\io"
 copy "..\Toolbox-Java\src\com\asofterspace\toolbox\utils\*.*" "src\com\asofterspace\toolbox\utils"
 
 rd /s /q bin
