@@ -6,7 +6,6 @@ package com.asofterspace.assEditor;
 
 import com.asofterspace.toolbox.codeeditor.utils.CodeLanguage;
 import com.asofterspace.toolbox.configuration.ConfigFile;
-import com.asofterspace.toolbox.io.Directory;
 import com.asofterspace.toolbox.io.File;
 import com.asofterspace.toolbox.utils.DateUtils;
 import com.asofterspace.toolbox.utils.Record;
@@ -63,28 +62,6 @@ public class AugFileCtrl {
 		}
 
 		switchToWorkspace(activeWorkspaceName);
-
-		startConfigSavingThread();
-	}
-
-	private void startConfigSavingThread() {
-
-		saveConfigThread = new Thread(new Runnable() {
-			@Override
-			public void run() {
-				while (true) {
-					try {
-						// save every five seconds
-						Thread.sleep(5000);
-					} catch (InterruptedException e) {
-						return;
-					}
-
-					saveConfigFileList();
-				}
-			}
-		});
-		saveConfigThread.start();
 	}
 
 	public String getWorkspaceName() {
@@ -179,6 +156,9 @@ public class AugFileCtrl {
 	}
 
 	public void switchToWorkspace(String workspace) {
+
+		// save the current state of the previous workspace
+		saveConfigFileList();
 
 		List<Record> recWorkspaces = configuration.getAllContents().getArray("workspaces");
 
@@ -362,6 +342,10 @@ public class AugFileCtrl {
 		StringBuilder fileListBuilder = new StringBuilder();
 
 		Record filesRec = new Record();
+
+		if (activeWorkspace == null) {
+			return;
+		}
 
 		activeWorkspace.set("files", filesRec);
 

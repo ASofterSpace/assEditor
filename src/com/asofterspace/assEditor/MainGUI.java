@@ -19,6 +19,7 @@ import com.asofterspace.toolbox.gui.GuiUtils;
 import com.asofterspace.toolbox.gui.MainWindow;
 import com.asofterspace.toolbox.io.Directory;
 import com.asofterspace.toolbox.io.File;
+import com.asofterspace.toolbox.io.JSON;
 import com.asofterspace.toolbox.io.SimpleFile;
 import com.asofterspace.toolbox.utils.Record;
 
@@ -256,6 +257,9 @@ public class MainGUI extends MainWindow {
 		Thread backupThread = new Thread(new Runnable() {
 			@Override
 			public void run() {
+
+				JSON configRoot = configuration.getAllContents();
+
 				while (true) {
 
 					if (currentlyShownTab != null) {
@@ -269,8 +273,13 @@ public class MainGUI extends MainWindow {
 							currentBackup = 0;
 						}
 
-						configuration.set(CONFIG_KEY_BACKUP_NUM, currentBackup);
+						// we do not set on the config element, just on the JSON root,
+						// as we do not want to save in here...
+						configRoot.set(CONFIG_KEY_BACKUP_NUM, currentBackup);
 					}
+
+					// ... because we are going to save in here anyway!
+					augFileCtrl.saveConfigFileList();
 
 					try {
 						// make backups once a minute
@@ -348,6 +357,9 @@ public class MainGUI extends MainWindow {
 						configuration.set(CONFIG_KEY_TOP, mainFrame.getLocation().y);
 					}
 				});
+
+				// we allow saving, which will happen in the backup thread
+				configuration.allowSaving();
 			}
 		});
 
@@ -1484,6 +1496,9 @@ public class MainGUI extends MainWindow {
 		if (showFilesInTree) {
 			fileTreeComponent.repaint();
 		}
+
+		// we want to save in the config that the new tab is now shown
+		augFileCtrl.saveConfigFileList();
 	}
 
 	public void goToPreviousTab() {

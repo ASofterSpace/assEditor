@@ -119,6 +119,10 @@ public class Main {
 			System.exit(1);
 		}
 
+		// we prevent saving as we would save a hundred times during startup, and will allow
+		// it again after the startup is done in MainGUI
+		config.preventSaving();
+
 		AugFileCtrl augFileCtrl = new AugFileCtrl(config, standalone);
 
 		for (String filename : openFilenames) {
