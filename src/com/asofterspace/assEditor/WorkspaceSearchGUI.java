@@ -9,14 +9,15 @@ import com.asofterspace.toolbox.gui.FileTab;
 import com.asofterspace.toolbox.gui.GuiUtils;
 import com.asofterspace.toolbox.io.File;
 import com.asofterspace.toolbox.utils.StrUtils;
+import com.asofterspace.toolbox.Utils;
 
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -175,7 +176,10 @@ public class WorkspaceSearchGUI {
 		result.append(replaceWith);
 		result.append(" in the following files:\n");
 
-		for (AugFileTab curTab : mainGUI.getTabs()) {
+		// explicitly copy the list item-by-item such that we do not get concurrent modification exceptions
+		List<AugFileTab> tabList = new ArrayList<>(mainGUI.getTabs());
+
+		for (AugFileTab curTab : tabList) {
 			if (curTab.replaceAll(searchFor, replaceWith)) {
 				result.append("\n" + curTab.getFilePath());
 				foundFileAmount++;

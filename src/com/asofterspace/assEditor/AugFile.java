@@ -86,6 +86,10 @@ public class AugFile {
 		return file.getContent();
 	}
 
+	public void ensureContents() {
+		file.ensureContents(false);
+	}
+
 	// used by the frontend to ask the backend about the caret pos to init with
 	public Integer getInitialCaretPos() {
 		return initialCaretPos;

@@ -940,6 +940,10 @@ public class AugFileTab implements FileTab {
 
 		String text = augFile.getContent();
 
+		if (fileContentMemo != null) {
+			text = fileContentMemo.getText();
+		}
+
 		int matchAmount = 0;
 
 		int nextpos = text.indexOf(searchFor);
@@ -1013,20 +1017,39 @@ public class AugFileTab implements FileTab {
 	 */
 	public boolean replaceAll(String searchFor, String replaceWith) {
 
-		ensureLoaded();
+		boolean foundIt;
 
-		String text = fileContentMemo.getText();
+		if (loaded) {
 
-		boolean foundIt = text.contains(searchFor);
+			String text = fileContentMemo.getText();
 
-		if (foundIt) {
-			text = text.replace(searchFor, replaceWith);
+			foundIt = text.contains(searchFor);
 
-			fileContentMemo.setText(text);
+			if (foundIt) {
 
-			highlighter.setSearchStr("");
+				text = text.replace(searchFor, replaceWith);
 
-			this.onChangeCallback.call();
+				fileContentMemo.setText(text);
+
+				highlighter.setSearchStr("");
+
+				this.onChangeCallback.call();
+			}
+
+		} else {
+
+			String text = augFile.getContent();
+
+			foundIt = text.contains(searchFor);
+
+			if (foundIt) {
+
+				text = text.replace(searchFor, replaceWith);
+
+				augFile.setContent(text);
+
+				this.onChangeCallback.call();
+			}
 		}
 
 		return foundIt;
@@ -1047,58 +1070,61 @@ public class AugFileTab implements FileTab {
 
 	public void save() {
 
-		ensureLoaded();
+		if (loaded) {
 
-		String contentText = fileContentMemo.getText();
+			String contentText = fileContentMemo.getText();
 
-		origCaretPos = fileContentMemo.getCaretPosition();
+			origCaretPos = fileContentMemo.getCaretPosition();
 
-		if (mainGUI.addMissingImportsOnSave) {
+			if (mainGUI.addMissingImportsOnSave) {
 
-			contentText = highlighter.addMissingImports(contentText);
+				contentText = highlighter.addMissingImports(contentText);
+			}
+
+			if (mainGUI.removeUnusedImportsOnSave) {
+
+				contentText = highlighter.removeUnusedImports(contentText);
+			}
+
+			if (mainGUI.reorganizeImportsOnSave) {
+
+				contentText = highlighter.reorganizeImports(contentText);
+			}
+
+			if (mainGUI.reorganizeImportsOnSaveCompatible) {
+
+				contentText = highlighter.reorganizeImportsCompatible(contentText);
+			}
+
+			if (mainGUI.replaceWhitespacesWithTabsOnSave) {
+
+				contentText = replaceLeadingWhitespacesWithTabs(contentText);
+			}
+
+			if (mainGUI.replaceTabsWithWhitespacesOnSave) {
+
+				contentText = replaceLeadingTabsWithWhitespaces(contentText);
+			}
+
+			if (mainGUI.removeTrailingWhitespaceOnSave) {
+
+				contentText = removeTrailingWhitespace(contentText);
+			}
+
+			fileContentMemo.setText(contentText);
+
+			if (origCaretPos > contentText.length()) {
+				origCaretPos = contentText.length();
+			}
+
+			fileContentMemo.setCaretPosition(origCaretPos);
+
+			augFile.setContent(contentText);
 		}
-
-		if (mainGUI.removeUnusedImportsOnSave) {
-
-			contentText = highlighter.removeUnusedImports(contentText);
-		}
-
-		if (mainGUI.reorganizeImportsOnSave) {
-
-			contentText = highlighter.reorganizeImports(contentText);
-		}
-
-		if (mainGUI.reorganizeImportsOnSaveCompatible) {
-
-			contentText = highlighter.reorganizeImportsCompatible(contentText);
-		}
-
-		if (mainGUI.replaceWhitespacesWithTabsOnSave) {
-
-			contentText = replaceLeadingWhitespacesWithTabs(contentText);
-		}
-
-		if (mainGUI.replaceTabsWithWhitespacesOnSave) {
-
-			contentText = replaceLeadingTabsWithWhitespaces(contentText);
-		}
-
-		if (mainGUI.removeTrailingWhitespaceOnSave) {
-
-			contentText = removeTrailingWhitespace(contentText);
-		}
-
-		fileContentMemo.setText(contentText);
-
-		if (origCaretPos > contentText.length()) {
-			origCaretPos = contentText.length();
-		}
-
-		fileContentMemo.setCaretPosition(origCaretPos);
-
-		augFile.setContent(contentText);
 
 		changed = false;
+
+		augFile.ensureContents();
 
 		augFile.save();
 
@@ -1449,6 +1475,11 @@ public class AugFileTab implements FileTab {
 	}
 
 	public void setFocus() {
+
+		if (fileContentMemo == null) {
+			return;
+		}
+
 		fileContentMemo.grabFocus();
 		fileContentMemo.requestFocus();
 	}
