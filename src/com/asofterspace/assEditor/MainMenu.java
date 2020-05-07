@@ -1252,7 +1252,7 @@ public class MainMenu {
 		openBackupPath.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				GuiUtils.openFolder(Main.getBackupPath());
+				GuiUtils.openFolder(AssEditor.getBackupPath());
 			}
 		});
 		huh.add(openBackupPath);
@@ -1261,8 +1261,8 @@ public class MainMenu {
 		about.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				String aboutMessage = "This is the " + Main.PROGRAM_TITLE + ".\n" +
-					"Version: " + Main.VERSION_NUMBER + " (" + Main.VERSION_DATE + ")\n" +
+				String aboutMessage = "This is the " + AssEditor.PROGRAM_TITLE + ".\n" +
+					"Version: " + AssEditor.VERSION_NUMBER + " (" + AssEditor.VERSION_DATE + ")\n" +
 					"Brought to you by: A Softer Space";
 				JOptionPane.showMessageDialog(mainFrame, aboutMessage, "About", JOptionPane.INFORMATION_MESSAGE);
 			}

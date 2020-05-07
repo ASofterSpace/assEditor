@@ -21,7 +21,7 @@ import java.util.List;
 import javax.swing.SwingUtilities;
 
 
-public class Main {
+public class AssEditor {
 
 	public final static String PROGRAM_TITLE = "A Softer Space Editor";
 	public final static String VERSION_NUMBER = "0.0.3.6(" + Utils.TOOLBOX_VERSION_NUMBER + ")";

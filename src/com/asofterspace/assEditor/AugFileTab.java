@@ -193,7 +193,7 @@ public class AugFileTab implements FileTab {
 
 		functionMemo = new FancyCodeEditor();
 		functionMemo.setGradientBackground(true);
-		List<Image> stamps = Main.getStamps();
+		List<Image> stamps = AssEditor.getStamps();
 		if (stamps.size() > 0) {
 			int ran = (int)(Math.random() * stamps.size());
 			functionMemo.setBackgroundImage(stamps.get(ran));
@@ -1057,7 +1057,7 @@ public class AugFileTab implements FileTab {
 
 		// set the backup file location relative to the class path to always
 		// get the same location, even when we are called from somewhere else
-		SimpleFile backupFile = new SimpleFile(Main.getBackupPath() + "content_" + StrUtils.leftPad0(backupNum, 4) + ".txt");
+		SimpleFile backupFile = new SimpleFile(AssEditor.getBackupPath() + "content_" + StrUtils.leftPad0(backupNum, 4) + ".txt");
 
 		backupFile.setContent(augFile.getFilename() + "\n\n" + fileContentMemo.getText());
 

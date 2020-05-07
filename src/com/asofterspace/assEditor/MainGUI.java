@@ -1720,7 +1720,7 @@ public class MainGUI extends MainWindow {
 
 	private void refreshTitleBar() {
 
-		mainFrame.setTitle(Main.PROGRAM_TITLE + " - " + augFileCtrl.getWorkspaceName() + " ");
+		mainFrame.setTitle(AssEditor.PROGRAM_TITLE + " - " + augFileCtrl.getWorkspaceName() + " ");
 	}
 
 	public void reloadAllAugFileTabs() {
