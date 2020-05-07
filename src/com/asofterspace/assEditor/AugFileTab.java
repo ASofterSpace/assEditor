@@ -15,7 +15,7 @@ import com.asofterspace.toolbox.gui.CodeEditorLineMemo;
 import com.asofterspace.toolbox.gui.FileTab;
 import com.asofterspace.toolbox.gui.GuiUtils;
 import com.asofterspace.toolbox.guiImages.FancyCodeEditor;
-import com.asofterspace.toolbox.images.DefaultImageFile;
+import com.asofterspace.toolbox.images.Image;
 import com.asofterspace.toolbox.io.Directory;
 import com.asofterspace.toolbox.io.File;
 import com.asofterspace.toolbox.io.SimpleFile;
@@ -193,14 +193,10 @@ public class AugFileTab implements FileTab {
 
 		functionMemo = new FancyCodeEditor();
 		functionMemo.setGradientBackground(true);
-		String classPath = System.getProperty("java.class.path");
-		Directory stampDir = new Directory(classPath + "/../res/stamps");
-		boolean recursively = true;
-		List<File> stampFiles = stampDir.getAllFiles(recursively);
-		if (stampFiles.size() > 0) {
-			int ran = (int)(Math.random() * stampFiles.size());
-			DefaultImageFile imgFile = new DefaultImageFile(stampFiles.get(ran));
-			functionMemo.setBackgroundImage(imgFile.getImage());
+		List<Image> stamps = Main.getStamps();
+		if (stamps.size() > 0) {
+			int ran = (int)(Math.random() * stamps.size());
+			functionMemo.setBackgroundImage(stamps.get(ran));
 		}
 
 		JPanel scrolledFunctionPanel = new JPanel();

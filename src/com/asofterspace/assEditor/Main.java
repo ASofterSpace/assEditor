@@ -5,6 +5,9 @@
 package com.asofterspace.assEditor;
 
 import com.asofterspace.toolbox.configuration.ConfigFile;
+import com.asofterspace.toolbox.images.DefaultImageFile;
+import com.asofterspace.toolbox.images.Image;
+import com.asofterspace.toolbox.io.Directory;
 import com.asofterspace.toolbox.io.File;
 import com.asofterspace.toolbox.io.JSON;
 import com.asofterspace.toolbox.io.JsonParseException;
@@ -21,10 +24,12 @@ import javax.swing.SwingUtilities;
 public class Main {
 
 	public final static String PROGRAM_TITLE = "A Softer Space Editor";
-	public final static String VERSION_NUMBER = "0.0.3.5(" + Utils.TOOLBOX_VERSION_NUMBER + ")";
-	public final static String VERSION_DATE = "18. December 2018 - 15. April 2020";
+	public final static String VERSION_NUMBER = "0.0.3.6(" + Utils.TOOLBOX_VERSION_NUMBER + ")";
+	public final static String VERSION_DATE = "18. December 2018 - 7. May 2020";
 
 	private final static String CONFIG_KEY_BACKUP_SETTINGS_NUM = "backupSettingsNum";
+
+	private final static List<Image> stamps = new ArrayList<>();
 
 
 	/**
@@ -132,10 +137,25 @@ public class Main {
 		augFileCtrl.saveConfigFileList();
 
 		SwingUtilities.invokeLater(new MainGUI(augFileCtrl, config, standalone));
+
+		String classPath = System.getProperty("java.class.path");
+		Directory stampDir = new Directory(classPath + "/../res/stamps");
+		boolean recursively = true;
+		List<File> stampFiles = stampDir.getAllFiles(recursively);
+		for (File stampFile : stampFiles) {
+			DefaultImageFile imgFile = new DefaultImageFile(stampFile);
+			Image stamp = imgFile.getImage();
+			stamp.minify();
+			stamps.add(stamp);
+		}
 	}
 
 	public static String getBackupPath() {
 		return System.getProperty("java.class.path") + "/../backup/";
+	}
+
+	public static List<Image> getStamps() {
+		return stamps;
 	}
 
 }
