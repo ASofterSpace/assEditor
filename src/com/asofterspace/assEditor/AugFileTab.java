@@ -1545,6 +1545,10 @@ public class AugFileTab implements FileTab {
 		}
 	}
 
+	public void addConstructor() {
+		highlighter.addConstructor();
+	}
+
 	public void addGetters() {
 		highlighter.addGetters();
 	}

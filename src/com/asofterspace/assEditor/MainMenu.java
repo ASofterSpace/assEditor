@@ -747,6 +747,17 @@ public class MainMenu {
 		JMenu code = new JMenu("Code");
 		menu.add(code);
 
+		JMenuItem addConstructorJava = new JMenuItem("Add Constructor based on Selected Fields");
+		addConstructorJava.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (mainGUI.getCurrentTab() != null) {
+					mainGUI.getCurrentTab().addConstructor();
+				}
+			}
+		});
+		code.add(addConstructorJava);
+
 		JMenuItem addGettersJava = new JMenuItem("Add Getters for Selected Fields");
 		addGettersJava.addActionListener(new ActionListener() {
 			@Override
