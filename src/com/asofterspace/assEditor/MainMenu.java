@@ -41,6 +41,7 @@ public class MainMenu {
 	private WorkspaceGUI workspaceGUI;
 	private WorkspaceExportGUI workspaceExportGUI;
 	private WorkspaceSearchGUI workspaceSearchGUI;
+	private NewProjectGUI newProjectGUI;
 
 	private JMenu switchWorkspace;
 	private JMenuItem refreshFiles;
@@ -90,6 +91,21 @@ public class MainMenu {
 		menu.add(file);
 
 		if (!standalone) {
+			JMenu newProject = new JMenu("New Project");
+			file.add(newProject);
+
+			JMenuItem newAssJavaProject = new JMenuItem("New A Softer Space Java Project");
+			newAssJavaProject.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					if (newProjectGUI == null) {
+						newProjectGUI = new NewProjectGUI(mainGUI, augFileCtrl);
+					}
+					newProjectGUI.show();
+				}
+			});
+			newProject.add(newAssJavaProject);
+
 			JMenuItem newFile = new JMenuItem("New File");
 			newFile.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, ActionEvent.CTRL_MASK));
 			newFile.addActionListener(new ActionListener() {
@@ -1413,6 +1429,10 @@ public class MainMenu {
 		workspaceSearchGUI.show();
 
 		workspaceSearchGUI.firstSearch();
+	}
+
+	public List<JCheckBoxMenuItem> getWorkspaces() {
+		return workspaces;
 	}
 
 }

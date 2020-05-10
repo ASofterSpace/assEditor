@@ -71,7 +71,7 @@ public class WorkspaceGUI {
 
 				augFileCtrl.addWorkspace(newWorkspaceName.getText());
 
-				refreshWorkspaces();
+				mainGUI.refreshWorkspaces();
 			}
 		});
 		newWorkspaceButtonRow.add(addButton);
@@ -88,7 +88,7 @@ public class WorkspaceGUI {
 
 				augFileCtrl.sortWorkspaces();
 
-				refreshWorkspaces();
+				mainGUI.refreshWorkspaces();
 			}
 		});
 		buttonRow.add(sortWorkspacesAlphaButton);
@@ -112,11 +112,6 @@ public class WorkspaceGUI {
 
 	public void show() {
 		GuiUtils.centerAndShowWindow(editWorkitemsDialog);
-	}
-
-	private void refreshWorkspaces() {
-		mainGUI.getMainMenu().refreshWorkspaces();
-		mainGUI.getMainPopupMenu().refreshWorkspaces();
 	}
 
 }

@@ -703,24 +703,11 @@ public class MainGUI extends MainWindow {
 
 			case JFileChooser.APPROVE_OPTION:
 
-				// load the files
-				augFileCtrl.getWorkspace().setString(CONFIG_KEY_LAST_DIRECTORY, augFilePicker.getCurrentDirectory().getAbsolutePath());
-				configuration.create();
-
-				AugFileTab latestTab = null;
-
+				List<java.io.File> selectedFiles = new ArrayList<>();
 				for (java.io.File curFile : augFilePicker.getSelectedFiles()) {
-					latestTab = openFilesRecursively(curFile);
+					selectedFiles.add(curFile);
 				}
-
-				// show the latest tab that we added!
-				if (latestTab != null) {
-					setCurrentlyShownTab(latestTab);
-				}
-
-				regenerateAugFileList();
-
-				reEnableDisableMenuItems();
+				openFiles(selectedFiles, augFilePicker.getCurrentDirectory().getAbsolutePath());
 
 				break;
 
@@ -728,6 +715,28 @@ public class MainGUI extends MainWindow {
 				// cancel was pressed... do nothing for now
 				break;
 		}
+	}
+
+	public void openFiles(List<java.io.File> filesToOpen, String newLastAbsoluteDirPath) {
+
+		// load the files
+		augFileCtrl.getWorkspace().setString(CONFIG_KEY_LAST_DIRECTORY, newLastAbsoluteDirPath);
+		configuration.create();
+
+		AugFileTab latestTab = null;
+
+		for (java.io.File curFile : filesToOpen) {
+			latestTab = openFilesRecursively(curFile);
+		}
+
+		// show the latest tab that we added!
+		if (latestTab != null) {
+			setCurrentlyShownTab(latestTab);
+		}
+
+		regenerateAugFileList();
+
+		reEnableDisableMenuItems();
 	}
 
 	private AugFileTab openFilesRecursively(java.io.File parent) {
@@ -1828,11 +1837,14 @@ public class MainGUI extends MainWindow {
 	}
 	*/
 
-	public void switchToWorkspace(JCheckBoxMenuItem workspaceItem, String workspaceName) {
+	public void switchToWorkspace(String workspaceName) {
 
 		mainMenu.uncheckWorkspaces();
 
-		workspaceItem.setSelected(true);
+		List<JCheckBoxMenuItem> workspaceItems = mainMenu.getWorkspaces();
+		for (JCheckBoxMenuItem workspaceItem : workspaceItems) {
+			workspaceItem.setSelected(workspaceName.equals(workspaceItem.getText()));
+		}
 
 		// set the current tab to null such that we automagically open the latest one of the newly opened workspace
 		setCurrentlyShownTab(null);
@@ -1856,6 +1868,11 @@ public class MainGUI extends MainWindow {
 		setRemoveUnusedImportsOnSave(activeWorkspace.getBoolean(CONFIG_KEY_REMOVE_UNUSED_IMPORTS_ON_SAVE, removeUnusedImportsOnSave));
 
 		refreshTitleBar();
+	}
+
+	public void refreshWorkspaces() {
+		getMainMenu().refreshWorkspaces();
+		getMainPopupMenu().refreshWorkspaces();
 	}
 
 	private String getCurrentDirName() {

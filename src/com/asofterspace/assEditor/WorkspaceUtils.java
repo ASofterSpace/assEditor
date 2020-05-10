@@ -94,7 +94,7 @@ public class WorkspaceUtils {
 					public void actionPerformed(ActionEvent e) {
 						((JCheckBoxMenuItem) workspace).setSelected(true);
 						if (!workspaceName.equals(mainGUI.getAugFileCtrl().getActiveWorkspaceName())) {
-							mainGUI.switchToWorkspace((JCheckBoxMenuItem) workspace, workspaceName);
+							mainGUI.switchToWorkspace(workspaceName);
 						}
 					}
 				});
