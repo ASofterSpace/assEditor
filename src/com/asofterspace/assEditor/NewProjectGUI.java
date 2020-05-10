@@ -178,6 +178,7 @@ public class NewProjectGUI {
 					"md toolbox\n" +
 					"cd toolbox\n" +
 					"\n" +
+					"md coders\n" +
 					"md io\n" +
 					"md utils\n" +
 					"md web\n" +
@@ -185,6 +186,7 @@ public class NewProjectGUI {
 					"cd ..\\..\\..\\..\n" +
 					"\n" +
 					"copy \"..\\Toolbox-Java\\src\\com\\asofterspace\\toolbox\\*.java\" \"src\\com\\asofterspace\\toolbox\"\n" +
+					"copy \"..\\Toolbox-Java\\src\\com\\asofterspace\\toolbox\\coders\\*.*\" \"src\\com\\asofterspace\\toolbox\\coders\"\n" +
 					"copy \"..\\Toolbox-Java\\src\\com\\asofterspace\\toolbox\\io\\*.*\" \"src\\com\\asofterspace\\toolbox\\io\"\n" +
 					"copy \"..\\Toolbox-Java\\src\\com\\asofterspace\\toolbox\\utils\\*.*\" \"src\\com\\asofterspace\\toolbox\\utils\"\n" +
 					"copy \"..\\Toolbox-Java\\src\\com\\asofterspace\\toolbox\\web\\*.*\" \"src\\com\\asofterspace\\toolbox\\web\"\n" +
@@ -216,6 +218,7 @@ public class NewProjectGUI {
 					"mkdir toolbox\n" +
 					"cd toolbox\n" +
 					"\n" +
+					"mkdir coders\n" +
 					"mkdir io\n" +
 					"mkdir utils\n" +
 					"mkdir web\n" +
@@ -223,6 +226,7 @@ public class NewProjectGUI {
 					"cd ../../../..\n" +
 					"\n" +
 					"cp ../Toolbox-Java/src/com/asofterspace/toolbox/*.java src/com/asofterspace/toolbox\n" +
+					"cp ../Toolbox-Java/src/com/asofterspace/toolbox/coders/*.* src/com/asofterspace/toolbox/coders\n" +
 					"cp ../Toolbox-Java/src/com/asofterspace/toolbox/io/*.* src/com/asofterspace/toolbox/io\n" +
 					"cp ../Toolbox-Java/src/com/asofterspace/toolbox/utils/*.* src/com/asofterspace/toolbox/utils\n" +
 					"cp ../Toolbox-Java/src/com/asofterspace/toolbox/web/*.* src/com/asofterspace/toolbox/web\n" +
@@ -493,6 +497,8 @@ public class NewProjectGUI {
 					"\n" +
 					"	public void save() {\n" +
 					"\n" +
+					"		root.makeObject();\n" +
+					"\n" +
 					"		/* here, put something like e.g.:\n" +
 					"\n" +
 					"		List<Record> objectsRecs = new ArrayList<>();\n" +
@@ -538,7 +544,7 @@ public class NewProjectGUI {
 
 		// Set the preferred size of the dialog
 		int width = 600;
-		int height = 240;
+		int height = 320;
 		dialog.setSize(width, height);
 		dialog.setPreferredSize(new Dimension(width, height));
 
