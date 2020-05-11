@@ -31,6 +31,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
@@ -491,12 +493,15 @@ public class MainGUI extends MainWindow {
 
 		// listen to text updates
 		jumpToFileField.getDocument().addDocumentListener(new DocumentListener() {
+			@Override
 			public void changedUpdate(DocumentEvent e) {
 				jump();
 			}
+			@Override
 			public void removeUpdate(DocumentEvent e) {
 				jump();
 			}
+			@Override
 			public void insertUpdate(DocumentEvent e) {
 				jump();
 			}
@@ -540,11 +545,23 @@ public class MainGUI extends MainWindow {
 
 		// listen to the enter key being pressed (which does not create text updates)
 		jumpToFileField.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (jumpToTab != null) {
 					showTab(jumpToTab, true);
 				}
 				jumpToFilePanel.setVisible(false);
+			}
+		});
+
+		// listen to being focused, and when it happens, select all the current content
+		jumpToFileField.addFocusListener(new FocusListener() {
+			@Override
+			public void focusGained(FocusEvent e) {
+				jumpToFileField.selectAll();
+			}
+			@Override
+			public void focusLost(FocusEvent e) {
 			}
 		});
 
@@ -562,12 +579,15 @@ public class MainGUI extends MainWindow {
 
 		// listen to text updates
 		searchField.getDocument().addDocumentListener(new DocumentListener() {
+			@Override
 			public void changedUpdate(DocumentEvent e) {
 				search();
 			}
+			@Override
 			public void removeUpdate(DocumentEvent e) {
 				search();
 			}
+			@Override
 			public void insertUpdate(DocumentEvent e) {
 				search();
 			}
@@ -582,6 +602,7 @@ public class MainGUI extends MainWindow {
 
 		// listen to the enter key being pressed (which does not create text updates)
 		searchField.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent e) {
 				String searchFor = searchField.getText();
 
@@ -591,10 +612,22 @@ public class MainGUI extends MainWindow {
 			}
 		});
 
+		// listen to being focused, and when it happens, select all the current content
+		searchField.addFocusListener(new FocusListener() {
+			@Override
+			public void focusGained(FocusEvent e) {
+				searchField.selectAll();
+			}
+			@Override
+			public void focusLost(FocusEvent e) {
+			}
+		});
+
 		replaceField = new JTextField();
 
 		// listen to the enter key being pressed (which does not create text updates)
 		replaceField.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent e) {
 				String searchFor = searchField.getText();
 				String replaceWith = replaceField.getText();
@@ -602,6 +635,17 @@ public class MainGUI extends MainWindow {
 				if (currentlyShownTab != null) {
 					currentlyShownTab.replaceAll(searchFor, replaceWith);
 				}
+			}
+		});
+
+		// listen to being focused, and when it happens, select all the current content
+		replaceField.addFocusListener(new FocusListener() {
+			@Override
+			public void focusGained(FocusEvent e) {
+				replaceField.selectAll();
+			}
+			@Override
+			public void focusLost(FocusEvent e) {
 			}
 		});
 
