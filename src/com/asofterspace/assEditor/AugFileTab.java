@@ -710,7 +710,12 @@ public class AugFileTab implements FileTab {
 			carPos = sourceCode.length();
 		}
 
-		fileContentMemo.setCaretPosition(carPos);
+		// set the caret to the next line (well, to where the next line will be after deleting...)
+		int newPos = lineStart + 1;
+		if (newPos > sourceCode.length()) {
+			newPos = sourceCode.length();
+		}
+		fileContentMemo.setCaretPosition(newPos);
 	}
 
 	public void lowCurSel() {
