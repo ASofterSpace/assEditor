@@ -1695,7 +1695,7 @@ public class MainGUI extends MainWindow {
 				Date latestAccessTime = latestTab.getFile().getLastAccessTime();
 				for (int i = 1; i < augFileTabs.size(); i++) {
 					Date curAccessTime = augFileTabs.get(i).getFile().getLastAccessTime();
-					if (curAccessTime.compareTo(latestAccessTime) > 0) {
+					if ((curAccessTime != null) && (curAccessTime.compareTo(latestAccessTime) > 0)) {
 						latestTab = augFileTabs.get(i);
 						latestAccessTime = curAccessTime;
 					}

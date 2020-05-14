@@ -1342,6 +1342,16 @@ public class MainMenu {
 		});
 		switchWorkspace.add(editWorkspaces);
 
+		JMenu archiveWorkspace = new JMenu("Archive a Workspace");
+		switchWorkspace.add(archiveWorkspace);
+
+		WorkspaceUtils.createWorkspaceMenuEntries(archiveWorkspace, WorkspaceAction.ARCHIVE, mainGUI);
+
+		JMenu unarchiveWorkspace = new JMenu("Unarchive a Workspace");
+		switchWorkspace.add(unarchiveWorkspace);
+
+		WorkspaceUtils.createWorkspaceMenuEntries(unarchiveWorkspace, WorkspaceAction.UNARCHIVE, mainGUI);
+
 		JMenuItem exportWorkspace = new JMenuItem("Export Current Workspace");
 		exportWorkspace.addActionListener(new ActionListener() {
 			@Override

@@ -25,6 +25,11 @@ public class AugFileCtrl {
 	private final static String CONF_CARET_POS = "caretPos";
 	private final static String CONF_LANGUAGE = "language";
 	private final static String CONF_ACCESS_TIME = "accessTime";
+	private final static String CONF_WORKSPACES = "workspaces";
+	private final static String CONF_ARCHIVED_WORKSPACES = "workspacesArchived";
+	private final static String CONF_ACTIVE_WORKSPACE = "activeWorkspace";
+	private final static String CONF_WORKSPACE_NAME = "name";
+	private final static String CONF_WORKSPACE_FILES = "files";
 	private final static String STANDALONE_WORKSPACE_NAME = "Standalone Non-Persistent Workspace";
 
 	private ConfigFile configuration;
@@ -40,7 +45,7 @@ public class AugFileCtrl {
 
 		this.configuration = configuration;
 
-		String activeWorkspaceName = configuration.getValue("activeWorkspace");
+		String activeWorkspaceName = configuration.getValue(CONF_ACTIVE_WORKSPACE);
 
 		if (standalone) {
 			activeWorkspaceName = STANDALONE_WORKSPACE_NAME;
@@ -49,7 +54,7 @@ public class AugFileCtrl {
 
 			Record standaloneWorkspace = addWorkspace(activeWorkspaceName);
 
-			List<Record> recFiles = standaloneWorkspace.getArray("files");
+			List<Record> recFiles = standaloneWorkspace.getArray(CONF_WORKSPACE_FILES);
 
 			Record recFile = new Record();
 
@@ -65,7 +70,7 @@ public class AugFileCtrl {
 	}
 
 	public String getWorkspaceName() {
-		return activeWorkspace.getString("name");
+		return activeWorkspace.getString(CONF_WORKSPACE_NAME);
 	}
 
 	public Record getWorkspace() {
@@ -73,14 +78,22 @@ public class AugFileCtrl {
 	}
 
 	public List<String> getWorkspaces() {
+		return getWorkspaces(CONF_WORKSPACES);
+	}
+
+	public List<String> getArchivedWorkspaces() {
+		return getWorkspaces(CONF_ARCHIVED_WORKSPACES);
+	}
+
+	private List<String> getWorkspaces(String key) {
 
 		List<String> workspaces = new ArrayList<>();
 
-		List<Record> recWorkspaces = configuration.getAllContents().getArray("workspaces");
+		List<Record> recWorkspaces = configuration.getAllContents().getArray(key);
 
 		for (Record recWorkspace : recWorkspaces) {
-			if (!STANDALONE_WORKSPACE_NAME.equals(recWorkspace.getString("name"))) {
-				workspaces.add(recWorkspace.getString("name"));
+			if (!STANDALONE_WORKSPACE_NAME.equals(recWorkspace.getString(CONF_WORKSPACE_NAME))) {
+				workspaces.add(recWorkspace.getString(CONF_WORKSPACE_NAME));
 			}
 		}
 
@@ -89,13 +102,13 @@ public class AugFileCtrl {
 
 	public void removeWorkspace(String workspace) {
 
-		Record recWorkspaceHolder = configuration.getAllContents().get("workspaces");
+		Record recWorkspaceHolder = configuration.getAllContents().get(CONF_WORKSPACES);
 		List<Record> recWorkspaces = recWorkspaceHolder.getValues();
 
 		int i = 0;
 		int foundAt = -1;
 		for (Record recWorkspace : recWorkspaces) {
-			if (workspace.equals(recWorkspace.getString("name"))) {
+			if (workspace.equals(recWorkspace.getString(CONF_WORKSPACE_NAME))) {
 				foundAt = i;
 			}
 			i++;
@@ -121,16 +134,16 @@ public class AugFileCtrl {
 			}
 		}
 
-		Record recWorkspaces = configuration.getAllContents().get("workspaces");
+		Record recWorkspaces = configuration.getAllContents().get(CONF_WORKSPACES);
 
 		Record newWorkspace = new Record();
 
 		Record fileRec = new Record();
 		fileRec.makeArray();
 
-		newWorkspace.set("files", fileRec);
+		newWorkspace.set(CONF_WORKSPACE_FILES, fileRec);
 
-		newWorkspace.setString("name", workspace);
+		newWorkspace.setString(CONF_WORKSPACE_NAME, workspace);
 
 		recWorkspaces.append(newWorkspace);
 
@@ -141,16 +154,68 @@ public class AugFileCtrl {
 
 	public void sortWorkspaces() {
 
-		List<Record> recWorkspaces = configuration.getAllContents().getArray("workspaces");
+		List<Record> recWorkspaces = configuration.getAllContents().getArray(CONF_WORKSPACES);
+		sortWorkspaceList(recWorkspaces);
+		configuration.getAllContents().setArray(CONF_WORKSPACES, recWorkspaces);
+
+		configuration.create();
+	}
+
+	private void sortWorkspaceList(List<Record> recWorkspaces) {
 
 		Collections.sort(recWorkspaces, new Comparator<Record>(){
 			@Override
 			public int compare(final Record a, final Record b) {
-				return a.getString("name").compareToIgnoreCase(b.getString("name"));
+				return a.getString(CONF_WORKSPACE_NAME).compareToIgnoreCase(b.getString(CONF_WORKSPACE_NAME));
 			}
 		});
+	}
 
-		configuration.getAllContents().setArray("workspaces", recWorkspaces);
+	public void archiveWorkspace(String workspace) {
+		archiveOrUnarchiveWorkspace(workspace, CONF_WORKSPACES, CONF_ARCHIVED_WORKSPACES, true);
+	}
+
+	public void unarchiveWorkspace(String workspace) {
+		archiveOrUnarchiveWorkspace(workspace, CONF_ARCHIVED_WORKSPACES, CONF_WORKSPACES, false);
+	}
+
+	/**
+	 * Move a workspace from the archive to the main list - or the other way around. :)
+	 * (And optionally sort the target list afterwards.)
+	 */
+	private void archiveOrUnarchiveWorkspace(String workspace, String originKey, String targetKey, boolean sortTarget) {
+
+		if (workspace == null) {
+			return;
+		}
+
+		List<Record> recWorkspaces = configuration.getAllContents().getArray(originKey);
+		List<Record> newWorkspaces = new ArrayList<>();
+		Record recordToMove = null;
+
+		// search for the record to be archived among the current workspace records
+		for (Record cur : recWorkspaces) {
+			if (workspace.equals(cur.getString(CONF_WORKSPACE_NAME))) {
+				recordToMove = cur;
+			} else {
+				newWorkspaces.add(cur);
+			}
+		}
+
+		// if there is nothing to do...
+		if (recordToMove == null) {
+			// ... do nothing!
+			return;
+		}
+
+		configuration.getAllContents().setArray(originKey, newWorkspaces);
+
+		List<Record> targetWorkspaces = configuration.getAllContents().getArray(targetKey);
+		targetWorkspaces.add(recordToMove);
+		if (sortTarget) {
+			sortWorkspaceList(targetWorkspaces);
+		}
+		configuration.getAllContents().setArray(targetKey, targetWorkspaces);
 
 		configuration.create();
 	}
@@ -160,11 +225,11 @@ public class AugFileCtrl {
 		// save the current state of the previous workspace
 		saveConfigFileList();
 
-		List<Record> recWorkspaces = configuration.getAllContents().getArray("workspaces");
+		List<Record> recWorkspaces = configuration.getAllContents().getArray(CONF_WORKSPACES);
 
 		for (Record recWorkspace : recWorkspaces) {
 			if ((workspace == null) ||
-				workspace.equals(recWorkspace.getString("name"))) {
+				workspace.equals(recWorkspace.getString(CONF_WORKSPACE_NAME))) {
 				switchToJsonWorkspace(recWorkspace);
 				return;
 			}
@@ -181,20 +246,20 @@ public class AugFileCtrl {
 	}
 
 	public String getActiveWorkspaceName() {
-		return activeWorkspace.getString("name");
+		return activeWorkspace.getString(CONF_WORKSPACE_NAME);
 	}
 
 	private void switchToJsonWorkspace(Record workspace) {
 
 		activeWorkspace = workspace;
 
-		if (!STANDALONE_WORKSPACE_NAME.equals(workspace.getString("name"))) {
-			configuration.getAllContents().setString("activeWorkspace", workspace.getString("name"));
+		if (!STANDALONE_WORKSPACE_NAME.equals(workspace.getString(CONF_WORKSPACE_NAME))) {
+			configuration.getAllContents().setString(CONF_ACTIVE_WORKSPACE, workspace.getString(CONF_WORKSPACE_NAME));
 		}
 
 		files = new ArrayList<>();
 
-		List<Record> recFiles = workspace.getArray("files");
+		List<Record> recFiles = workspace.getArray(CONF_WORKSPACE_FILES);
 
 		if (recFiles != null) {
 			for (Record recFile : recFiles) {
@@ -323,12 +388,12 @@ public class AugFileCtrl {
 
 	public void addFilesToWorkspace(List<AugFile> augFiles, String workspaceName) {
 
-		List<Record> recWorkspaces = configuration.getAllContents().getArray("workspaces");
+		List<Record> recWorkspaces = configuration.getAllContents().getArray(CONF_WORKSPACES);
 
 		for (Record recWorkspace : recWorkspaces) {
-			if (workspaceName.equals(recWorkspace.getString("name"))) {
+			if (workspaceName.equals(recWorkspace.getString(CONF_WORKSPACE_NAME))) {
 
-				Record filesRec = recWorkspace.get("files");
+				Record filesRec = recWorkspace.get(CONF_WORKSPACE_FILES);
 
 				addFilesToConfig(augFiles, filesRec);
 
@@ -347,7 +412,7 @@ public class AugFileCtrl {
 			return;
 		}
 
-		activeWorkspace.set("files", filesRec);
+		activeWorkspace.set(CONF_WORKSPACE_FILES, filesRec);
 
 		synchronized (files) {
 			addFilesToConfig(files, filesRec);

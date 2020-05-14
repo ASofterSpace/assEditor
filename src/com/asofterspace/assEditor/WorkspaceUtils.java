@@ -30,6 +30,12 @@ public class WorkspaceUtils {
 		parentElem.removeAll();
 
 		List<String> workspaceNames = mainGUI.getAugFileCtrl().getWorkspaces();
+
+		// we can only unarchive workspaces that have been archived before ;)
+		if (onClickAction == WorkspaceAction.UNARCHIVE) {
+			workspaceNames = mainGUI.getAugFileCtrl().getArchivedWorkspaces();
+		}
+
 		for (int i = 0; i < workspaceNames.size(); i++) {
 			final String workspaceName = workspaceNames.get(i);
 			if (i + 1 < workspaceNames.size()) {
@@ -96,6 +102,28 @@ public class WorkspaceUtils {
 						if (!workspaceName.equals(mainGUI.getAugFileCtrl().getActiveWorkspaceName())) {
 							mainGUI.switchToWorkspace(workspaceName);
 						}
+					}
+				});
+				return workspace;
+
+			case ARCHIVE:
+				workspace = new JMenuItem(workspaceName);
+				workspace.addActionListener(new ActionListener() {
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						mainGUI.getAugFileCtrl().archiveWorkspace(workspaceName);
+						mainGUI.refreshWorkspaces();
+					}
+				});
+				return workspace;
+
+			case UNARCHIVE:
+				workspace = new JMenuItem(workspaceName);
+				workspace.addActionListener(new ActionListener() {
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						mainGUI.getAugFileCtrl().unarchiveWorkspace(workspaceName);
+						mainGUI.refreshWorkspaces();
 					}
 				});
 				return workspace;
