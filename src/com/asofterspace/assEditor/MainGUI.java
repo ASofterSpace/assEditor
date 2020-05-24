@@ -738,7 +738,7 @@ public class MainGUI extends MainWindow {
 		augFilePicker.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
 		augFilePicker.setMultiSelectionEnabled(true);
 
-		augFilePicker.showOpenDialog(mainFrame, new CallbackWithStatus() {
+		augFilePicker.showOpenDialog(new CallbackWithStatus() {
 			public void call(int status) {
 				switch (status) {
 
