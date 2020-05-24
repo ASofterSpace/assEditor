@@ -746,7 +746,7 @@ public class MainGUI extends MainWindow {
 
 						openFiles(
 							augFilePicker.getSelectedFiles(),
-							augFilePicker.getSelectedFolders(),
+							augFilePicker.getSelectedDirectories(),
 							augFilePicker.getCurrentDirectory().getAbsoluteDirname()
 						);
 
