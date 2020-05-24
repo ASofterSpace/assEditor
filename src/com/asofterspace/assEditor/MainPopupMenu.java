@@ -70,7 +70,7 @@ public class MainPopupMenu {
 		openFilePopup.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				mainGUI.openFile();
+				mainGUI.showOpenFileDialog();
 			}
 		});
 		popupMenu.add(openFilePopup);

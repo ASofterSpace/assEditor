@@ -516,18 +516,18 @@ public class NewProjectGUI {
 					"}");
 
 				// load all these files
-				List<java.io.File> filesToOpen = new ArrayList<>();
-				filesToOpen.add(gitignoreFile.getJavaFile());
-				filesToOpen.add(buildBatFile.getJavaFile());
-				filesToOpen.add(buildShFile.getJavaFile());
-				filesToOpen.add(readmeFile.getJavaFile());
-				filesToOpen.add(releaseShFile.getJavaFile());
-				filesToOpen.add(runBatFile.getJavaFile());
-				filesToOpen.add(runShFile.getJavaFile());
-				filesToOpen.add(unlicenseFile.getJavaFile());
-				filesToOpen.add(databaseFile.getJavaFile());
-				filesToOpen.add(mainFile.getJavaFile());
-				mainGUI.openFiles(filesToOpen, newFolderName);
+				List<File> filesToOpen = new ArrayList<>();
+				filesToOpen.add(gitignoreFile);
+				filesToOpen.add(buildBatFile);
+				filesToOpen.add(buildShFile);
+				filesToOpen.add(readmeFile);
+				filesToOpen.add(releaseShFile);
+				filesToOpen.add(runBatFile);
+				filesToOpen.add(runShFile);
+				filesToOpen.add(unlicenseFile);
+				filesToOpen.add(databaseFile);
+				filesToOpen.add(mainFile);
+				mainGUI.openFiles(filesToOpen, null, newFolderName);
 
 				dialog.dispose();
 			}

@@ -17,10 +17,12 @@ import com.asofterspace.toolbox.gui.FileTreeModel;
 import com.asofterspace.toolbox.gui.FileTreeNode;
 import com.asofterspace.toolbox.gui.GuiUtils;
 import com.asofterspace.toolbox.gui.MainWindow;
+import com.asofterspace.toolbox.gui.OpenFileDialog;
 import com.asofterspace.toolbox.io.Directory;
 import com.asofterspace.toolbox.io.File;
 import com.asofterspace.toolbox.io.JSON;
 import com.asofterspace.toolbox.io.SimpleFile;
+import com.asofterspace.toolbox.utils.CallbackWithStatus;
 import com.asofterspace.toolbox.utils.Record;
 
 import java.awt.BorderLayout;
@@ -198,11 +200,11 @@ public class MainGUI extends MainWindow {
 							renameFile.rename(newName);
 
 							// open renamed file as new tab
-							AugFileTab latestTab = openFilesRecursively(renameFile.getJavaFile());
+							AugFileTab latestTab = openFile(renameFile);
 							if (latestTab == null) {
 								// if something went wrong, try to re-open the old file (it might still be there)
 								File oldFile = new File(origFilePath);
-								latestTab = openFilesRecursively(oldFile.getJavaFile());
+								latestTab = openFile(oldFile);
 							}
 
 							if (latestTab != null) {
@@ -705,12 +707,9 @@ public class MainGUI extends MainWindow {
 		return showFilesInTree;
 	}
 
-	public void openFile() {
+	public void showOpenFileDialog() {
 
-		// TODO :: de-localize the JFileChooser (by default it seems localized, which is inconsistent when the rest of the program is in English...)
-		// (while you're at it, make Öffnen into Save for the save dialog, but keep it as Open for the open dialog... ^^)
-		// TODO :: actually, write our own file chooser
-		JFileChooser augFilePicker;
+		OpenFileDialog augFilePicker = new OpenFileDialog();
 
 		// if we find nothing better, use the last-used directory
 		String lastDirectory = augFileCtrl.getWorkspace().getString(CONFIG_KEY_LAST_DIRECTORY);
@@ -732,36 +731,36 @@ public class MainGUI extends MainWindow {
 		}
 
 		if ((lastDirectory != null) && !"".equals(lastDirectory)) {
-			augFilePicker = new JFileChooser(new java.io.File(lastDirectory));
-		} else {
-			augFilePicker = new JFileChooser();
+			augFilePicker.setCurrentDirectory(new Directory(lastDirectory));
 		}
 
 		augFilePicker.setDialogTitle("Open a Code File to Edit");
 		augFilePicker.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
 		augFilePicker.setMultiSelectionEnabled(true);
 
-		int result = augFilePicker.showOpenDialog(mainFrame);
+		augFilePicker.showOpenDialog(mainFrame, new CallbackWithStatus() {
+			public void call(int status) {
+				switch (status) {
 
-		switch (result) {
+					case OpenFileDialog.APPROVE_OPTION:
 
-			case JFileChooser.APPROVE_OPTION:
+						openFiles(
+							augFilePicker.getSelectedFiles(),
+							augFilePicker.getSelectedFolders(),
+							augFilePicker.getCurrentDirectory().getAbsoluteDirname()
+						);
 
-				List<java.io.File> selectedFiles = new ArrayList<>();
-				for (java.io.File curFile : augFilePicker.getSelectedFiles()) {
-					selectedFiles.add(curFile);
+						break;
+
+					case OpenFileDialog.CANCEL_OPTION:
+						// cancel was pressed... do nothing for now
+						break;
 				}
-				openFiles(selectedFiles, augFilePicker.getCurrentDirectory().getAbsolutePath());
-
-				break;
-
-			case JFileChooser.CANCEL_OPTION:
-				// cancel was pressed... do nothing for now
-				break;
-		}
+			}
+		});
 	}
 
-	public void openFiles(List<java.io.File> filesToOpen, String newLastAbsoluteDirPath) {
+	public void openFiles(List<File> filesToOpen, List<Directory> foldersToOpen, String newLastAbsoluteDirPath) {
 
 		// load the files
 		augFileCtrl.getWorkspace().setString(CONFIG_KEY_LAST_DIRECTORY, newLastAbsoluteDirPath);
@@ -769,8 +768,16 @@ public class MainGUI extends MainWindow {
 
 		AugFileTab latestTab = null;
 
-		for (java.io.File curFile : filesToOpen) {
-			latestTab = openFilesRecursively(curFile);
+		if (filesToOpen != null) {
+			for (File curFile : filesToOpen) {
+				latestTab = openFile(curFile);
+			}
+		}
+
+		if (foldersToOpen != null) {
+			for (Directory curFolder : foldersToOpen) {
+				latestTab = openFilesRecursively(curFolder);
+			}
 		}
 
 		// show the latest tab that we added!
@@ -783,52 +790,58 @@ public class MainGUI extends MainWindow {
 		reEnableDisableMenuItems();
 	}
 
-	private AugFileTab openFilesRecursively(java.io.File parent) {
+	private AugFileTab openFile(File fileToOpen) {
+
+		// if the file was already opened before...
+		String newFilename = fileToOpen.getCanonicalFilename();
+		for (AugFileTab tab : augFileTabs) {
+			if (newFilename.equals(tab.getFilePath())) {
+				// ... then load this existing tab!
+				return tab;
+			}
+		}
+
+		AugFile newFile = augFileCtrl.loadAnotherFile(fileToOpen);
+
+		if (newFile != null) {
+			// ... if not, add a tab for it
+			AugFileTab result = new AugFileTab(mainPanelRight, newFile, this, augFileCtrl);
+			augFileTabs.add(result);
+			return result;
+		}
+
+		// this... should not happen!
+		return null;
+	}
+
+	private AugFileTab openFilesRecursively(Directory parent) {
 
 		AugFileTab result = null;
 
-		if (parent.isDirectory()) {
-			// when opening entire directories...
-			java.io.File[] curFiles = parent.listFiles();
+		// when opening entire directories...
+		boolean recursively = true;
+		List<File> curFiles = parent.getAllFiles(recursively);
 
-			for (java.io.File curFile : curFiles) {
-				if (!curFile.isDirectory()) {
-					// ... ignore gedit backup files
-					if (curFile.getName().endsWith("~")) {
-						continue;
-					}
-					// ... ignore unity meta files
-					if (curFile.getName().endsWith(".meta")) {
-						continue;
-					}
-					// ... ignore java package info files
-					if (curFile.getName().equals("package-info.java")) {
-						continue;
-					}
-					// TODO :: maybe ignore files that are covered by .gitignore?
-					// (as those are often also backup files or similar...)
-				}
-				result = openFilesRecursively(curFile);
+		for (File curFile : curFiles) {
+
+			String localFilename = curFile.getLocalFilename();
+
+			// ... ignore gedit backup files
+			if (localFilename.endsWith("~")) {
+				continue;
 			}
-		} else {
-			File fileToOpen = new File(parent);
-
-			AugFile newFile = augFileCtrl.loadAnotherFile(fileToOpen);
-
-			// if the file was already opened before...
-			if (newFile == null) {
-				// ... then load this existing tab!
-				String newFilename = fileToOpen.getCanonicalFilename();
-				for (AugFileTab tab : augFileTabs) {
-					if (newFilename.equals(tab.getFilePath())) {
-						return tab;
-					}
-				}
-			} else {
-				// ... if not, add a tab for it
-				result = new AugFileTab(mainPanelRight, newFile, this, augFileCtrl);
-				augFileTabs.add(result);
+			// ... ignore unity meta files
+			if (localFilename.endsWith(".meta")) {
+				continue;
 			}
+			// ... ignore java package info files
+			if (localFilename.equals("package-info.java")) {
+				continue;
+			}
+			// TODO :: maybe ignore files that are covered by .gitignore?
+			// (as those are often also backup files or similar...)
+
+			result = openFile(curFile);
 		}
 
 		return result;

@@ -131,7 +131,7 @@ public class MainMenu {
 		openFile.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				mainGUI.openFile();
+				mainGUI.showOpenFileDialog();
 			}
 		});
 		file.add(openFile);
