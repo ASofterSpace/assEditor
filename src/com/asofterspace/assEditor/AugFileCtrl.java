@@ -114,7 +114,7 @@ public class AugFileCtrl {
 			i++;
 		}
 		if (foundAt >= 0) {
-			recWorkspaceHolder.removeIndex(foundAt);
+			recWorkspaceHolder.remove(foundAt);
 		}
 	}
 
