@@ -19,6 +19,7 @@ import com.asofterspace.toolbox.images.Image;
 import com.asofterspace.toolbox.io.Directory;
 import com.asofterspace.toolbox.io.File;
 import com.asofterspace.toolbox.io.SimpleFile;
+import com.asofterspace.toolbox.io.XML;
 import com.asofterspace.toolbox.utils.Callback;
 import com.asofterspace.toolbox.utils.StrUtils;
 import com.asofterspace.toolbox.utils.TextEncoding;
@@ -600,6 +601,24 @@ public class AugFileTab implements FileTab {
 		}
 
 		fileContentMemo.setText(sourceCode.toString());
+	}
+
+	public void removeCommentsAndStrings() {
+
+		ensureLoaded();
+
+		String newContent = highlighter.removeCommentsAndStrings(fileContentMemo.getText());
+
+		fileContentMemo.setText(newContent);
+	}
+
+	public void removeXmlTags() {
+
+		ensureLoaded();
+
+		String newContent = XML.removeXmlTagsFromText(fileContentMemo.getText());
+
+		fileContentMemo.setText(newContent);
 	}
 
 	public void writeLineNumbers() {

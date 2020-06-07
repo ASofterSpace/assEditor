@@ -831,6 +831,28 @@ public class MainMenu {
 		});
 		code.add(removeDebugLines);
 
+		JMenuItem removeCommentsAndStrings = new JMenuItem("Remove Comments and Strings");
+		removeCommentsAndStrings.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (mainGUI.getCurrentTab() != null) {
+					mainGUI.getCurrentTab().removeCommentsAndStrings();
+				}
+			}
+		});
+		code.add(removeCommentsAndStrings);
+
+		JMenuItem removeXmlTags = new JMenuItem("Remove XML tags");
+		removeXmlTags.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (mainGUI.getCurrentTab() != null) {
+					mainGUI.getCurrentTab().removeXmlTags();
+				}
+			}
+		});
+		code.add(removeXmlTags);
+
 		code.addSeparator();
 
 		JMenuItem applyGit = new JMenuItem("Apply Git Markers (+/- at the beginning of lines)");
