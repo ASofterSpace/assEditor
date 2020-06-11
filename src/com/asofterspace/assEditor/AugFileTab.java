@@ -90,6 +90,7 @@ public class AugFileTab implements FileTab {
 	private int newCaretPos;
 
 	private int selectionOrder = 0;
+	private String defaultIndentationStr = "\t";
 
 
 	public AugFileTab(JPanel parentPanel, AugFile augFile, final MainGUI mainGUI, AugFileCtrl augFileCtrl) {
@@ -417,6 +418,8 @@ public class AugFileTab implements FileTab {
 		CodeLanguage codeKind = augFile.getSourceLanguage();
 
 		highlighter = CodeHighlighterFactory.getHighlighterForLanguage(codeKind, fileContentMemo);
+
+		highlighter.setDefaultIndentation(defaultIndentationStr);
 
 		if (highlighter.suppliesFunctions()) {
 
@@ -1587,6 +1590,13 @@ public class AugFileTab implements FileTab {
 
 	public void addEquals() {
 		highlighter.addEquals();
+	}
+
+	public void setDefaultIndent(String defaultIndentationStr) {
+		this.defaultIndentationStr = defaultIndentationStr;
+		if (highlighter != null) {
+			highlighter.setDefaultIndentation(defaultIndentationStr);
+		}
 	}
 
 	public void jumpToLine(int lineNum) {

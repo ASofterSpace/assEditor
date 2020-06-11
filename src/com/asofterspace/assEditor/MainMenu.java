@@ -25,6 +25,7 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
+import javax.swing.JRadioButtonMenuItem;
 import javax.swing.KeyStroke;
 
 
@@ -53,6 +54,9 @@ public class MainMenu {
 	JCheckBoxMenuItem setLightSchemeItem;
 	JCheckBoxMenuItem setDarkSchemeItem;
 	JCheckBoxMenuItem useAntiAliasingItem;
+	JRadioButtonMenuItem defaultIndentTab;
+	JRadioButtonMenuItem defaultIndent2Spaces;
+	JRadioButtonMenuItem defaultIndent4Spaces;
 	JCheckBoxMenuItem removeTrailingWhitespaceOnSaveItem;
 	JCheckBoxMenuItem replaceWhitespacesWithTabsOnSaveItem;
 	JCheckBoxMenuItem replaceTabsWithWhitespacesOnSaveItem;
@@ -1069,6 +1073,34 @@ public class MainMenu {
 		language.add(ckDefault);
 
 		settings.addSeparator();
+
+		JMenu defaultIndentation = new JMenu("Default Indentation");
+		defaultIndentTab = new JRadioButtonMenuItem("1 Tab");
+		defaultIndentTab.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				mainGUI.setDefaultIndent("\t");
+			}
+		});
+		defaultIndentation.add(defaultIndentTab);
+		defaultIndent2Spaces = new JRadioButtonMenuItem("2 Spaces");
+		defaultIndent2Spaces.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				mainGUI.setDefaultIndent("  ");
+			}
+		});
+		defaultIndentation.add(defaultIndent2Spaces);
+		defaultIndent4Spaces = new JRadioButtonMenuItem("4 Spaces");
+		defaultIndent4Spaces.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				mainGUI.setDefaultIndent("    ");
+			}
+		});
+		defaultIndentation.add(defaultIndent4Spaces);
+		settings.add(defaultIndentation);
+		mainGUI.setDefaultIndent(mainGUI.getDefaultIndent());
 
 		removeTrailingWhitespaceOnSaveItem = new JCheckBoxMenuItem("Remove Trailing Whitespace on Save");
 		removeTrailingWhitespaceOnSaveItem.addActionListener(new ActionListener() {

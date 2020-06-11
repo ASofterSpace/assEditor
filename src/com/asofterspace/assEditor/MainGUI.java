@@ -90,6 +90,7 @@ public class MainGUI extends MainWindow {
 	private final static String CONFIG_KEY_LAST_DIRECTORY = "lastDirectory";
 	private final static String CONFIG_KEY_SCHEME = "scheme";
 	private final static String CONFIG_KEY_ANTI_ALIASING = "antiAliasing";
+	private final static String CONFIG_KEY_DEFAULT_INDENTATION_STR = "defaultIndentationStr";
 	private final static String CONFIG_KEY_REMOVE_TRAILING_WHITESPACE_ON_SAVE = "onSaveRemoveTrailingWhitespace";
 	private final static String CONFIG_KEY_REPLACE_WHITESPACES_WITH_TABS_ON_SAVE = "onSaveReplaceWhitespacesWithTabs";
 	private final static String CONFIG_KEY_REPLACE_TABS_WITH_WHITESPACES_ON_SAVE = "onSaveReplaceTabsWithWhitespaces";
@@ -143,6 +144,7 @@ public class MainGUI extends MainWindow {
 	Boolean showFilesInTree;
 	boolean showFiles;
 	boolean standalone;
+	String defaultIndentationStr;
 
 	// this keeps track of the tabs we opened, and in which order we did so
 	private List<AugFileTab> listOfPreviousTabs;
@@ -233,6 +235,8 @@ public class MainGUI extends MainWindow {
 		if (currentScheme == null) {
 			currentScheme = GuiUtils.DARK_SCHEME;
 		}
+
+		defaultIndentationStr = configuration.getValue(CONFIG_KEY_DEFAULT_INDENTATION_STR);
 
 		removeTrailingWhitespaceOnSave = configuration.getBoolean(CONFIG_KEY_REMOVE_TRAILING_WHITESPACE_ON_SAVE, true);
 
@@ -806,6 +810,7 @@ public class MainGUI extends MainWindow {
 		if (newFile != null) {
 			// ... if not, add a tab for it
 			AugFileTab result = new AugFileTab(mainPanelRight, newFile, this, augFileCtrl);
+			result.setDefaultIndent(defaultIndentationStr);
 			augFileTabs.add(result);
 			return result;
 		}
@@ -866,6 +871,7 @@ public class MainGUI extends MainWindow {
 		} else {
 			// ... if not, add a tab for it
 			loadedTab = new AugFileTab(mainPanelRight, newFile, this, augFileCtrl);
+			loadedTab.setDefaultIndent(defaultIndentationStr);
 			augFileTabs.add(loadedTab);
 		}
 
@@ -1463,6 +1469,46 @@ public class MainGUI extends MainWindow {
 		mainMenu.removeUnusedImportsOnSaveItem.setSelected(setTo);
 	}
 
+	public String getDefaultIndent() {
+		return defaultIndentationStr;
+	}
+
+	public void setDefaultIndent(String indentationStr) {
+
+		if (indentationStr == null) {
+			indentationStr = "\t";
+		}
+
+		this.defaultIndentationStr = indentationStr;
+
+		Record activeWorkspace = augFileCtrl.getActiveWorkspace();
+		if (activeWorkspace != null) {
+			activeWorkspace.set(CONFIG_KEY_DEFAULT_INDENTATION_STR, defaultIndentationStr);
+		}
+
+		configuration.set(CONFIG_KEY_DEFAULT_INDENTATION_STR, defaultIndentationStr);
+
+		mainMenu.defaultIndent2Spaces.setSelected(false);
+		mainMenu.defaultIndent4Spaces.setSelected(false);
+		mainMenu.defaultIndentTab.setSelected(false);
+
+		switch (defaultIndentationStr) {
+			case "  ":
+				mainMenu.defaultIndent2Spaces.setSelected(true);
+				break;
+			case "    ":
+				mainMenu.defaultIndent4Spaces.setSelected(true);
+				break;
+			default:
+				mainMenu.defaultIndentTab.setSelected(true);
+				break;
+		}
+
+		for (AugFileTab tab : augFileTabs) {
+			tab.setDefaultIndent(defaultIndentationStr);
+		}
+	}
+
 	private void setCopyOnEnter(Boolean setTo) {
 
 		if (setTo == null) {
@@ -1803,7 +1849,9 @@ public class MainGUI extends MainWindow {
 		List<AugFile> files = augFileCtrl.getFiles();
 		for (AugFile file : files) {
 			file.refreshContent();
-			augFileTabs.add(new AugFileTab(mainPanelRight, file, this, augFileCtrl));
+			AugFileTab newTab = new AugFileTab(mainPanelRight, file, this, augFileCtrl);
+			newTab.setDefaultIndent(defaultIndentationStr);
+			augFileTabs.add(newTab);
 		}
 
 		regenerateAugFileList();
