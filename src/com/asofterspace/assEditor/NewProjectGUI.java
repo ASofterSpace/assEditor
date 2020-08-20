@@ -98,6 +98,11 @@ public class NewProjectGUI {
 
 				// cleanup input
 				String projectName = newProjectName.getText().trim();
+				String[] projectNames = projectName.split(" ");
+				projectName = projectNames[0];
+				for (int i = 1; i < projectNames.length; i++) {
+					projectName += StrUtils.upcaseFirstLetter(projectNames[i]);
+				}
 				String _ProjectName = StrUtils.upcaseFirstLetter(projectName);
 				String _projectName = StrUtils.lowcaseFirstLetter(projectName);
 
