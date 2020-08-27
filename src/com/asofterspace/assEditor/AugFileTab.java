@@ -1592,6 +1592,10 @@ public class AugFileTab implements FileTab {
 		highlighter.addEquals();
 	}
 
+	public void addToString() {
+		highlighter.addToString();
+	}
+
 	public void setDefaultIndent(String defaultIndentationStr) {
 		this.defaultIndentationStr = defaultIndentationStr;
 		if (highlighter != null) {

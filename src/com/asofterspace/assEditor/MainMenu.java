@@ -811,7 +811,18 @@ public class MainMenu {
 		});
 		code.add(addGettersAndSettersJava);
 
-		JMenuItem addEquals = new JMenuItem("Add equals() and hashCode()");
+		JMenuItem addToString = new JMenuItem("Add toString() for Selected Fields");
+		addToString.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (mainGUI.getCurrentTab() != null) {
+					mainGUI.getCurrentTab().addToString();
+				}
+			}
+		});
+		code.add(addToString);
+
+		JMenuItem addEquals = new JMenuItem("Add equals() and hashCode() for Selected Fields");
 		addEquals.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
