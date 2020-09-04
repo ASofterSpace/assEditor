@@ -819,6 +819,9 @@ public class MainGUI extends MainWindow {
 		return null;
 	}
 
+	// in here, we ignore a lot of files (when opening a folder), but this makes sense, as by default
+	// we assume people really don't want us to open them... on the other hand, if someone explicitly
+	// selects a single file to open, then we will open that
 	private AugFileTab openFilesRecursively(Directory parent) {
 
 		AugFileTab result = null;
@@ -829,20 +832,44 @@ public class MainGUI extends MainWindow {
 
 		for (File curFile : curFiles) {
 
-			String localFilename = curFile.getLocalFilename();
+			String absoluteFilename = curFile.getAbsoluteFilename();
+			String absoluteFilenameLow = absoluteFilename.toLowerCase();
 
 			// ... ignore gedit backup files
-			if (localFilename.endsWith("~")) {
+			if (absoluteFilename.endsWith("~")) {
+				continue;
+			}
+			// ... ignore files inside .git folder
+			if (absoluteFilename.contains("/.git/") || absoluteFilename.contains("\\.git\\")) {
 				continue;
 			}
 			// ... ignore unity meta files
-			if (localFilename.endsWith(".meta")) {
+			if (absoluteFilenameLow.endsWith(".meta")) {
 				continue;
 			}
+			// ... ignore media files
+			if (absoluteFilenameLow.endsWith(".jpg") ||
+				absoluteFilenameLow.endsWith(".png") ||
+				absoluteFilenameLow.endsWith(".bmp") ||
+				absoluteFilenameLow.endsWith(".gif") ||
+				absoluteFilenameLow.endsWith(".mp3") ||
+				absoluteFilenameLow.endsWith(".wav") ||
+				absoluteFilenameLow.endsWith(".ogg") ||
+				absoluteFilenameLow.endsWith(".mp4") ||
+				absoluteFilenameLow.endsWith(".mkv") ||
+				absoluteFilenameLow.endsWith(".avi") ||
+				absoluteFilenameLow.endsWith(".mpg") ||
+				absoluteFilenameLow.endsWith(".mpeg")) {
+				continue;
+			}
+
+			String localFilename = curFile.getLocalFilename();
+
 			// ... ignore java package info files
 			if (localFilename.equals("package-info.java")) {
 				continue;
 			}
+
 			// TODO :: maybe ignore files that are covered by .gitignore?
 			// (as those are often also backup files or similar...)
 
