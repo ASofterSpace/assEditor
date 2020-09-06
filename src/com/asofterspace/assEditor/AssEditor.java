@@ -24,8 +24,8 @@ import javax.swing.SwingUtilities;
 public class AssEditor {
 
 	public final static String PROGRAM_TITLE = "A Softer Space Editor";
-	public final static String VERSION_NUMBER = "0.0.3.7(" + Utils.TOOLBOX_VERSION_NUMBER + ")";
-	public final static String VERSION_DATE = "18. December 2018 - 10. May 2020";
+	public final static String VERSION_NUMBER = "0.0.3.8(" + Utils.TOOLBOX_VERSION_NUMBER + ")";
+	public final static String VERSION_DATE = "18. December 2018 - 6. September 2020";
 
 	private final static String CONFIG_KEY_BACKUP_SETTINGS_NUM = "backupSettingsNum";
 
@@ -86,7 +86,7 @@ public class AssEditor {
 			}
 			if ("--standalone".equals(arg)) {
 				standalone = true;
-				break;
+				continue;
 			}
 			// if this argument was not one of the predefined startup arguments,
 			// then just open it as a file ;)
@@ -128,7 +128,7 @@ public class AssEditor {
 		// it again after the startup is done in MainGUI
 		config.preventSaving();
 
-		AugFileCtrl augFileCtrl = new AugFileCtrl(config, standalone);
+		AugFileCtrl augFileCtrl = new AugFileCtrl(config, standalone, openFilenames.size() < 1);
 
 		for (String filename : openFilenames) {
 			augFileCtrl.loadAnotherFileWithoutSaving(new File(filename));

@@ -1779,11 +1779,13 @@ public class MainGUI extends MainWindow {
 			if (augFileTabs.size() > 0) {
 				AugFileTab latestTab = augFileTabs.get(0);
 				Date latestAccessTime = latestTab.getFile().getLastAccessTime();
-				for (int i = 1; i < augFileTabs.size(); i++) {
-					Date curAccessTime = augFileTabs.get(i).getFile().getLastAccessTime();
-					if ((curAccessTime != null) && (curAccessTime.compareTo(latestAccessTime) > 0)) {
-						latestTab = augFileTabs.get(i);
-						latestAccessTime = curAccessTime;
+				if (latestAccessTime != null) {
+					for (int i = 1; i < augFileTabs.size(); i++) {
+						Date curAccessTime = augFileTabs.get(i).getFile().getLastAccessTime();
+						if ((curAccessTime != null) && (curAccessTime.compareTo(latestAccessTime) > 0)) {
+							latestTab = augFileTabs.get(i);
+							latestAccessTime = curAccessTime;
+						}
 					}
 				}
 				setCurrentlyShownTab(latestTab);

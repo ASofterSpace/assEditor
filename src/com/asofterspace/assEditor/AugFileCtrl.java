@@ -41,7 +41,7 @@ public class AugFileCtrl {
 	private Thread saveConfigThread;
 
 
-	public AugFileCtrl(ConfigFile configuration, boolean standalone) {
+	public AugFileCtrl(ConfigFile configuration, boolean standalone, boolean addStandaloneFile) {
 
 		this.configuration = configuration;
 
@@ -56,14 +56,16 @@ public class AugFileCtrl {
 
 			List<Record> recFiles = standaloneWorkspace.getArray(CONF_WORKSPACE_FILES);
 
-			Record recFile = new Record();
+			if (addStandaloneFile) {
+				Record recFile = new Record();
 
-			recFile.set(CONF_FILENAME, "untitled");
-			recFile.set(CONF_CARET_POS, 0);
-			recFile.set(CONF_LANGUAGE, CodeLanguage.PLAINTEXT.toString());
-			recFile.set(CONF_ACCESS_TIME, DateUtils.serializeDateTime(null));
+				recFile.set(CONF_FILENAME, "untitled");
+				recFile.set(CONF_CARET_POS, 0);
+				recFile.set(CONF_LANGUAGE, CodeLanguage.PLAINTEXT.toString());
+				recFile.set(CONF_ACCESS_TIME, DateUtils.serializeDateTime(null));
 
-			recFiles.add(recFile);
+				recFiles.add(recFile);
+			}
 		}
 
 		switchToWorkspace(activeWorkspaceName);
