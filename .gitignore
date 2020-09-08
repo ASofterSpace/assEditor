@@ -22,26 +22,27 @@
 hs_err_pid*
 
 # bin directory
-bin
+/bin
 
 # other local files
-other
+/other
 
 # actual local data
-data
+/data
 
 # temporary files
 *.tmp
+/untitled
 
 # sourcefile list
-src/sourcefiles.list
+/src/sourcefiles.list
 
 # external dependencies (with their own repositories and life cycles)
-src/com/asofterspace/toolbox
+/src/com/asofterspace/toolbox
 
 # config files
-config
+/config
 
 # backups
-backup
+/backup
 *~

@@ -9,6 +9,7 @@ import com.asofterspace.toolbox.codeeditor.utils.CodeLanguage;
 import com.asofterspace.toolbox.gui.FileTab;
 import com.asofterspace.toolbox.gui.GuiUtils;
 import com.asofterspace.toolbox.io.File;
+import com.asofterspace.toolbox.utils.SortOrder;
 import com.asofterspace.toolbox.utils.TextEncoding;
 
 import java.awt.event.ActionEvent;
@@ -712,29 +713,51 @@ public class MainMenu {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (mainGUI.getCurrentTab() != null) {
-					mainGUI.getCurrentTab().sortDocumentAlphabetically();
+					mainGUI.getCurrentTab().sortDocument(SortOrder.ALPHABETICAL);
 				}
 			}
 		});
 		edit.add(sortDocumentAlph);
+
+		JMenuItem sortDocumentNum = new JMenuItem("Sort Entire Document Numerically");
+		sortDocumentNum.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (mainGUI.getCurrentTab() != null) {
+					mainGUI.getCurrentTab().sortDocument(SortOrder.NUMERICAL);
+				}
+			}
+		});
+		edit.add(sortDocumentNum);
 
 		JMenuItem sortSelectedLinesAlph = new JMenuItem("Sort Selected Lines Alphabetically");
 		sortSelectedLinesAlph.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (mainGUI.getCurrentTab() != null) {
-					mainGUI.getCurrentTab().sortSelectedLinesAlphabetically();
+					mainGUI.getCurrentTab().sortSelectedLines(SortOrder.ALPHABETICAL);
 				}
 			}
 		});
 		edit.add(sortSelectedLinesAlph);
+
+		JMenuItem sortSelectedLinesNum = new JMenuItem("Sort Selected Lines Numerically");
+		sortSelectedLinesNum.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (mainGUI.getCurrentTab() != null) {
+					mainGUI.getCurrentTab().sortSelectedLines(SortOrder.NUMERICAL);
+				}
+			}
+		});
+		edit.add(sortSelectedLinesNum);
 
 		JMenuItem sortSelectedStringsAlph = new JMenuItem("Sort Selected Strings (\"foo\", \"bar\") Alphabetically");
 		sortSelectedStringsAlph.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (mainGUI.getCurrentTab() != null) {
-					mainGUI.getCurrentTab().sortSelectedStringsAlphabetically();
+					mainGUI.getCurrentTab().sortSelectedStrings(SortOrder.ALPHABETICAL);
 				}
 			}
 		});

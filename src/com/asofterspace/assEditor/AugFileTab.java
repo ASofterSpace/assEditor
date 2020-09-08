@@ -21,6 +21,7 @@ import com.asofterspace.toolbox.io.File;
 import com.asofterspace.toolbox.io.SimpleFile;
 import com.asofterspace.toolbox.io.XML;
 import com.asofterspace.toolbox.utils.Callback;
+import com.asofterspace.toolbox.utils.SortOrder;
 import com.asofterspace.toolbox.utils.StrUtils;
 import com.asofterspace.toolbox.utils.TextEncoding;
 
@@ -1174,19 +1175,19 @@ public class AugFileTab implements FileTab {
 		highlighter.removeUnusedImports();
 	}
 
-	public void sortDocumentAlphabetically() {
+	public void sortDocument(SortOrder order) {
 
-		highlighter.sortDocumentAlphabetically();
+		highlighter.sortDocument(order);
 	}
 
-	public void sortSelectedLinesAlphabetically() {
+	public void sortSelectedLines(SortOrder order) {
 
-		highlighter.sortSelectedLinesAlphabetically();
+		highlighter.sortSelectedLines(order);
 	}
 
-	public void sortSelectedStringsAlphabetically() {
+	public void sortSelectedStrings(SortOrder order) {
 
-		highlighter.sortSelectedStringsAlphabetically();
+		highlighter.sortSelectedStrings(order);
 	}
 
 	public void replaceLeadingWhitespacesWithTabs() {
