@@ -100,6 +100,7 @@ public class MainGUI extends MainWindow {
 	private final static String CONFIG_KEY_REMOVE_UNUSED_IMPORTS_ON_SAVE = "onSaveRemoveUnusedImports";
 	private final static String CONFIG_KEY_COPY_ON_ENTER = "copyOnEnter";
 	private final static String CONFIG_KEY_TAB_ENTIRE_BLOCKS = "tabEntireBlocks";
+	private final static String CONFIG_KEY_PROPOSE_TOKEN_AUTO_COMPLETE = "proposeTokenAutoComplete";
 	private final static String CONFIG_KEY_BACKUP_NUM = "backupNum";
 	private final static String CONFIG_KEY_WIDTH = "mainFrameWidth";
 	private final static String CONFIG_KEY_HEIGHT = "mainFrameHeight";
@@ -141,6 +142,7 @@ public class MainGUI extends MainWindow {
 	Boolean removeUnusedImportsOnSave;
 	Boolean copyOnEnter;
 	Boolean tabEntireBlocks;
+	Boolean proposeTokenAutoComplete;
 	Boolean showFilesInTree;
 	boolean showFiles;
 	boolean standalone;
@@ -255,6 +257,8 @@ public class MainGUI extends MainWindow {
 		copyOnEnter = configuration.getBoolean(CONFIG_KEY_COPY_ON_ENTER, true);
 
 		tabEntireBlocks = configuration.getBoolean(CONFIG_KEY_TAB_ENTIRE_BLOCKS, true);
+
+		proposeTokenAutoComplete = configuration.getBoolean(CONFIG_KEY_PROPOSE_TOKEN_AUTO_COMPLETE, true);
 
 		currentBackup = configuration.getInteger(CONFIG_KEY_BACKUP_NUM, 0);
 
@@ -1566,6 +1570,25 @@ public class MainGUI extends MainWindow {
 		configuration.set(CONFIG_KEY_TAB_ENTIRE_BLOCKS, tabEntireBlocks);
 
 		mainMenu.tabEntireBlocksItem.setSelected(tabEntireBlocks);
+
+		updateHighlightersOnAllTabs();
+	}
+
+	public boolean getProposeTokenAutoComplete() {
+		return proposeTokenAutoComplete;
+	}
+
+	public void setProposeTokenAutoComplete(Boolean setTo) {
+
+		if (setTo == null) {
+			setTo = true;
+		}
+
+		proposeTokenAutoComplete = setTo;
+
+		configuration.set(CONFIG_KEY_PROPOSE_TOKEN_AUTO_COMPLETE, proposeTokenAutoComplete);
+
+		mainMenu.proposeTokenAutoCompleteItem.setSelected(proposeTokenAutoComplete);
 
 		updateHighlightersOnAllTabs();
 	}

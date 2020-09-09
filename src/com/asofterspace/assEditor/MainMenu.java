@@ -70,6 +70,7 @@ public class MainMenu {
 	JCheckBoxMenuItem usingUTF8WithoutBOM;
 	JCheckBoxMenuItem usingISOLatin1;
 	JCheckBoxMenuItem tabEntireBlocksItem;
+	JCheckBoxMenuItem proposeTokenAutoCompleteItem;
 	JCheckBoxMenuItem showFilesInTreeItem;
 	private JMenuItem close;
 	private List<JMenuItem> codeKindItems;
@@ -1247,6 +1248,16 @@ public class MainMenu {
 		});
 		mainGUI.setTabEntireBlocks(mainGUI.getTabEntireBlocks());
 		settings.add(tabEntireBlocksItem);
+
+		proposeTokenAutoCompleteItem = new JCheckBoxMenuItem("Propose Token Auto-Completion");
+		proposeTokenAutoCompleteItem.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				mainGUI.setProposeTokenAutoComplete(!mainGUI.getProposeTokenAutoComplete());
+			}
+		});
+		mainGUI.setProposeTokenAutoComplete(mainGUI.getProposeTokenAutoComplete());
+		settings.add(proposeTokenAutoCompleteItem);
 
 		JMenu window = new JMenu("Window");
 

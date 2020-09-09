@@ -24,8 +24,8 @@ import javax.swing.SwingUtilities;
 public class AssEditor {
 
 	public final static String PROGRAM_TITLE = "A Softer Space Editor";
-	public final static String VERSION_NUMBER = "0.0.3.8(" + Utils.TOOLBOX_VERSION_NUMBER + ")";
-	public final static String VERSION_DATE = "18. December 2018 - 6. September 2020";
+	public final static String VERSION_NUMBER = "0.0.4.0(" + Utils.TOOLBOX_VERSION_NUMBER + ")";
+	public final static String VERSION_DATE = "18. December 2018 - 9. September 2020";
 
 	private final static String CONFIG_KEY_BACKUP_SETTINGS_NUM = "backupSettingsNum";
 
@@ -43,9 +43,6 @@ public class AssEditor {
 	 * ask to save before closing if files are unsaved
 	 * replace also including newlines etc.! (so have a little button next to the search bar which shows either "text matching" or "extended (\n, \r, \t)")
 	 * let user remove and reorder workspaces
-	 * create a better opening dialog (e.g. one in which we can enter a path at the top, and where we can
-	 *   automagically descend into Java-madness without having to click through src>main>java>com>ass>..., and where we do not
-	 *   auto-open entire folders upon [Enter] but only when explicitly asking to open all files in the folder!)
 	 * not only call resizeNameLabel() in the AugFileTab.show(), but also in an onResize event!
 	 * show "changemark *" at the top also
 	 * disable "reorganize imports" in the menu when the highlighter does not support it

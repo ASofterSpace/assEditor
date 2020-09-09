@@ -497,6 +497,10 @@ public class AugFileTab implements FileTab {
 		// update color scheme
 		setComponentScheme(mainGUI.currentScheme);
 
+		if (highlighter == null) {
+			return;
+		}
+
 		switch (mainGUI.currentScheme) {
 			case GuiUtils.LIGHT_SCHEME:
 				highlighter.setLightScheme();
@@ -518,6 +522,9 @@ public class AugFileTab implements FileTab {
 
 		// update block tab behavior
 		highlighter.setTabEntireBlocks(mainGUI.tabEntireBlocks);
+
+		// update proposed token autocompletion behavior
+		highlighter.setProposeTokenAutoComplete(mainGUI.proposeTokenAutoComplete);
 	}
 
 	public void setFileContent(String newContent) {
