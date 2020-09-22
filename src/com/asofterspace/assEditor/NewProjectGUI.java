@@ -96,15 +96,28 @@ public class NewProjectGUI {
 		addButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 
-				// cleanup input
-				String projectName = newProjectName.getText().trim();
+				// cleanup input - e.g. FOO bar and assSystem lead to:
+				// projectOName = "FOO bar" and "assSystem"
+				//  projectName = "FOOBar"  and "assSystem"
+				// _projectName = "fooBar"  and "assSystem"
+				// _ProjectName = "FooBar"  and "AssSystem"
+				String projectOName = newProjectName.getText().trim();
+				String projectName = projectOName;
 				String[] projectNames = projectName.split(" ");
 				projectName = projectNames[0];
+
+				// convert the first part to lowercase if it starts with an uppercase character
+				// so that in FOO bar we get foo, in ass System we get ass, but in assSystem we get assSystem
+				String _projectName = projectNames[0];
+				if (Character.isUpperCase(_projectName.charAt(0))) {
+					_projectName = _projectName.toLowerCase();
+				}
+
 				for (int i = 1; i < projectNames.length; i++) {
 					projectName += StrUtils.upcaseFirstLetter(projectNames[i]);
+					_projectName += StrUtils.upcaseFirstLetter(projectNames[i]);
 				}
-				String _ProjectName = StrUtils.upcaseFirstLetter(projectName);
-				String _projectName = StrUtils.lowcaseFirstLetter(projectName);
+				String _ProjectName = StrUtils.upcaseFirstLetter(_projectName);
 
 				String newFolderName = newFolder.getText().trim();
 				if (!((newFolderName.endsWith("/")) || (newFolderName.endsWith("\\")))) {
@@ -247,7 +260,7 @@ public class NewProjectGUI {
 					"javac -deprecation -Xlint:all -encoding utf8 -d ../bin @sourcefiles.list");
 
 				SimpleFile readmeFile = new SimpleFile(newFolderName + "README.md");
-				readmeFile.saveContent("# " + projectName + "\n" +
+				readmeFile.saveContent("# " + projectOName + "\n" +
 					"\n" +
 					"**Class:** Utility\n" +
 					"\n" +
@@ -275,7 +288,7 @@ public class NewProjectGUI {
 					"\n" +
 					"## Run\n" +
 					"\n" +
-					"To start up the " + projectName + " project after it has been built, you can call under Windows:\n" +
+					"To start up the " + projectOName + " project after it has been built, you can call under Windows:\n" +
 					"\n" +
 					"```\n" +
 					"run.bat\n" +
