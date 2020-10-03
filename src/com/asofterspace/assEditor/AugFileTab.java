@@ -109,18 +109,18 @@ public class AugFileTab implements FileTab {
 			public void call() {
 				if (!changed) {
 					changed = true;
-					regenerateAugFileListWhileWeAreVisible();
+					repaintAugFileListWhileWeAreVisible();
 				}
 			}
 		};
 	}
 
-	private void regenerateAugFileListWhileWeAreVisible() {
+	private void repaintAugFileListWhileWeAreVisible() {
 
 		// this tab is already visible, so we do not need to show it again,
-		// therefore instead of calling mainGUI.regenerateAugFileList();,
+		// therefore instead of calling the slow mainGUI.regenerateAugFileList();,
 		// we call the following two (!) lines:
-		mainGUI.regenerateAugFileListWithoutShowingAnyTabs();
+		mainGUI.repaintAugFileList();
 		mainGUI.highlightTabInLeftListOrTree(AugFileTab.this);
 	}
 
@@ -1159,7 +1159,7 @@ public class AugFileTab implements FileTab {
 
 		augFile.save();
 
-		regenerateAugFileListWhileWeAreVisible();
+		repaintAugFileListWhileWeAreVisible();
 	}
 
 	public void addMissingImports() {

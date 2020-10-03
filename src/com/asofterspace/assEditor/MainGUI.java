@@ -1763,7 +1763,7 @@ public class MainGUI extends MainWindow {
 		}
 	}
 
-	public void regenerateAugFileListWithoutShowingAnyTabs() {
+	public void repaintAugFileList() {
 
 		if (showFilesInTree) {
 
@@ -1771,25 +1771,7 @@ public class MainGUI extends MainWindow {
 
 		} else {
 
-			Collections.sort(augFileTabs, new Comparator<AugFileTab>() {
-				public int compare(AugFileTab a, AugFileTab b) {
-					// TODO :: make it configurable whether to sort by just the name or by
-					// the full name (including the path)!
-					// return a.getName().toLowerCase().compareTo(b.getName().toLowerCase());
-					return a.getFilePath().toLowerCase().compareTo(b.getFilePath().toLowerCase());
-				}
-			});
-
-			augFileTabArray = new AugFileTab[augFileTabs.size()];
-
-			int i = 0;
-
-			for (AugFileTab augFileTab : augFileTabs) {
-				augFileTabArray[i] = augFileTab;
-				i++;
-			}
-
-			fileListComponent.setListData(augFileTabArray);
+			fileListComponent.repaint();
 		}
 	}
 
@@ -1824,18 +1806,34 @@ public class MainGUI extends MainWindow {
 			}
 		}
 
-		// regenerate the file tree
-		fileTreeModel.regenerate(augFileTabs);
+		if (showFilesInTree) {
 
-		// no longer necessary to manually call this, as we made the tree always-expanded
-		// for performance reasons!
-		fullyExpandAugFileTree();
+			// regenerate the file tree
+			fileTreeModel.regenerate(augFileTabs);
 
-		// in case of a tree, this would just cause a repaint, which is unnecessary
-		// as we anyway just did a full regenerate call - but in case of the list
-		// we do want to call this!
-		if (!showFilesInTree) {
-			regenerateAugFileListWithoutShowingAnyTabs();
+			fullyExpandAugFileTree();
+
+		} else {
+
+			Collections.sort(augFileTabs, new Comparator<AugFileTab>() {
+				public int compare(AugFileTab a, AugFileTab b) {
+					// TODO :: make it configurable whether to sort by just the name or by
+					// the full name (including the path)!
+					// return a.getName().toLowerCase().compareTo(b.getName().toLowerCase());
+					return a.getFilePath().toLowerCase().compareTo(b.getFilePath().toLowerCase());
+				}
+			});
+
+			augFileTabArray = new AugFileTab[augFileTabs.size()];
+
+			int i = 0;
+
+			for (AugFileTab augFileTab : augFileTabs) {
+				augFileTabArray[i] = augFileTab;
+				i++;
+			}
+
+			fileListComponent.setListData(augFileTabArray);
 		}
 
 		// if there still is no last shown tab (e.g. we just deleted the very last one)...
@@ -1928,8 +1926,6 @@ public class MainGUI extends MainWindow {
 		}
 
 		regenerateAugFileList();
-
-		// fullyExpandAugFileTree();
 
 		reEnableDisableMenuItems();
 
