@@ -1628,6 +1628,13 @@ public class AugFileTab implements FileTab {
 		return fileContentMemo.getText();
 	}
 
+	public void setContent(String newContent) {
+
+		ensureLoaded();
+
+		fileContentMemo.setText(newContent);
+	}
+
 	public void setSelectionOrder(int selOrder) {
 		this.selectionOrder = selOrder;
 	}

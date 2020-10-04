@@ -6,6 +6,7 @@ package com.asofterspace.assEditor;
 
 import com.asofterspace.toolbox.codeeditor.base.Code;
 import com.asofterspace.toolbox.codeeditor.utils.CodeLanguage;
+import com.asofterspace.toolbox.coders.Base64Encoder;
 import com.asofterspace.toolbox.gui.FileTab;
 import com.asofterspace.toolbox.gui.GuiUtils;
 import com.asofterspace.toolbox.io.File;
@@ -1053,6 +1054,24 @@ public class MainMenu {
 			});
 			encodings.add(allUsingISOLatin1);
 		}
+
+
+		JMenu conversions = new JMenu("Conversions");
+		menu.add(conversions);
+
+		JMenuItem base64enc = new JMenuItem("Base 64 encode");
+		base64enc.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				AugFileTab tab = mainGUI.getCurrentTab();
+				if (tab != null) {
+					tab.setContent(Base64Encoder.encodeIntoBase64(tab.getContent()));
+				}
+			}
+		});
+		conversions.add(base64enc);
+
+		conversions.addSeparator();
 
 
 		JMenu settings = new JMenu("Settings");
