@@ -6,7 +6,23 @@ package com.asofterspace.assEditor;
 
 import com.asofterspace.toolbox.codeeditor.base.Code;
 import com.asofterspace.toolbox.codeeditor.utils.CodeLanguage;
+import com.asofterspace.toolbox.coders.Base64Decoder;
 import com.asofterspace.toolbox.coders.Base64Encoder;
+import com.asofterspace.toolbox.coders.BinaryDecoder;
+import com.asofterspace.toolbox.coders.BinaryEncoder;
+import com.asofterspace.toolbox.coders.HexDecoder;
+import com.asofterspace.toolbox.coders.HexEncoder;
+import com.asofterspace.toolbox.coders.HtmlDecoder;
+import com.asofterspace.toolbox.coders.HtmlEncoder;
+import com.asofterspace.toolbox.coders.MorseDecoder;
+import com.asofterspace.toolbox.coders.MorseEncoder;
+import com.asofterspace.toolbox.coders.RomanNumeralDecoder;
+import com.asofterspace.toolbox.coders.RomanNumeralEncoder;
+import com.asofterspace.toolbox.coders.UrlDecoder;
+import com.asofterspace.toolbox.coders.UrlEncoder;
+import com.asofterspace.toolbox.coders.Utf8Decoder;
+import com.asofterspace.toolbox.coders.Utf8Encoder;
+import com.asofterspace.toolbox.coders.UuidEncoderDecoder;
 import com.asofterspace.toolbox.gui.FileTab;
 import com.asofterspace.toolbox.gui.GuiUtils;
 import com.asofterspace.toolbox.io.File;
@@ -1065,13 +1081,243 @@ public class MainMenu {
 			public void actionPerformed(ActionEvent e) {
 				AugFileTab tab = mainGUI.getCurrentTab();
 				if (tab != null) {
-					tab.setContent(Base64Encoder.encodeIntoBase64(tab.getContent()));
+					tab.setContent(Base64Encoder.encode(tab.getContent()));
 				}
 			}
 		});
 		conversions.add(base64enc);
 
+		JMenuItem base64dec = new JMenuItem("Base 64 decode");
+		base64dec.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				AugFileTab tab = mainGUI.getCurrentTab();
+				if (tab != null) {
+					tab.setContent(Base64Decoder.decode(tab.getContent()));
+				}
+			}
+		});
+		conversions.add(base64dec);
+
 		conversions.addSeparator();
+
+		JMenuItem hexenc = new JMenuItem("Hex encode");
+		hexenc.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				AugFileTab tab = mainGUI.getCurrentTab();
+				if (tab != null) {
+					tab.setContent(HexEncoder.encode(tab.getContent()));
+				}
+			}
+		});
+		conversions.add(hexenc);
+
+		JMenuItem hexdec = new JMenuItem("Hex decode");
+		hexdec.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				AugFileTab tab = mainGUI.getCurrentTab();
+				if (tab != null) {
+					tab.setContent(HexDecoder.decode(tab.getContent()));
+				}
+			}
+		});
+		conversions.add(hexdec);
+
+		conversions.addSeparator();
+
+		JMenuItem binaryenc = new JMenuItem("Binary encode");
+		binaryenc.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				AugFileTab tab = mainGUI.getCurrentTab();
+				if (tab != null) {
+					tab.setContent(BinaryEncoder.encode(tab.getContent()));
+				}
+			}
+		});
+		conversions.add(binaryenc);
+
+		JMenuItem binarydec = new JMenuItem("Binary decode");
+		binarydec.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				AugFileTab tab = mainGUI.getCurrentTab();
+				if (tab != null) {
+					tab.setContent(BinaryDecoder.decode(tab.getContent()));
+				}
+			}
+		});
+		conversions.add(binarydec);
+
+		conversions.addSeparator();
+
+		JMenuItem utf8enc = new JMenuItem("UTF8 encode");
+		utf8enc.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				AugFileTab tab = mainGUI.getCurrentTab();
+				if (tab != null) {
+					tab.setContent(Utf8Encoder.encode(tab.getContent()));
+				}
+			}
+		});
+		conversions.add(utf8enc);
+
+		JMenuItem utf8dec = new JMenuItem("UTF8 decode");
+		utf8dec.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				AugFileTab tab = mainGUI.getCurrentTab();
+				if (tab != null) {
+					tab.setContent(Utf8Decoder.decode(tab.getContent()));
+				}
+			}
+		});
+		conversions.add(utf8dec);
+
+		conversions.addSeparator();
+
+		JMenuItem htmlenc = new JMenuItem("HTML encode");
+		htmlenc.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				AugFileTab tab = mainGUI.getCurrentTab();
+				if (tab != null) {
+					tab.setContent(HtmlEncoder.encode(tab.getContent()));
+				}
+			}
+		});
+		conversions.add(htmlenc);
+
+		JMenuItem htmldec = new JMenuItem("HTML decode");
+		htmldec.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				AugFileTab tab = mainGUI.getCurrentTab();
+				if (tab != null) {
+					tab.setContent(HtmlDecoder.decode(tab.getContent()));
+				}
+			}
+		});
+		conversions.add(htmldec);
+
+		conversions.addSeparator();
+
+		JMenuItem urlenc = new JMenuItem("URL encode");
+		urlenc.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				AugFileTab tab = mainGUI.getCurrentTab();
+				if (tab != null) {
+					tab.setContent(UrlEncoder.encode(tab.getContent()));
+				}
+			}
+		});
+		conversions.add(urlenc);
+
+		JMenuItem urldec = new JMenuItem("URL decode");
+		urldec.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				AugFileTab tab = mainGUI.getCurrentTab();
+				if (tab != null) {
+					tab.setContent(UrlDecoder.decode(tab.getContent()));
+				}
+			}
+		});
+		conversions.add(urldec);
+
+		conversions.addSeparator();
+
+		JMenuItem morseenc = new JMenuItem("Morse encode");
+		morseenc.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				AugFileTab tab = mainGUI.getCurrentTab();
+				if (tab != null) {
+					tab.setContent(MorseEncoder.encode(tab.getContent()));
+				}
+			}
+		});
+		conversions.add(morseenc);
+
+		JMenuItem morsedec = new JMenuItem("Morse decode");
+		morsedec.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				AugFileTab tab = mainGUI.getCurrentTab();
+				if (tab != null) {
+					tab.setContent(MorseDecoder.decode(tab.getContent()));
+				}
+			}
+		});
+		conversions.add(morsedec);
+
+		conversions.addSeparator();
+
+		JMenuItem romanNumeralenc = new JMenuItem("Roman Numeral encode");
+		romanNumeralenc.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				AugFileTab tab = mainGUI.getCurrentTab();
+				if (tab != null) {
+					tab.setContent(RomanNumeralEncoder.encode(tab.getContent()));
+				}
+			}
+		});
+		conversions.add(romanNumeralenc);
+
+		JMenuItem romanNumeraldec = new JMenuItem("Roman Numeral decode");
+		romanNumeraldec.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				AugFileTab tab = mainGUI.getCurrentTab();
+				if (tab != null) {
+					tab.setContent(RomanNumeralDecoder.decode(tab.getContent()));
+				}
+			}
+		});
+		conversions.add(romanNumeraldec);
+
+		conversions.addSeparator();
+
+		JMenuItem uuidJavaToEcore = new JMenuItem("Java UUID to Ecore");
+		uuidJavaToEcore.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				AugFileTab tab = mainGUI.getCurrentTab();
+				if (tab != null) {
+					tab.setContent(UuidEncoderDecoder.convertJavaUUIDtoEcore(tab.getContent()));
+				}
+			}
+		});
+		conversions.add(uuidJavaToEcore);
+
+		JMenuItem uuidEcoreToJava = new JMenuItem("Ecore UUID to Java");
+		uuidEcoreToJava.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				AugFileTab tab = mainGUI.getCurrentTab();
+				if (tab != null) {
+					tab.setContent(UuidEncoderDecoder.convertEcoreUUIDtoJava(tab.getContent()));
+				}
+			}
+		});
+		conversions.add(uuidEcoreToJava);
+
+		JMenuItem generateUuid = new JMenuItem("Generate Java UUID");
+		generateUuid.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				AugFileTab tab = mainGUI.getCurrentTab();
+				if (tab != null) {
+					tab.setContent(UuidEncoderDecoder.generateJavaUUID());
+				}
+			}
+		});
+		conversions.add(generateUuid);
 
 
 		JMenu settings = new JMenu("Settings");
