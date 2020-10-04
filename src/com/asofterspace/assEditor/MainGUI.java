@@ -1129,7 +1129,8 @@ public class MainGUI extends MainWindow {
 		mainFrame.pack();
 
 		if (showFiles && (currentlyShownTab != null)) {
-			highlightTabInLeftListOrTree(currentlyShownTab);
+			boolean resize = false;
+			highlightTabInLeftListOrTree(currentlyShownTab, resize);
 		}
 	}
 
@@ -1701,7 +1702,8 @@ public class MainGUI extends MainWindow {
 		mainMenu.reSelectCurrentCodeLanguageItem(currentlyShownTab.getSourceLanguage().toString());
 
 		if (highlightTab) {
-			highlightTabInLeftListOrTree(currentlyShownTab);
+			boolean resize = false;
+			highlightTabInLeftListOrTree(currentlyShownTab, resize);
 		}
 
 		tabToShow.showGoBack(listOfPreviousTabs.size() > 0);
@@ -1760,18 +1762,6 @@ public class MainGUI extends MainWindow {
 		// fully expand the file tree
 		for (int i = 0; i < fileTreeComponent.getRowCount(); i++) {
 			fileTreeComponent.expandRow(i);
-		}
-	}
-
-	public void repaintAugFileList() {
-
-		if (showFilesInTree) {
-
-			fileTreeComponent.repaint();
-
-		} else {
-
-			fileListComponent.repaint();
 		}
 	}
 
@@ -1858,31 +1848,50 @@ public class MainGUI extends MainWindow {
 		regenerateAugFileList();
 	}
 
-	public void highlightTabInLeftListOrTree(final AugFileTab tab) {
+	/**
+	 * Highlight this tab in the tree and optionally resize that one entry
+	 * (just for highlighting - so changing the background color - the resize
+	 * is not necessary, but if the .toString() changed, e.g. due to the change
+	 * marker being added to the node, then the resize IS necessary, as otherwise
+	 * the string would be cut off!)
+	 */
+	public void highlightTabInLeftListOrTree(final AugFileTab tab, final boolean doResize) {
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
 			public void run() {
-				// highlight tab the list
-				int i = 0;
-				for (AugFileTab augFileTab : augFileTabs) {
-					if (tab.equals(augFileTab)) {
-						fileListComponent.setSelectedIndex(i);
-						break;
+
+				if (showFilesInTree) {
+
+					// highlight tab the tree
+					Object[] paths = fileTreeModel.getPathToRoot(tab);
+					if (paths.length > 0) {
+						TreePath curPath = new TreePath(paths);
+						fileTreeComponent.setSelectionPath(curPath);
+						fileTreeComponent.scrollPathToVisible(curPath);
+						if (doResize) {
+							fileTreeModel.valueForPathChanged(curPath, fileTreeModel.getNode(tab));
+						}
 					}
-					i++;
-				}
 
-				// highlight tab the tree
-				Object[] paths = fileTreeModel.getPathToRoot(tab);
-				if (paths.length > 0) {
-					TreePath curPath = new TreePath(paths);
-					fileTreeComponent.setSelectionPath(curPath);
-					fileTreeComponent.scrollPathToVisible(curPath);
-					fileTreeModel.valueForPathChanged(curPath, fileTreeModel.getNode(tab));
-				}
+					// jump back to the actual tab
+					tab.setFocus();
 
-				// jump back to the actual tab
-				tab.setFocus();
+				} else {
+
+					// highlight tab the list
+					int i = 0;
+					for (AugFileTab augFileTab : augFileTabs) {
+						if (tab.equals(augFileTab)) {
+							fileListComponent.setSelectedIndex(i);
+							break;
+						}
+						i++;
+					}
+
+					if (doResize) {
+						fileListComponent.repaint();
+					}
+				}
 			}
 		});
 	}

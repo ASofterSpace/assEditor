@@ -119,9 +119,9 @@ public class AugFileTab implements FileTab {
 
 		// this tab is already visible, so we do not need to show it again,
 		// therefore instead of calling the slow mainGUI.regenerateAugFileList();,
-		// we call the following two (!) lines:
-		mainGUI.repaintAugFileList();
-		mainGUI.highlightTabInLeftListOrTree(AugFileTab.this);
+		// we call the following:
+		boolean resize = true;
+		mainGUI.highlightTabInLeftListOrTree(AugFileTab.this, resize);
 	}
 
 	private JPanel createVisualPanel() {
