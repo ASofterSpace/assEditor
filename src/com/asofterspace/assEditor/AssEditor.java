@@ -34,8 +34,6 @@ public class AssEditor {
 
 	/**
 	 * TODO:
-	 * do not constantly save the settings file (currently, when having it open in n++, we are again and again asked to refresh)
-	 * converters inbuilt
 	 * enable stats at the bottom
 	 * add highlighting for datex
 	 * enable hex view
