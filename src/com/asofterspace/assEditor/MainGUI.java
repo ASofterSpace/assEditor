@@ -1756,15 +1756,6 @@ public class MainGUI extends MainWindow {
 		return "nameless";
 	}
 
-	@Deprecated
-	public void fullyExpandAugFileTree() {
-
-		// fully expand the file tree
-		for (int i = 0; i < fileTreeComponent.getRowCount(); i++) {
-			fileTreeComponent.expandRow(i);
-		}
-	}
-
 	/**
 	 * Regenerate the file list on the left hand side based on the augFileTabs list,
 	 * and (if at least one file exists), select and open the current tab or, if it
@@ -1801,7 +1792,7 @@ public class MainGUI extends MainWindow {
 			// regenerate the file tree
 			fileTreeModel.regenerate(augFileTabs);
 
-			fullyExpandAugFileTree();
+			fileTreeComponent.fullyExpand();
 
 		} else {
 
