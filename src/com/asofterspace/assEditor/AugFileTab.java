@@ -22,6 +22,7 @@ import com.asofterspace.toolbox.io.SimpleFile;
 import com.asofterspace.toolbox.io.XML;
 import com.asofterspace.toolbox.utils.Callback;
 import com.asofterspace.toolbox.utils.SortOrder;
+import com.asofterspace.toolbox.utils.StringModifier;
 import com.asofterspace.toolbox.utils.StrUtils;
 import com.asofterspace.toolbox.utils.TextEncoding;
 
@@ -746,6 +747,67 @@ public class AugFileTab implements FileTab {
 			newPos = sourceCode.length();
 		}
 		fileContentMemo.setCaretPosition(newPos);
+	}
+
+	/**
+	 * Modifies the selected text, if any is selected, or otherwise the entire text
+	 */
+	public void modifySelectedOrAllText(StringModifier modifier) {
+
+		ensureLoaded();
+
+		String sourceCode = fileContentMemo.getText();
+
+		int carPos = fileContentMemo.getCaretPosition();
+		int selStart = fileContentMemo.getSelectionStart();
+		int selEnd = fileContentMemo.getSelectionEnd();
+
+		String midStr = sourceCode.substring(selStart, selEnd);
+
+		if (midStr.length() > 0) {
+
+			midStr = modifier.modify(midStr);
+
+			sourceCode = sourceCode.substring(0, selStart) + midStr + sourceCode.substring(selEnd);
+
+			fileContentMemo.setText(sourceCode);
+			if (carPos > selStart) {
+				fileContentMemo.setCaretPosition(selStart + midStr.length());
+			} else {
+				fileContentMemo.setCaretPosition(carPos);
+			}
+
+		} else {
+
+			sourceCode = modifier.modify(sourceCode);
+
+			fileContentMemo.setText(sourceCode);
+		}
+	}
+
+	/**
+	 * Inserts text at the cursor position
+	 */
+	public void insertText(String text) {
+
+		ensureLoaded();
+
+		String sourceCode = fileContentMemo.getText();
+
+		int carPos = fileContentMemo.getCaretPosition();
+		int selStart = fileContentMemo.getSelectionStart();
+		int selEnd = fileContentMemo.getSelectionEnd();
+
+		String midStr = text;
+
+		sourceCode = sourceCode.substring(0, selStart) + midStr + sourceCode.substring(selEnd);
+
+		fileContentMemo.setText(sourceCode);
+		if (carPos > selStart) {
+			fileContentMemo.setCaretPosition(selStart + midStr.length());
+		} else {
+			fileContentMemo.setCaretPosition(carPos);
+		}
 	}
 
 	public void lowCurSel() {

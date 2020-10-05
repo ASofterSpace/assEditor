@@ -1287,10 +1287,13 @@ public class MainMenu {
 		conversions.add(uuidEcoreToJava);
 
 		JMenuItem generateUuid = new JMenuItem("Generate Java UUID");
-		addTextModificationAction(generateUuid, new StringModifier() {
+		generateUuid.addActionListener(new ActionListener() {
 			@Override
-			public String modify(String str) {
-				return UuidEncoderDecoder.generateJavaUUID();
+			public void actionPerformed(ActionEvent e) {
+				AugFileTab tab = mainGUI.getCurrentTab();
+				if (tab != null) {
+					tab.insertText(UuidEncoderDecoder.generateJavaUUID());
+				}
 			}
 		});
 		conversions.add(generateUuid);
@@ -1860,7 +1863,7 @@ public class MainMenu {
 			public void actionPerformed(ActionEvent e) {
 				AugFileTab tab = mainGUI.getCurrentTab();
 				if (tab != null) {
-					tab.setContent(modifier.modify(tab.getContent()));
+					tab.modifySelectedOrAllText(modifier);
 				}
 			}
 		});
