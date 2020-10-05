@@ -31,6 +31,7 @@ import com.asofterspace.toolbox.io.HTML;
 import com.asofterspace.toolbox.io.JSON;
 import com.asofterspace.toolbox.io.JsonParseException;
 import com.asofterspace.toolbox.utils.SortOrder;
+import com.asofterspace.toolbox.utils.StrUtils;
 import com.asofterspace.toolbox.utils.TextEncoding;
 
 import java.awt.event.ActionEvent;
@@ -1407,6 +1408,24 @@ public class MainMenu {
 			}
 		});
 		conversions.add(escJSON);
+
+		conversions.addSeparator();
+
+		JMenuItem javaStrEsc = new JMenuItem("Java string escape");
+		javaStrEsc.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				AugFileTab tab = mainGUI.getCurrentTab();
+				if (tab != null) {
+					String str = tab.getContent();
+					str = StrUtils.replaceAll(str, "\"", "\\\"");
+					str = StrUtils.replaceAll(str, "\n", "\\n\" +\n\t\t\t\"");
+					str = "\"" + str + "\"";
+					tab.setContent(str);
+				}
+			}
+		});
+		conversions.add(javaStrEsc);
 
 		conversions.addSeparator();
 
