@@ -26,6 +26,8 @@ import com.asofterspace.toolbox.coders.UuidEncoderDecoder;
 import com.asofterspace.toolbox.gui.FileTab;
 import com.asofterspace.toolbox.gui.GuiUtils;
 import com.asofterspace.toolbox.io.File;
+import com.asofterspace.toolbox.io.JSON;
+import com.asofterspace.toolbox.io.JsonParseException;
 import com.asofterspace.toolbox.utils.SortOrder;
 import com.asofterspace.toolbox.utils.TextEncoding;
 
@@ -1203,6 +1205,17 @@ public class MainMenu {
 		});
 		conversions.add(htmldec);
 
+		JMenuItem removeHtmlTags = new JMenuItem("Remove HTML tags");
+		removeHtmlTags.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (mainGUI.getCurrentTab() != null) {
+					mainGUI.getCurrentTab().removeXmlTags();
+				}
+			}
+		});
+		code.add(removeHtmlTags);
+
 		conversions.addSeparator();
 
 		JMenuItem urlenc = new JMenuItem("URL encode");
@@ -1318,6 +1331,56 @@ public class MainMenu {
 			}
 		});
 		conversions.add(generateUuid);
+
+		conversions.addSeparator();
+
+		JMenuItem prettyJSON = new JMenuItem("JSON prettify");
+		prettyJSON.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				AugFileTab tab = mainGUI.getCurrentTab();
+				if (tab != null) {
+					try {
+						JSON json = new JSON(tab.getContent());
+						boolean compressed = false;
+						tab.setContent(json.toString(compressed));
+					} catch (JsonParseException ex) {
+						// do nothing
+					}
+				}
+			}
+		});
+		conversions.add(prettyJSON);
+
+		JMenuItem miniJSON = new JMenuItem("JSON minify");
+		miniJSON.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				AugFileTab tab = mainGUI.getCurrentTab();
+				if (tab != null) {
+					try {
+						JSON json = new JSON(tab.getContent());
+						boolean compressed = true;
+						tab.setContent(json.toString(compressed));
+					} catch (JsonParseException ex) {
+						// do nothing
+					}
+				}
+			}
+		});
+		conversions.add(miniJSON);
+
+		JMenuItem escJSON = new JMenuItem("JSON escape");
+		escJSON.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				AugFileTab tab = mainGUI.getCurrentTab();
+				if (tab != null) {
+					tab.setContent(JSON.escapeJSONstr(tab.getContent()));
+				}
+			}
+		});
+		conversions.add(escJSON);
 
 
 		JMenu settings = new JMenu("Settings");
