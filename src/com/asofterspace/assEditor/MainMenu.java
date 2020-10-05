@@ -27,6 +27,7 @@ import com.asofterspace.toolbox.coders.UuidEncoderDecoder;
 import com.asofterspace.toolbox.gui.FileTab;
 import com.asofterspace.toolbox.gui.GuiUtils;
 import com.asofterspace.toolbox.io.File;
+import com.asofterspace.toolbox.io.HTML;
 import com.asofterspace.toolbox.io.JSON;
 import com.asofterspace.toolbox.io.JsonParseException;
 import com.asofterspace.toolbox.utils.SortOrder;
@@ -1205,6 +1206,30 @@ public class MainMenu {
 			}
 		});
 		conversions.add(htmldec);
+
+		JMenuItem htmlesc = new JMenuItem("HTML escape");
+		htmlesc.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				AugFileTab tab = mainGUI.getCurrentTab();
+				if (tab != null) {
+					tab.setContent(HTML.escapeHTMLstr(tab.getContent()));
+				}
+			}
+		});
+		conversions.add(htmlesc);
+
+		JMenuItem htmlunesc = new JMenuItem("HTML unescape");
+		htmlunesc.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				AugFileTab tab = mainGUI.getCurrentTab();
+				if (tab != null) {
+					tab.setContent(HTML.unescapeHTMLstr(tab.getContent()));
+				}
+			}
+		});
+		conversions.add(htmlunesc);
 
 		JMenuItem removeHtmlTags = new JMenuItem("Remove HTML tags");
 		removeHtmlTags.addActionListener(new ActionListener() {
