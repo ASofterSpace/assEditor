@@ -31,6 +31,7 @@ import com.asofterspace.toolbox.io.HTML;
 import com.asofterspace.toolbox.io.JSON;
 import com.asofterspace.toolbox.io.JsonParseException;
 import com.asofterspace.toolbox.utils.SortOrder;
+import com.asofterspace.toolbox.utils.StringModifier;
 import com.asofterspace.toolbox.utils.StrUtils;
 import com.asofterspace.toolbox.utils.TextEncoding;
 
@@ -1081,25 +1082,19 @@ public class MainMenu {
 		menu.add(conversions);
 
 		JMenuItem base64enc = new JMenuItem("Base 64 encode");
-		base64enc.addActionListener(new ActionListener() {
+		addTextModificationAction(base64enc, new StringModifier() {
 			@Override
-			public void actionPerformed(ActionEvent e) {
-				AugFileTab tab = mainGUI.getCurrentTab();
-				if (tab != null) {
-					tab.setContent(Base64Encoder.encode(tab.getContent()));
-				}
+			public String modify(String str) {
+				return Base64Encoder.encode(str);
 			}
 		});
 		conversions.add(base64enc);
 
 		JMenuItem base64dec = new JMenuItem("Base 64 decode");
-		base64dec.addActionListener(new ActionListener() {
+		addTextModificationAction(base64dec, new StringModifier() {
 			@Override
-			public void actionPerformed(ActionEvent e) {
-				AugFileTab tab = mainGUI.getCurrentTab();
-				if (tab != null) {
-					tab.setContent(Base64Decoder.decode(tab.getContent()));
-				}
+			public String modify(String str) {
+				return Base64Decoder.decode(str);
 			}
 		});
 		conversions.add(base64dec);
@@ -1107,25 +1102,19 @@ public class MainMenu {
 		conversions.addSeparator();
 
 		JMenuItem hexenc = new JMenuItem("Hex encode");
-		hexenc.addActionListener(new ActionListener() {
+		addTextModificationAction(hexenc, new StringModifier() {
 			@Override
-			public void actionPerformed(ActionEvent e) {
-				AugFileTab tab = mainGUI.getCurrentTab();
-				if (tab != null) {
-					tab.setContent(HexEncoder.encode(tab.getContent()));
-				}
+			public String modify(String str) {
+				return HexEncoder.encode(str);
 			}
 		});
 		conversions.add(hexenc);
 
 		JMenuItem hexdec = new JMenuItem("Hex decode");
-		hexdec.addActionListener(new ActionListener() {
+		addTextModificationAction(hexdec, new StringModifier() {
 			@Override
-			public void actionPerformed(ActionEvent e) {
-				AugFileTab tab = mainGUI.getCurrentTab();
-				if (tab != null) {
-					tab.setContent(HexDecoder.decode(tab.getContent()));
-				}
+			public String modify(String str) {
+				return HexDecoder.decode(str);
 			}
 		});
 		conversions.add(hexdec);
@@ -1133,25 +1122,19 @@ public class MainMenu {
 		conversions.addSeparator();
 
 		JMenuItem binaryenc = new JMenuItem("Binary encode");
-		binaryenc.addActionListener(new ActionListener() {
+		addTextModificationAction(binaryenc, new StringModifier() {
 			@Override
-			public void actionPerformed(ActionEvent e) {
-				AugFileTab tab = mainGUI.getCurrentTab();
-				if (tab != null) {
-					tab.setContent(BinaryEncoder.encode(tab.getContent()));
-				}
+			public String modify(String str) {
+				return BinaryEncoder.encode(str);
 			}
 		});
 		conversions.add(binaryenc);
 
 		JMenuItem binarydec = new JMenuItem("Binary decode");
-		binarydec.addActionListener(new ActionListener() {
+		addTextModificationAction(binarydec, new StringModifier() {
 			@Override
-			public void actionPerformed(ActionEvent e) {
-				AugFileTab tab = mainGUI.getCurrentTab();
-				if (tab != null) {
-					tab.setContent(BinaryDecoder.decode(tab.getContent()));
-				}
+			public String modify(String str) {
+				return BinaryDecoder.decode(str);
 			}
 		});
 		conversions.add(binarydec);
@@ -1159,25 +1142,19 @@ public class MainMenu {
 		conversions.addSeparator();
 
 		JMenuItem utf8enc = new JMenuItem("UTF8 encode");
-		utf8enc.addActionListener(new ActionListener() {
+		addTextModificationAction(utf8enc, new StringModifier() {
 			@Override
-			public void actionPerformed(ActionEvent e) {
-				AugFileTab tab = mainGUI.getCurrentTab();
-				if (tab != null) {
-					tab.setContent(Utf8Encoder.encode(tab.getContent()));
-				}
+			public String modify(String str) {
+				return Utf8Encoder.encode(str);
 			}
 		});
 		conversions.add(utf8enc);
 
 		JMenuItem utf8dec = new JMenuItem("UTF8 decode");
-		utf8dec.addActionListener(new ActionListener() {
+		addTextModificationAction(utf8dec, new StringModifier() {
 			@Override
-			public void actionPerformed(ActionEvent e) {
-				AugFileTab tab = mainGUI.getCurrentTab();
-				if (tab != null) {
-					tab.setContent(Utf8Decoder.decode(tab.getContent()));
-				}
+			public String modify(String str) {
+				return Utf8Decoder.decode(str);
 			}
 		});
 		conversions.add(utf8dec);
@@ -1185,60 +1162,46 @@ public class MainMenu {
 		conversions.addSeparator();
 
 		JMenuItem htmlenc = new JMenuItem("HTML encode");
-		htmlenc.addActionListener(new ActionListener() {
+		addTextModificationAction(htmlenc, new StringModifier() {
 			@Override
-			public void actionPerformed(ActionEvent e) {
-				AugFileTab tab = mainGUI.getCurrentTab();
-				if (tab != null) {
-					tab.setContent(HtmlEncoder.encode(tab.getContent()));
-				}
+			public String modify(String str) {
+				return HtmlEncoder.encode(str);
 			}
 		});
 		conversions.add(htmlenc);
 
 		JMenuItem htmldec = new JMenuItem("HTML decode");
-		htmldec.addActionListener(new ActionListener() {
+		addTextModificationAction(htmldec, new StringModifier() {
 			@Override
-			public void actionPerformed(ActionEvent e) {
-				AugFileTab tab = mainGUI.getCurrentTab();
-				if (tab != null) {
-					tab.setContent(HtmlDecoder.decode(tab.getContent()));
-				}
+			public String modify(String str) {
+				return HtmlDecoder.decode(str);
 			}
 		});
 		conversions.add(htmldec);
 
 		JMenuItem htmlesc = new JMenuItem("HTML escape");
-		htmlesc.addActionListener(new ActionListener() {
+		addTextModificationAction(htmlesc, new StringModifier() {
 			@Override
-			public void actionPerformed(ActionEvent e) {
-				AugFileTab tab = mainGUI.getCurrentTab();
-				if (tab != null) {
-					tab.setContent(HTML.escapeHTMLstr(tab.getContent()));
-				}
+			public String modify(String str) {
+				return HTML.escapeHTMLstr(str);
 			}
 		});
 		conversions.add(htmlesc);
 
 		JMenuItem htmlunesc = new JMenuItem("HTML unescape");
-		htmlunesc.addActionListener(new ActionListener() {
+		addTextModificationAction(htmlunesc, new StringModifier() {
 			@Override
-			public void actionPerformed(ActionEvent e) {
-				AugFileTab tab = mainGUI.getCurrentTab();
-				if (tab != null) {
-					tab.setContent(HTML.unescapeHTMLstr(tab.getContent()));
-				}
+			public String modify(String str) {
+				return HTML.unescapeHTMLstr(str);
 			}
 		});
 		conversions.add(htmlunesc);
 
 		JMenuItem removeHtmlTags = new JMenuItem("Remove HTML tags");
-		removeHtmlTags.addActionListener(new ActionListener() {
+		addTextModificationAction(removeHtmlTags, new StringModifier() {
 			@Override
-			public void actionPerformed(ActionEvent e) {
-				if (mainGUI.getCurrentTab() != null) {
-					mainGUI.getCurrentTab().removeXmlTags();
-				}
+			public String modify(String str) {
+				return HTML.removeHtmlTagsFromText(str);
 			}
 		});
 		code.add(removeHtmlTags);
@@ -1246,25 +1209,19 @@ public class MainMenu {
 		conversions.addSeparator();
 
 		JMenuItem urlenc = new JMenuItem("URL encode");
-		urlenc.addActionListener(new ActionListener() {
+		addTextModificationAction(urlenc, new StringModifier() {
 			@Override
-			public void actionPerformed(ActionEvent e) {
-				AugFileTab tab = mainGUI.getCurrentTab();
-				if (tab != null) {
-					tab.setContent(UrlEncoder.encode(tab.getContent()));
-				}
+			public String modify(String str) {
+				return UrlEncoder.encode(str);
 			}
 		});
 		conversions.add(urlenc);
 
 		JMenuItem urldec = new JMenuItem("URL decode");
-		urldec.addActionListener(new ActionListener() {
+		addTextModificationAction(urldec, new StringModifier() {
 			@Override
-			public void actionPerformed(ActionEvent e) {
-				AugFileTab tab = mainGUI.getCurrentTab();
-				if (tab != null) {
-					tab.setContent(UrlDecoder.decode(tab.getContent()));
-				}
+			public String modify(String str) {
+				return UrlDecoder.decode(str);
 			}
 		});
 		conversions.add(urldec);
@@ -1272,25 +1229,19 @@ public class MainMenu {
 		conversions.addSeparator();
 
 		JMenuItem morseenc = new JMenuItem("Morse encode");
-		morseenc.addActionListener(new ActionListener() {
+		addTextModificationAction(morseenc, new StringModifier() {
 			@Override
-			public void actionPerformed(ActionEvent e) {
-				AugFileTab tab = mainGUI.getCurrentTab();
-				if (tab != null) {
-					tab.setContent(MorseEncoder.encode(tab.getContent()));
-				}
+			public String modify(String str) {
+				return MorseEncoder.encode(str);
 			}
 		});
 		conversions.add(morseenc);
 
 		JMenuItem morsedec = new JMenuItem("Morse decode");
-		morsedec.addActionListener(new ActionListener() {
+		addTextModificationAction(morsedec, new StringModifier() {
 			@Override
-			public void actionPerformed(ActionEvent e) {
-				AugFileTab tab = mainGUI.getCurrentTab();
-				if (tab != null) {
-					tab.setContent(MorseDecoder.decode(tab.getContent()));
-				}
+			public String modify(String str) {
+				return MorseDecoder.decode(str);
 			}
 		});
 		conversions.add(morsedec);
@@ -1298,25 +1249,19 @@ public class MainMenu {
 		conversions.addSeparator();
 
 		JMenuItem romanNumeralenc = new JMenuItem("Roman Numeral encode");
-		romanNumeralenc.addActionListener(new ActionListener() {
+		addTextModificationAction(romanNumeralenc, new StringModifier() {
 			@Override
-			public void actionPerformed(ActionEvent e) {
-				AugFileTab tab = mainGUI.getCurrentTab();
-				if (tab != null) {
-					tab.setContent(RomanNumeralEncoder.encode(tab.getContent()));
-				}
+			public String modify(String str) {
+				return RomanNumeralEncoder.encode(str);
 			}
 		});
 		conversions.add(romanNumeralenc);
 
 		JMenuItem romanNumeraldec = new JMenuItem("Roman Numeral decode");
-		romanNumeraldec.addActionListener(new ActionListener() {
+		addTextModificationAction(romanNumeraldec, new StringModifier() {
 			@Override
-			public void actionPerformed(ActionEvent e) {
-				AugFileTab tab = mainGUI.getCurrentTab();
-				if (tab != null) {
-					tab.setContent(RomanNumeralDecoder.decode(tab.getContent()));
-				}
+			public String modify(String str) {
+				return RomanNumeralDecoder.decode(str);
 			}
 		});
 		conversions.add(romanNumeraldec);
@@ -1324,37 +1269,28 @@ public class MainMenu {
 		conversions.addSeparator();
 
 		JMenuItem uuidJavaToEcore = new JMenuItem("Java UUID to Ecore");
-		uuidJavaToEcore.addActionListener(new ActionListener() {
+		addTextModificationAction(uuidJavaToEcore, new StringModifier() {
 			@Override
-			public void actionPerformed(ActionEvent e) {
-				AugFileTab tab = mainGUI.getCurrentTab();
-				if (tab != null) {
-					tab.setContent(UuidEncoderDecoder.convertJavaUUIDtoEcore(tab.getContent()));
-				}
+			public String modify(String str) {
+				return UuidEncoderDecoder.convertJavaUUIDtoEcore(str);
 			}
 		});
 		conversions.add(uuidJavaToEcore);
 
 		JMenuItem uuidEcoreToJava = new JMenuItem("Ecore UUID to Java");
-		uuidEcoreToJava.addActionListener(new ActionListener() {
+		addTextModificationAction(uuidEcoreToJava, new StringModifier() {
 			@Override
-			public void actionPerformed(ActionEvent e) {
-				AugFileTab tab = mainGUI.getCurrentTab();
-				if (tab != null) {
-					tab.setContent(UuidEncoderDecoder.convertEcoreUUIDtoJava(tab.getContent()));
-				}
+			public String modify(String str) {
+				return UuidEncoderDecoder.convertEcoreUUIDtoJava(str);
 			}
 		});
 		conversions.add(uuidEcoreToJava);
 
 		JMenuItem generateUuid = new JMenuItem("Generate Java UUID");
-		generateUuid.addActionListener(new ActionListener() {
+		addTextModificationAction(generateUuid, new StringModifier() {
 			@Override
-			public void actionPerformed(ActionEvent e) {
-				AugFileTab tab = mainGUI.getCurrentTab();
-				if (tab != null) {
-					tab.setContent(UuidEncoderDecoder.generateJavaUUID());
-				}
+			public String modify(String str) {
+				return UuidEncoderDecoder.generateJavaUUID();
 			}
 		});
 		conversions.add(generateUuid);
@@ -1362,49 +1298,40 @@ public class MainMenu {
 		conversions.addSeparator();
 
 		JMenuItem prettyJSON = new JMenuItem("JSON prettify");
-		prettyJSON.addActionListener(new ActionListener() {
+		addTextModificationAction(prettyJSON, new StringModifier() {
 			@Override
-			public void actionPerformed(ActionEvent e) {
-				AugFileTab tab = mainGUI.getCurrentTab();
-				if (tab != null) {
-					try {
-						JSON json = new JSON(tab.getContent());
-						boolean compressed = false;
-						tab.setContent(json.toString(compressed));
-					} catch (JsonParseException ex) {
-						// do nothing
-					}
+			public String modify(String str) {
+				try {
+					JSON json = new JSON(str);
+					boolean compressed = false;
+					return json.toString(compressed);
+				} catch (JsonParseException ex) {
+					return str;
 				}
 			}
 		});
 		conversions.add(prettyJSON);
 
 		JMenuItem miniJSON = new JMenuItem("JSON minify");
-		miniJSON.addActionListener(new ActionListener() {
+		addTextModificationAction(miniJSON, new StringModifier() {
 			@Override
-			public void actionPerformed(ActionEvent e) {
-				AugFileTab tab = mainGUI.getCurrentTab();
-				if (tab != null) {
-					try {
-						JSON json = new JSON(tab.getContent());
-						boolean compressed = true;
-						tab.setContent(json.toString(compressed));
-					} catch (JsonParseException ex) {
-						// do nothing
-					}
+			public String modify(String str) {
+				try {
+					JSON json = new JSON(str);
+					boolean compressed = true;
+					return json.toString(compressed);
+				} catch (JsonParseException ex) {
+					return str;
 				}
 			}
 		});
 		conversions.add(miniJSON);
 
 		JMenuItem escJSON = new JMenuItem("JSON escape");
-		escJSON.addActionListener(new ActionListener() {
+		addTextModificationAction(escJSON, new StringModifier() {
 			@Override
-			public void actionPerformed(ActionEvent e) {
-				AugFileTab tab = mainGUI.getCurrentTab();
-				if (tab != null) {
-					tab.setContent(JSON.escapeJSONstr(tab.getContent()));
-				}
+			public String modify(String str) {
+				return JSON.escapeJSONstr(str);
 			}
 		});
 		conversions.add(escJSON);
@@ -1412,17 +1339,13 @@ public class MainMenu {
 		conversions.addSeparator();
 
 		JMenuItem javaStrEsc = new JMenuItem("Java string escape");
-		javaStrEsc.addActionListener(new ActionListener() {
+		addTextModificationAction(javaStrEsc, new StringModifier() {
 			@Override
-			public void actionPerformed(ActionEvent e) {
-				AugFileTab tab = mainGUI.getCurrentTab();
-				if (tab != null) {
-					String str = tab.getContent();
-					str = StrUtils.replaceAll(str, "\"", "\\\"");
-					str = StrUtils.replaceAll(str, "\n", "\\n\" +\n\t\t\t\"");
-					str = "\"" + str + "\"";
-					tab.setContent(str);
-				}
+			public String modify(String str) {
+				str = StrUtils.replaceAll(str, "\"", "\\\"");
+				str = StrUtils.replaceAll(str, "\n", "\\n\" +\n\t\t\t\"");
+				str = "\"" + str + "\"";
+				return str;
 			}
 		});
 		conversions.add(javaStrEsc);
@@ -1931,4 +1854,15 @@ public class MainMenu {
 		return workspaces;
 	}
 
+	private void addTextModificationAction(JMenuItem item, StringModifier modifier) {
+		item.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				AugFileTab tab = mainGUI.getCurrentTab();
+				if (tab != null) {
+					tab.setContent(modifier.modify(tab.getContent()));
+				}
+			}
+		});
+	}
 }
