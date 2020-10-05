@@ -10,6 +10,7 @@ import com.asofterspace.toolbox.coders.Base64Decoder;
 import com.asofterspace.toolbox.coders.Base64Encoder;
 import com.asofterspace.toolbox.coders.BinaryDecoder;
 import com.asofterspace.toolbox.coders.BinaryEncoder;
+import com.asofterspace.toolbox.coders.EgsccPrettifier;
 import com.asofterspace.toolbox.coders.HexDecoder;
 import com.asofterspace.toolbox.coders.HexEncoder;
 import com.asofterspace.toolbox.coders.HtmlDecoder;
@@ -1381,6 +1382,20 @@ public class MainMenu {
 			}
 		});
 		conversions.add(escJSON);
+
+		conversions.addSeparator();
+
+		JMenuItem prettyEGSCC = new JMenuItem("EGS-CC prettify");
+		prettyEGSCC.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				AugFileTab tab = mainGUI.getCurrentTab();
+				if (tab != null) {
+					tab.setContent(EgsccPrettifier.prettify(tab.getContent()));
+				}
+			}
+		});
+		conversions.add(prettyEGSCC);
 
 
 		JMenu settings = new JMenu("Settings");
