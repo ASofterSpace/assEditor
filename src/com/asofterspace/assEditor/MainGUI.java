@@ -1875,7 +1875,7 @@ public class MainGUI extends MainWindow {
 						fileTreeComponent.setSelectionPath(curPath);
 						fileTreeComponent.scrollPathToVisible(curPath);
 						if (doResize) {
-							fileTreeModel.valueForPathChanged(curPath, fileTreeModel.getNode(tab));
+							fileTreeModel.resizeNode(curPath);
 						}
 					}
 
