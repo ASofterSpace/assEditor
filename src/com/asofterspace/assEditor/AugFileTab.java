@@ -1489,6 +1489,48 @@ public class AugFileTab implements FileTab {
 		fileContentMemo.setCaretPosition(origCaretPos);
 	}
 
+	public void removeUntilFirstOccurrence(String needle) {
+
+		ensureLoaded();
+
+		String contentText = fileContentMemo.getText();
+
+		String[] lines = contentText.split("\n");
+		StringBuilder result = new StringBuilder();
+
+		for (String line : lines) {
+			int index = line.indexOf(needle);
+			if (index >= 0) {
+				line = line.substring(index + needle.length());
+				result.append(line);
+			}
+			result.append("\n");
+		}
+
+		fileContentMemo.setText(result.toString());
+	}
+
+	public void removeAfterLastOccurrence(String needle) {
+
+		ensureLoaded();
+
+		String contentText = fileContentMemo.getText();
+
+		String[] lines = contentText.split("\n");
+		StringBuilder result = new StringBuilder();
+
+		for (String line : lines) {
+			int index = line.lastIndexOf(needle);
+			if (index >= 0) {
+				line = line.substring(0, index);
+				result.append(line);
+			}
+			result.append("\n");
+		}
+
+		fileContentMemo.setText(result.toString());
+	}
+
 	public void deleteAllLinesContainingText(String needle, boolean invert) {
 
 		ensureLoaded();

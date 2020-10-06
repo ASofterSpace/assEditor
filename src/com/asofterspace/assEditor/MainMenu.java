@@ -30,6 +30,7 @@ import com.asofterspace.toolbox.io.File;
 import com.asofterspace.toolbox.io.HTML;
 import com.asofterspace.toolbox.io.JSON;
 import com.asofterspace.toolbox.io.JsonParseException;
+import com.asofterspace.toolbox.io.XML;
 import com.asofterspace.toolbox.utils.SortOrder;
 import com.asofterspace.toolbox.utils.StringModifier;
 import com.asofterspace.toolbox.utils.StrUtils;
@@ -516,6 +517,17 @@ public class MainMenu {
 		});
 		indentSelection.add(indentByFourTabs);
 
+		JMenuItem indentByEightTabs = new JMenuItem("By 8 Tabs");
+		indentByEightTabs.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (mainGUI.getCurrentTab() != null) {
+					mainGUI.getCurrentTab().indentSelection("\t\t\t\t\t\t\t\t");
+				}
+			}
+		});
+		indentSelection.add(indentByEightTabs);
+
 		JMenuItem indentBySpace = new JMenuItem("By Space");
 		indentBySpace.addActionListener(new ActionListener() {
 			@Override
@@ -548,6 +560,17 @@ public class MainMenu {
 			}
 		});
 		indentSelection.add(indentByFourSpaces);
+
+		JMenuItem indentByEightSpaces = new JMenuItem("By 8 Spaces");
+		indentByEightSpaces.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (mainGUI.getCurrentTab() != null) {
+					mainGUI.getCurrentTab().indentSelection("        ");
+				}
+			}
+		});
+		indentSelection.add(indentByEightSpaces);
 
 		JMenu unindentSelection = new JMenu("Unindent Current Selection");
 		edit.add(unindentSelection);
@@ -584,6 +607,17 @@ public class MainMenu {
 			}
 		});
 		unindentSelection.add(unindentFourLevels);
+
+		JMenuItem unindentEightLevels = new JMenuItem("8 Levels");
+		unindentEightLevels.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (mainGUI.getCurrentTab() != null) {
+					mainGUI.getCurrentTab().unindentSelection(8, false);
+				}
+			}
+		});
+		unindentSelection.add(unindentEightLevels);
 
 		JMenuItem unindentAllLevels = new JMenuItem("All Levels");
 		unindentAllLevels.addActionListener(new ActionListener() {
@@ -628,6 +662,17 @@ public class MainMenu {
 			}
 		});
 		unindentSelection.add(forceUnindentFourLevels);
+
+		JMenuItem forceUnindentEightLevels = new JMenuItem("Force Unindent 8 Levels");
+		forceUnindentEightLevels.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (mainGUI.getCurrentTab() != null) {
+					mainGUI.getCurrentTab().unindentSelection(8, true);
+				}
+			}
+		});
+		unindentSelection.add(forceUnindentEightLevels);
 
 		edit.addSeparator();
 
@@ -905,12 +950,10 @@ public class MainMenu {
 		code.add(removeCommentsAndStrings);
 
 		JMenuItem removeXmlTags = new JMenuItem("Remove XML tags");
-		removeXmlTags.addActionListener(new ActionListener() {
+		addTextModificationAction(removeXmlTags, new StringModifier() {
 			@Override
-			public void actionPerformed(ActionEvent e) {
-				if (mainGUI.getCurrentTab() != null) {
-					mainGUI.getCurrentTab().removeXmlTags();
-				}
+			public String modify(String str) {
+				return XML.removeXmlTagsFromText(str);
 			}
 		});
 		code.add(removeXmlTags);
@@ -953,6 +996,30 @@ public class MainMenu {
 			}
 		});
 		operations.add(count100Up);
+
+		operations.addSeparator();
+
+		JMenuItem remTextUntil = new JMenuItem("Remove Text Until First Text In Search Field From Each Line");
+		remTextUntil.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (mainGUI.getCurrentTab() != null) {
+					mainGUI.getCurrentTab().removeUntilFirstOccurrence(mainGUI.getSearchFieldText());
+				}
+			}
+		});
+		operations.add(remTextUntil);
+
+		JMenuItem remTextAfter = new JMenuItem("Remove Text After Last Text In Search Field From Each Line");
+		remTextAfter.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (mainGUI.getCurrentTab() != null) {
+					mainGUI.getCurrentTab().removeAfterLastOccurrence(mainGUI.getSearchFieldText());
+				}
+			}
+		});
+		operations.add(remTextAfter);
 
 		operations.addSeparator();
 
@@ -1204,7 +1271,7 @@ public class MainMenu {
 				return HTML.removeHtmlTagsFromText(str);
 			}
 		});
-		code.add(removeHtmlTags);
+		conversions.add(removeHtmlTags);
 
 		conversions.addSeparator();
 
