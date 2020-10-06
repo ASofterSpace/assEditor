@@ -14,6 +14,7 @@ import com.asofterspace.toolbox.gui.FileTreeCellRenderer;
 import com.asofterspace.toolbox.gui.FileTreeFile;
 import com.asofterspace.toolbox.gui.FileTreeFolder;
 import com.asofterspace.toolbox.gui.FileTreeModel;
+import com.asofterspace.toolbox.gui.FileTreeModelListener;
 import com.asofterspace.toolbox.gui.FileTreeNode;
 import com.asofterspace.toolbox.gui.GuiUtils;
 import com.asofterspace.toolbox.gui.MainWindow;
@@ -167,8 +168,10 @@ public class MainGUI extends MainWindow {
 
 		augFileTabArray = new AugFileTab[0];
 		fileTreeModel = new FileTreeModel();
-		fileTreeModel.addTreeModelListener(new TreeModelListener() {
-			public void treeNodesChanged(TreeModelEvent e) {
+		fileTreeModel.addTreeModelListener(new FileTreeModelListener() {
+
+			@Override
+			public void treeNodesRenamed(TreeModelEvent e) {
 				FileTreeNode node = fileTreeModel.getChild(e.getTreePath());
 				if (node instanceof FileTreeFile) {
 					FileTreeFile file = (FileTreeFile) node;
@@ -221,8 +224,20 @@ public class MainGUI extends MainWindow {
 					}
 				}
 			}
+
+			@Override
+			public void treeNodesResized(TreeModelEvent e) {}
+
+			@Override
+			public void treeNodesChanged(TreeModelEvent e) {}
+
+			@Override
 			public void treeNodesInserted(TreeModelEvent e) {}
+
+			@Override
 			public void treeNodesRemoved(TreeModelEvent e) {}
+
+			@Override
 			public void treeStructureChanged(TreeModelEvent e) {}
 		});
 
