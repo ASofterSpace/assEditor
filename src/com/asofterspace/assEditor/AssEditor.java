@@ -64,8 +64,6 @@ public class AssEditor {
 	 */
 	public static void main(String[] args) {
 
-Utils.debuglog("startup main 1");
-
 		// let the Utils know in what program it is being used
 		Utils.setProgramTitle(PROGRAM_TITLE);
 		Utils.setVersionNumber(VERSION_NUMBER);
@@ -94,8 +92,6 @@ Utils.debuglog("startup main 1");
 			openFilenames.add(arg);
 		}
 
-Utils.debuglog("startup main 2");
-
 		try {
 			// we get a config file based on the classpath, such that we know that this is always the
 			// same "install" location, without change even if we are called from somewhere else
@@ -112,8 +108,6 @@ Utils.debuglog("startup main 2");
 			System.exit(1);
 		}
 
-Utils.debuglog("startup main 3");
-
 		// we prevent saving as we would save a hundred times during startup, and will allow
 		// it again after the startup is done in MainGUI
 		config.preventSaving();
@@ -124,13 +118,7 @@ Utils.debuglog("startup main 3");
 			augFileCtrl.loadAnotherFileWithoutSaving(new File(filename));
 		}
 
-Utils.debuglog("startup main 4");
-
-Utils.debuglog("startup main 5");
-
 		SwingUtilities.invokeLater(new MainGUI(augFileCtrl, config, standalone));
-
-Utils.debuglog("startup main 6");
 	}
 
 	public static void performPostStartupActions() {
@@ -153,8 +141,6 @@ Utils.debuglog("startup main 6");
 				addStampTo(stampTarget);
 			}
 		}
-
-Utils.debuglog("startup main 7");
 
 		int currentBackup = config.getInteger(CONFIG_KEY_BACKUP_SETTINGS_NUM, 0);
 
