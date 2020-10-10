@@ -15,7 +15,6 @@ import com.asofterspace.toolbox.gui.CodeEditorLineMemo;
 import com.asofterspace.toolbox.gui.FileTab;
 import com.asofterspace.toolbox.gui.GuiUtils;
 import com.asofterspace.toolbox.guiImages.FancyCodeEditor;
-import com.asofterspace.toolbox.images.Image;
 import com.asofterspace.toolbox.io.Directory;
 import com.asofterspace.toolbox.io.File;
 import com.asofterspace.toolbox.io.SimpleFile;
@@ -197,11 +196,7 @@ public class AugFileTab implements FileTab {
 
 		functionMemo = new FancyCodeEditor();
 		functionMemo.setGradientBackground(true);
-		List<Image> stamps = AssEditor.getStamps();
-		if (stamps.size() > 0) {
-			int ran = (int)(Math.random() * stamps.size());
-			functionMemo.setBackgroundImage(stamps.get(ran));
-		}
+		AssEditor.addStampTo(functionMemo);
 
 		JPanel scrolledFunctionPanel = new JPanel();
 		scrolledFunctionPanel.setLayout(new GridBagLayout());

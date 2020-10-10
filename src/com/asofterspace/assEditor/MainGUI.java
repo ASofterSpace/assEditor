@@ -158,6 +158,8 @@ public class MainGUI extends MainWindow {
 
 	public MainGUI(AugFileCtrl augFileCtrl, ConfigFile config, boolean standalone) {
 
+Utils.debuglog("startup MainGUI 1");
+
 		this.augFileCtrl = augFileCtrl;
 
 		this.configuration = config;
@@ -241,12 +243,16 @@ public class MainGUI extends MainWindow {
 			public void treeStructureChanged(TreeModelEvent e) {}
 		});
 
+Utils.debuglog("startup MainGUI 2");
+
 		augFileTabs = new ArrayList<>();
 		listOfPreviousTabs = new ArrayList<>();
 		listOfFutureTabs = new ArrayList<>();
 
 		useAntiAliasing = configuration.getBoolean(CONFIG_KEY_ANTI_ALIASING, true);
 		updateUseAntiAliasing();
+
+Utils.debuglog("startup MainGUI 3");
 
 		currentScheme = configuration.getValue(CONFIG_KEY_SCHEME);
 
@@ -281,6 +287,8 @@ public class MainGUI extends MainWindow {
 		fontSize = configuration.getInteger(CONFIG_KEY_FONT_SIZE, DEFAULT_FONT_SIZE);
 
 		showFilesInTree = configuration.getBoolean(CONFIG_KEY_SHOW_FILES_IN_TREE, true);
+
+Utils.debuglog("startup MainGUI 4");
 
 		Thread backupThread = new Thread(new Runnable() {
 			@Override
@@ -319,6 +327,9 @@ public class MainGUI extends MainWindow {
 			}
 		});
 		backupThread.start();
+
+Utils.debuglog("startup MainGUI 5");
+
 	}
 
 	@Override
@@ -326,17 +337,27 @@ public class MainGUI extends MainWindow {
 
 		super.create();
 
+Utils.debuglog("startup MainGUI run 1");
+
 		// Add content to the window
 		this.mainMenu = new MainMenu(this, mainFrame, augFileCtrl, standalone);
 		mainMenu.createMenu();
 
+Utils.debuglog("startup MainGUI run 1.1");
+
 		this.mainPopupMenu = new MainPopupMenu(this, mainFrame, standalone);
 		mainPopupMenu.createPopupMenu();
 
+Utils.debuglog("startup MainGUI run 1.2");
+
 		createMainPanel(mainFrame);
+
+Utils.debuglog("startup MainGUI run 1.3");
 
 		noteAreaFile = new SimpleFile(configuration.getParentDirectory().getCanonicalDirname() + "/notes.txt");
 		noteArea.setText(noteAreaFile.getContent());
+
+Utils.debuglog("startup MainGUI run 2");
 
 		configureGUI();
 
@@ -345,6 +366,8 @@ public class MainGUI extends MainWindow {
 		reEnableDisableMenuItems();
 
 		setScheme(currentScheme);
+
+Utils.debuglog("startup MainGUI run 3");
 
 		// do not call super.show, as we are doing things a little bit
 		// differently around here (including restoring from previous
@@ -358,11 +381,16 @@ public class MainGUI extends MainWindow {
 
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
+
+Utils.debuglog("startup MainGUI run invLater 1");
+
 				// Stage everything to be shown
 				mainFrame.pack();
 
 				// Actually display the whole jazz
 				mainFrame.setVisible(true);
+
+Utils.debuglog("startup MainGUI run invLater 2");
 
 				if ((lastWidth < 1) || (lastHeight < 1)) {
 					GuiUtils.maximizeWindow(mainFrame);
@@ -373,6 +401,8 @@ public class MainGUI extends MainWindow {
 
 					mainFrame.setLocation(new Point(lastLeft, lastTop));
 				}
+
+Utils.debuglog("startup MainGUI run invLater 3");
 
 				mainFrame.addComponentListener(new ComponentAdapter() {
 					public void componentResized(ComponentEvent componentEvent) {
@@ -388,10 +418,19 @@ public class MainGUI extends MainWindow {
 
 				// we allow saving, which will happen in the backup thread
 				configuration.allowSaving();
+
+Utils.debuglog("startup MainGUI run invLater 4");
+
+				AssEditor.performPostStartupActions();
 			}
 		});
 
+Utils.debuglog("startup MainGUI run 4");
+
 		reloadAllAugFileTabs();
+
+Utils.debuglog("startup MainGUI run 5");
+
 	}
 
 	private JPanel createMainPanel(JFrame parent) {

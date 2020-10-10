@@ -5,6 +5,7 @@
 package com.asofterspace.assEditor;
 
 import com.asofterspace.toolbox.configuration.ConfigFile;
+import com.asofterspace.toolbox.guiImages.FancyCodeEditor;
 import com.asofterspace.toolbox.images.DefaultImageFile;
 import com.asofterspace.toolbox.images.Image;
 import com.asofterspace.toolbox.io.Directory;
@@ -24,12 +25,15 @@ import javax.swing.SwingUtilities;
 public class AssEditor {
 
 	public final static String PROGRAM_TITLE = "A Softer Space Editor";
-	public final static String VERSION_NUMBER = "0.0.4.2(" + Utils.TOOLBOX_VERSION_NUMBER + ")";
-	public final static String VERSION_DATE = "18. December 2018 - 6. October 2020";
+	public final static String VERSION_NUMBER = "0.0.4.3(" + Utils.TOOLBOX_VERSION_NUMBER + ")";
+	public final static String VERSION_DATE = "18. December 2018 - 10. October 2020";
 
 	private final static String CONFIG_KEY_BACKUP_SETTINGS_NUM = "backupSettingsNum";
 
+	private static ConfigFile config;
+	private static AugFileCtrl augFileCtrl;
 	private final static List<Image> stamps = new ArrayList<>();
+	private final static List<FancyCodeEditor> wantStamps = new ArrayList<>();
 
 
 	/**
@@ -60,12 +64,14 @@ public class AssEditor {
 	 */
 	public static void main(String[] args) {
 
+Utils.debuglog("startup main 1");
+
 		// let the Utils know in what program it is being used
 		Utils.setProgramTitle(PROGRAM_TITLE);
 		Utils.setVersionNumber(VERSION_NUMBER);
 		Utils.setVersionDate(VERSION_DATE);
 
-		ConfigFile config = null;
+		config = null;
 		boolean standalone = false;
 
 		List<String> openFilenames = new ArrayList<>();
@@ -88,6 +94,8 @@ public class AssEditor {
 			openFilenames.add(arg);
 		}
 
+Utils.debuglog("startup main 2");
+
 		try {
 			// we get a config file based on the classpath, such that we know that this is always the
 			// same "install" location, without change even if we are called from somewhere else
@@ -98,40 +106,36 @@ public class AssEditor {
 				config.setAllContents(new JSON("{\"workspaces\": [{\"name\": \"default\", \"files\": []}]}"));
 			}
 
-			int currentBackup = config.getInteger(CONFIG_KEY_BACKUP_SETTINGS_NUM, 0);
-
-			// backup the configuration (in the same location as the file content backups are kept)
-			SimpleFile backupFile = new SimpleFile(getBackupPath() + "settings_" +
-				StrUtils.leftPad0(currentBackup, 4) + ConfigFile.FILE_EXTENSION);
-			backupFile.setContent(config.getAllContents().toString(false));
-			backupFile.create();
-
-			currentBackup++;
-			if (currentBackup > 9999) {
-				currentBackup = 0;
-			}
-
-			config.set(CONFIG_KEY_BACKUP_SETTINGS_NUM, currentBackup);
-
 		} catch (JsonParseException e) {
 			System.err.println("Loading the settings failed:");
 			System.err.println(e);
 			System.exit(1);
 		}
 
+Utils.debuglog("startup main 3");
+
 		// we prevent saving as we would save a hundred times during startup, and will allow
 		// it again after the startup is done in MainGUI
 		config.preventSaving();
 
-		AugFileCtrl augFileCtrl = new AugFileCtrl(config, standalone, openFilenames.size() < 1);
+		augFileCtrl = new AugFileCtrl(config, standalone, openFilenames.size() < 1);
 
 		for (String filename : openFilenames) {
 			augFileCtrl.loadAnotherFileWithoutSaving(new File(filename));
 		}
 
-		augFileCtrl.saveConfigFileList();
+Utils.debuglog("startup main 4");
+
+Utils.debuglog("startup main 5");
 
 		SwingUtilities.invokeLater(new MainGUI(augFileCtrl, config, standalone));
+
+Utils.debuglog("startup main 6");
+	}
+
+	public static void performPostStartupActions() {
+
+		augFileCtrl.saveConfigFileList();
 
 		String classPath = System.getProperty("java.class.path");
 		Directory stampDir = new Directory(classPath + "/../res/stamps");
@@ -143,6 +147,29 @@ public class AssEditor {
 			stamp.minify();
 			stamps.add(stamp);
 		}
+
+		if (stamps.size() > 0) {
+			for (FancyCodeEditor stampTarget : wantStamps) {
+				addStampTo(stampTarget);
+			}
+		}
+
+Utils.debuglog("startup main 7");
+
+		int currentBackup = config.getInteger(CONFIG_KEY_BACKUP_SETTINGS_NUM, 0);
+
+		// backup the configuration (in the same location as the file content backups are kept)
+		SimpleFile backupFile = new SimpleFile(getBackupPath() + "settings_" +
+			StrUtils.leftPad0(currentBackup, 4) + ConfigFile.FILE_EXTENSION);
+		backupFile.setContent(config.getAllContents().toString(false));
+		backupFile.create();
+
+		currentBackup++;
+		if (currentBackup > 9999) {
+			currentBackup = 0;
+		}
+
+		config.set(CONFIG_KEY_BACKUP_SETTINGS_NUM, currentBackup);
 	}
 
 	public static String getBackupPath() {
@@ -151,6 +178,16 @@ public class AssEditor {
 
 	public static List<Image> getStamps() {
 		return stamps;
+	}
+
+	public static void addStampTo(FancyCodeEditor functionMemo) {
+		List<Image> stamps = AssEditor.getStamps();
+		if (stamps.size() > 0) {
+			int ran = (int)(Math.random() * stamps.size());
+			functionMemo.setBackgroundImage(stamps.get(ran));
+		} else {
+			wantStamps.add(functionMemo);
+		}
 	}
 
 }
