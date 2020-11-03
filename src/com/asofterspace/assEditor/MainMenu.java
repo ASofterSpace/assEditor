@@ -1068,6 +1068,60 @@ public class MainMenu {
 		operations.add(delAllNotStartText);
 
 
+		JMenu stats = new JMenu("Stats");
+		menu.add(stats);
+
+		JMenuItem showCharacterAmount = new JMenuItem("Show Amount of Characters");
+		showCharacterAmount.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (mainGUI.getCurrentTab() != null) {
+					GuiUtils.notify("The currently opened text contains " +
+						mainGUI.getCurrentTab().getContent().length() +
+						" characters.");
+				}
+			}
+		});
+		stats.add(showCharacterAmount);
+
+		JMenuItem showWordAmount = new JMenuItem("Show Amount of Words");
+		showWordAmount.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (mainGUI.getCurrentTab() != null) {
+					String content = mainGUI.getCurrentTab().getContent();
+					content = StrUtils.replaceAll(content, ".", " ");
+					content = StrUtils.replaceAll(content, ",", " ");
+					content = StrUtils.replaceAll(content, ";", " ");
+					content = StrUtils.replaceAll(content, "!", " ");
+					content = StrUtils.replaceAll(content, "?", " ");
+					content = StrUtils.replaceAll(content, "\t", " ");
+					content = StrUtils.replaceAll(content, "  ", " ");
+					content = content.trim();
+					int amount = StrUtils.countCharInString(' ', content) + 1;
+					GuiUtils.notify("The currently opened text contains " +
+						amount + " words.");
+				}
+			}
+		});
+		stats.add(showWordAmount);
+
+		JMenuItem showLineAmount = new JMenuItem("Show Amount of Lines");
+		showLineAmount.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (mainGUI.getCurrentTab() != null) {
+					String content = mainGUI.getCurrentTab().getContent();
+					content = content.trim();
+					int amount = StrUtils.countCharInString('\n', content) + 1;
+					GuiUtils.notify("The currently opened text contains " +
+						amount + " lines.");
+				}
+			}
+		});
+		stats.add(showLineAmount);
+
+
 		JMenu encodings = new JMenu("Encodings");
 		menu.add(encodings);
 
