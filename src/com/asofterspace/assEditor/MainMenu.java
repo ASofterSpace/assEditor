@@ -799,6 +799,17 @@ public class MainMenu {
 		});
 		edit.add(sortDocumentNum);
 
+		JMenuItem reverseDocument = new JMenuItem("Reverse Entire Document");
+		reverseDocument.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (mainGUI.getCurrentTab() != null) {
+					mainGUI.getCurrentTab().sortDocument(SortOrder.REVERSE);
+				}
+			}
+		});
+		edit.add(reverseDocument);
+
 		JMenuItem sortSelectedLinesAlph = new JMenuItem("Sort Selected Lines Alphabetically");
 		sortSelectedLinesAlph.addActionListener(new ActionListener() {
 			@Override
@@ -820,6 +831,17 @@ public class MainMenu {
 			}
 		});
 		edit.add(sortSelectedLinesNum);
+
+		JMenuItem reverseSelectedLines = new JMenuItem("Reverse Selected Lines");
+		reverseSelectedLines.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (mainGUI.getCurrentTab() != null) {
+					mainGUI.getCurrentTab().sortSelectedLines(SortOrder.REVERSE);
+				}
+			}
+		});
+		edit.add(reverseSelectedLines);
 
 		JMenuItem sortSelectedStringsAlph = new JMenuItem("Sort Selected Strings (\"foo\", \"bar\") Alphabetically");
 		sortSelectedStringsAlph.addActionListener(new ActionListener() {
