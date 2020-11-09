@@ -689,8 +689,17 @@ public class AugFileTab implements FileTab {
 
 		int carPos = fileContentMemo.getCaretPosition();
 
-		int lineStart = StrUtils.getLineStartFromPosition(carPos, sourceCode);
-		int lineEnd = StrUtils.getLineEndFromPosition(carPos, sourceCode);
+		int selStart = highlighter.getSelStart();
+		int selEnd = highlighter.getSelEnd();
+
+		if (selStart > selEnd) {
+			int selMid = selEnd;
+			selEnd = selStart;
+			selStart = selMid;
+		}
+
+		int lineStart = StrUtils.getLineStartFromPosition(selStart, sourceCode);
+		int lineEnd = StrUtils.getLineEndFromPosition(selEnd, sourceCode);
 
 		String insertStr = sourceCode.substring(lineStart, lineEnd);
 		if (!insertStr.startsWith("\n")) {
@@ -718,10 +727,17 @@ public class AugFileTab implements FileTab {
 
 		String sourceCode = fileContentMemo.getText();
 
-		int carPos = fileContentMemo.getCaretPosition();
+		int selStart = highlighter.getSelStart();
+		int selEnd = highlighter.getSelEnd();
 
-		int lineStart = StrUtils.getLineStartFromPosition(carPos, sourceCode);
-		int lineEnd = StrUtils.getLineEndFromPosition(carPos, sourceCode);
+		if (selStart > selEnd) {
+			int selMid = selEnd;
+			selEnd = selStart;
+			selStart = selMid;
+		}
+
+		int lineStart = StrUtils.getLineStartFromPosition(selStart, sourceCode);
+		int lineEnd = StrUtils.getLineEndFromPosition(selEnd, sourceCode);
 
 		// ignore trailing newline
 		if (lineStart > 0) {
@@ -731,10 +747,6 @@ public class AugFileTab implements FileTab {
 		sourceCode = sourceCode.substring(0, lineStart) + sourceCode.substring(lineEnd);
 
 		fileContentMemo.setText(sourceCode);
-
-		if (carPos > sourceCode.length()) {
-			carPos = sourceCode.length();
-		}
 
 		// set the caret to the next line (well, to where the next line will be after deleting...)
 		int newPos = lineStart + 1;
