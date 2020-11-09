@@ -1244,7 +1244,7 @@ public class MainMenu {
 
 		conversions.addSeparator();
 
-		JMenuItem hexenc = new JMenuItem("Hex encode");
+		JMenuItem hexenc = new JMenuItem("Hex encode text");
 		addTextModificationAction(hexenc, new StringModifier() {
 			@Override
 			public String modify(String str) {
@@ -1253,7 +1253,7 @@ public class MainMenu {
 		});
 		conversions.add(hexenc);
 
-		JMenuItem hexdec = new JMenuItem("Hex decode");
+		JMenuItem hexdec = new JMenuItem("Hex decode text");
 		addTextModificationAction(hexdec, new StringModifier() {
 			@Override
 			public String modify(String str) {
@@ -1261,6 +1261,24 @@ public class MainMenu {
 			}
 		});
 		conversions.add(hexdec);
+
+		JMenuItem hexencnum = new JMenuItem("Hex encode number");
+		addTextModificationAction(hexencnum, new StringModifier() {
+			@Override
+			public String modify(String str) {
+				return HexEncoder.encodeNumberToHex(StrUtils.strToInt(str));
+			}
+		});
+		conversions.add(hexencnum);
+
+		JMenuItem hexdecnum = new JMenuItem("Hex decode number");
+		addTextModificationAction(hexdecnum, new StringModifier() {
+			@Override
+			public String modify(String str) {
+				return "" + HexDecoder.decodeNumber(str);
+			}
+		});
+		conversions.add(hexdecnum);
 
 		conversions.addSeparator();
 
