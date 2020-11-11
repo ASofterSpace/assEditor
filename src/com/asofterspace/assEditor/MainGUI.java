@@ -100,6 +100,7 @@ public class MainGUI extends MainWindow {
 	private final static String CONFIG_KEY_REORGANIZE_IMPORTS_ON_SAVE = "onSaveReorganizeImports";
 	private final static String CONFIG_KEY_REORGANIZE_IMPORTS_ON_SAVE_COMPATIBLE = "onSaveReorganizeImportsCompatible";
 	private final static String CONFIG_KEY_REMOVE_UNUSED_IMPORTS_ON_SAVE = "onSaveRemoveUnusedImports";
+	private final static String CONFIG_KEY_AUTOMAGICALLY_ADD_SEMICOLONS_ON_SAVE = "onSaveAutomagicallyAddSemicolons";
 	private final static String CONFIG_KEY_COPY_ON_ENTER = "copyOnEnter";
 	private final static String CONFIG_KEY_TAB_ENTIRE_BLOCKS = "tabEntireBlocks";
 	private final static String CONFIG_KEY_PROPOSE_TOKEN_AUTO_COMPLETE = "proposeTokenAutoComplete";
@@ -142,6 +143,7 @@ public class MainGUI extends MainWindow {
 	Boolean reorganizeImportsOnSave;
 	Boolean reorganizeImportsOnSaveCompatible;
 	Boolean removeUnusedImportsOnSave;
+	Boolean automagicallyAddSemicolonsOnSave;
 	Boolean copyOnEnter;
 	Boolean tabEntireBlocks;
 	Boolean proposeTokenAutoComplete;
@@ -269,6 +271,8 @@ public class MainGUI extends MainWindow {
 		reorganizeImportsOnSaveCompatible = configuration.getBoolean(CONFIG_KEY_REORGANIZE_IMPORTS_ON_SAVE_COMPATIBLE, true);
 
 		removeUnusedImportsOnSave = configuration.getBoolean(CONFIG_KEY_REMOVE_UNUSED_IMPORTS_ON_SAVE, true);
+
+		automagicallyAddSemicolonsOnSave = configuration.getBoolean(CONFIG_KEY_AUTOMAGICALLY_ADD_SEMICOLONS_ON_SAVE, true);
 
 		copyOnEnter = configuration.getBoolean(CONFIG_KEY_COPY_ON_ENTER, true);
 
@@ -1520,6 +1524,28 @@ public class MainGUI extends MainWindow {
 		mainMenu.removeUnusedImportsOnSaveItem.setSelected(setTo);
 	}
 
+	public boolean getAutomagicallyAddSemicolonsOnSave() {
+		return automagicallyAddSemicolonsOnSave;
+	}
+
+	public void setAutomagicallyAddSemicolonsOnSave(Boolean setTo) {
+
+		if (setTo == null) {
+			setTo = true;
+		}
+
+		automagicallyAddSemicolonsOnSave = setTo;
+
+		Record activeWorkspace = augFileCtrl.getActiveWorkspace();
+		if (activeWorkspace != null) {
+			activeWorkspace.set(CONFIG_KEY_AUTOMAGICALLY_ADD_SEMICOLONS_ON_SAVE, automagicallyAddSemicolonsOnSave);
+		}
+
+		configuration.set(CONFIG_KEY_AUTOMAGICALLY_ADD_SEMICOLONS_ON_SAVE, automagicallyAddSemicolonsOnSave);
+
+		mainMenu.automagicallyAddSemicolonsOnSaveItem.setSelected(setTo);
+	}
+
 	public String getDefaultIndent() {
 		return defaultIndentationStr;
 	}
@@ -2061,6 +2087,7 @@ public class MainGUI extends MainWindow {
 		setReorganizeImportsOnSave(activeWorkspace.getBoolean(CONFIG_KEY_REORGANIZE_IMPORTS_ON_SAVE, reorganizeImportsOnSave));
 		setReorganizeImportsOnSaveCompatible(activeWorkspace.getBoolean(CONFIG_KEY_REORGANIZE_IMPORTS_ON_SAVE_COMPATIBLE, reorganizeImportsOnSaveCompatible));
 		setRemoveUnusedImportsOnSave(activeWorkspace.getBoolean(CONFIG_KEY_REMOVE_UNUSED_IMPORTS_ON_SAVE, removeUnusedImportsOnSave));
+		setAutomagicallyAddSemicolonsOnSave(activeWorkspace.getBoolean(CONFIG_KEY_AUTOMAGICALLY_ADD_SEMICOLONS_ON_SAVE, automagicallyAddSemicolonsOnSave));
 
 		refreshTitleBar();
 	}

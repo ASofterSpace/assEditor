@@ -89,6 +89,7 @@ public class MainMenu {
 	JCheckBoxMenuItem reorganizeImportsOnSaveItem;
 	JCheckBoxMenuItem reorganizeImportsOnSaveCompatibleItem;
 	JCheckBoxMenuItem removeUnusedImportsOnSaveItem;
+	JCheckBoxMenuItem automagicallyAddSemicolonsOnSaveItem;
 	JCheckBoxMenuItem copyOnEnterItem;
 	JCheckBoxMenuItem usingUTF8WithBOM;
 	JCheckBoxMenuItem usingUTF8WithoutBOM;
@@ -698,83 +699,6 @@ public class MainMenu {
 		});
 		edit.add(removeLineNumbers);
 
-		JMenuItem removeTrailWhitespace = new JMenuItem("Remove Trailing Whitespace");
-		removeTrailWhitespace.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				if (mainGUI.getCurrentTab() != null) {
-					mainGUI.getCurrentTab().removeTrailingWhitespace();
-				}
-			}
-		});
-		edit.add(removeTrailWhitespace);
-
-		JMenuItem repWhitespacesWithTabs = new JMenuItem("Replace Leading Whitespaces with Tabs");
-		repWhitespacesWithTabs.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				if (mainGUI.getCurrentTab() != null) {
-					mainGUI.getCurrentTab().replaceLeadingWhitespacesWithTabs();
-				}
-			}
-		});
-		edit.add(repWhitespacesWithTabs);
-
-		JMenuItem repTabsWithWhitespaces = new JMenuItem("Replace Leading Tabs with Whitespaces");
-		repTabsWithWhitespaces.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				if (mainGUI.getCurrentTab() != null) {
-					mainGUI.getCurrentTab().replaceLeadingTabsWithWhitespaces();
-				}
-			}
-		});
-		edit.add(repTabsWithWhitespaces);
-
-		JMenuItem addMissingImports = new JMenuItem("Add Missing Imports");
-		addMissingImports.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				if (mainGUI.getCurrentTab() != null) {
-					mainGUI.getCurrentTab().addMissingImports();
-				}
-			}
-		});
-		edit.add(addMissingImports);
-
-		JMenuItem reorgImports = new JMenuItem("Reorganize Imports (Normal)");
-		reorgImports.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				if (mainGUI.getCurrentTab() != null) {
-					mainGUI.getCurrentTab().reorganizeImports();
-				}
-			}
-		});
-		edit.add(reorgImports);
-
-		JMenuItem reorgImportsCompatible = new JMenuItem("Reorganize Imports (Compatibile with Wonky IDEs)");
-		reorgImportsCompatible.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				if (mainGUI.getCurrentTab() != null) {
-					mainGUI.getCurrentTab().reorganizeImportsCompatible();
-				}
-			}
-		});
-		edit.add(reorgImportsCompatible);
-
-		JMenuItem removeUnusedImports = new JMenuItem("Remove Unused Imports");
-		removeUnusedImports.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				if (mainGUI.getCurrentTab() != null) {
-					mainGUI.getCurrentTab().removeUnusedImports();
-				}
-			}
-		});
-		edit.add(removeUnusedImports);
-
 		edit.addSeparator();
 
 		JMenuItem sortDocumentAlph = new JMenuItem("Sort Entire Document Alphabetically");
@@ -979,6 +903,96 @@ public class MainMenu {
 			}
 		});
 		code.add(removeXmlTags);
+
+		code.addSeparator();
+
+		JMenuItem removeTrailWhitespace = new JMenuItem("Remove Trailing Whitespace");
+		removeTrailWhitespace.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (mainGUI.getCurrentTab() != null) {
+					mainGUI.getCurrentTab().removeTrailingWhitespace();
+				}
+			}
+		});
+		code.add(removeTrailWhitespace);
+
+		JMenuItem repWhitespacesWithTabs = new JMenuItem("Replace Leading Whitespaces with Tabs");
+		repWhitespacesWithTabs.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (mainGUI.getCurrentTab() != null) {
+					mainGUI.getCurrentTab().replaceLeadingWhitespacesWithTabs();
+				}
+			}
+		});
+		code.add(repWhitespacesWithTabs);
+
+		JMenuItem repTabsWithWhitespaces = new JMenuItem("Replace Leading Tabs with Whitespaces");
+		repTabsWithWhitespaces.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (mainGUI.getCurrentTab() != null) {
+					mainGUI.getCurrentTab().replaceLeadingTabsWithWhitespaces();
+				}
+			}
+		});
+		code.add(repTabsWithWhitespaces);
+
+		JMenuItem addMissingImports = new JMenuItem("Add Missing Imports");
+		addMissingImports.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (mainGUI.getCurrentTab() != null) {
+					mainGUI.getCurrentTab().addMissingImports();
+				}
+			}
+		});
+		code.add(addMissingImports);
+
+		JMenuItem reorgImports = new JMenuItem("Reorganize Imports (Normal)");
+		reorgImports.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (mainGUI.getCurrentTab() != null) {
+					mainGUI.getCurrentTab().reorganizeImports();
+				}
+			}
+		});
+		code.add(reorgImports);
+
+		JMenuItem reorgImportsCompatible = new JMenuItem("Reorganize Imports (Compatibile with Wonky IDEs)");
+		reorgImportsCompatible.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (mainGUI.getCurrentTab() != null) {
+					mainGUI.getCurrentTab().reorganizeImportsCompatible();
+				}
+			}
+		});
+		code.add(reorgImportsCompatible);
+
+		JMenuItem removeUnusedImports = new JMenuItem("Remove Unused Imports");
+		removeUnusedImports.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (mainGUI.getCurrentTab() != null) {
+					mainGUI.getCurrentTab().removeUnusedImports();
+				}
+			}
+		});
+		code.add(removeUnusedImports);
+
+		JMenuItem automagicallyAddSemicolons = new JMenuItem("Automagically Add Semicolons to Line Ends");
+		automagicallyAddSemicolons.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (mainGUI.getCurrentTab() != null) {
+					mainGUI.getCurrentTab().automagicallyAddSemicolons();
+				}
+			}
+		});
+		code.add(automagicallyAddSemicolons);
 
 		code.addSeparator();
 
@@ -1683,6 +1697,16 @@ public class MainMenu {
 		mainGUI.setRemoveUnusedImportsOnSave(mainGUI.getRemoveUnusedImportsOnSave());
 		settings.add(removeUnusedImportsOnSaveItem);
 
+		automagicallyAddSemicolonsOnSaveItem = new JCheckBoxMenuItem("Automagically Add Semicolons to Line Ends on Save");
+		automagicallyAddSemicolonsOnSaveItem.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				mainGUI.setAutomagicallyAddSemicolonsOnSave(!mainGUI.getAutomagicallyAddSemicolonsOnSave());
+			}
+		});
+		mainGUI.setAutomagicallyAddSemicolonsOnSave(mainGUI.getAutomagicallyAddSemicolonsOnSave());
+		settings.add(automagicallyAddSemicolonsOnSaveItem);
+
 		JMenuItem toggleAllSwitchesInGroup = new JMenuItem("Toggle All 'On Save' Switches On / Off");
 		toggleAllSwitchesInGroup.addActionListener(new ActionListener() {
 			@Override
@@ -1695,6 +1719,7 @@ public class MainMenu {
 				mainGUI.setReorganizeImportsOnSave(toggleTo);
 				mainGUI.setReorganizeImportsOnSaveCompatible(false);
 				mainGUI.setRemoveUnusedImportsOnSave(toggleTo);
+				mainGUI.setAutomagicallyAddSemicolonsOnSave(toggleTo);
 			}
 		});
 		settings.add(toggleAllSwitchesInGroup);

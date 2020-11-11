@@ -1211,6 +1211,11 @@ public class AugFileTab implements FileTab {
 				contentText = removeTrailingWhitespace(contentText);
 			}
 
+			if (mainGUI.automagicallyAddSemicolonsOnSave) {
+
+				contentText = highlighter.automagicallyAddSemicolons(contentText);
+			}
+
 			fileContentMemo.setText(contentText);
 
 			if (origCaretPos > contentText.length()) {
@@ -1249,6 +1254,11 @@ public class AugFileTab implements FileTab {
 	public void removeUnusedImports() {
 
 		highlighter.removeUnusedImports();
+	}
+
+	public void automagicallyAddSemicolons() {
+
+		highlighter.automagicallyAddSemicolons();
 	}
 
 	public void sortDocument(SortOrder order) {
