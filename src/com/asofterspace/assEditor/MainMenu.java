@@ -482,199 +482,6 @@ public class MainMenu {
 		});
 		edit.add(upCurWord);
 
-		JMenu indentSelection = new JMenu("Indent Current Selection");
-		edit.add(indentSelection);
-
-		JMenuItem indentByTab = new JMenuItem("By Tab");
-		indentByTab.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				if (mainGUI.getCurrentTab() != null) {
-					mainGUI.getCurrentTab().indentSelection("\t");
-				}
-			}
-		});
-		indentSelection.add(indentByTab);
-
-		JMenuItem indentByTwoTabs = new JMenuItem("By 2 Tabs");
-		indentByTwoTabs.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				if (mainGUI.getCurrentTab() != null) {
-					mainGUI.getCurrentTab().indentSelection("\t\t");
-				}
-			}
-		});
-		indentSelection.add(indentByTwoTabs);
-
-		JMenuItem indentByFourTabs = new JMenuItem("By 4 Tabs");
-		indentByFourTabs.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				if (mainGUI.getCurrentTab() != null) {
-					mainGUI.getCurrentTab().indentSelection("\t\t\t\t");
-				}
-			}
-		});
-		indentSelection.add(indentByFourTabs);
-
-		JMenuItem indentByEightTabs = new JMenuItem("By 8 Tabs");
-		indentByEightTabs.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				if (mainGUI.getCurrentTab() != null) {
-					mainGUI.getCurrentTab().indentSelection("\t\t\t\t\t\t\t\t");
-				}
-			}
-		});
-		indentSelection.add(indentByEightTabs);
-
-		JMenuItem indentBySpace = new JMenuItem("By Space");
-		indentBySpace.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				if (mainGUI.getCurrentTab() != null) {
-					mainGUI.getCurrentTab().indentSelection(" ");
-				}
-			}
-		});
-		indentSelection.add(indentBySpace);
-
-		JMenuItem indentByTwoSpaces = new JMenuItem("By 2 Spaces");
-		indentByTwoSpaces.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				if (mainGUI.getCurrentTab() != null) {
-					mainGUI.getCurrentTab().indentSelection("  ");
-				}
-			}
-		});
-		indentSelection.add(indentByTwoSpaces);
-
-		JMenuItem indentByFourSpaces = new JMenuItem("By 4 Spaces");
-		indentByFourSpaces.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				if (mainGUI.getCurrentTab() != null) {
-					mainGUI.getCurrentTab().indentSelection("    ");
-				}
-			}
-		});
-		indentSelection.add(indentByFourSpaces);
-
-		JMenuItem indentByEightSpaces = new JMenuItem("By 8 Spaces");
-		indentByEightSpaces.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				if (mainGUI.getCurrentTab() != null) {
-					mainGUI.getCurrentTab().indentSelection("        ");
-				}
-			}
-		});
-		indentSelection.add(indentByEightSpaces);
-
-		JMenu unindentSelection = new JMenu("Unindent Current Selection");
-		edit.add(unindentSelection);
-
-		JMenuItem unindentOneLevel = new JMenuItem("One Level");
-		unindentOneLevel.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				if (mainGUI.getCurrentTab() != null) {
-					mainGUI.getCurrentTab().unindentSelection(1, false);
-				}
-			}
-		});
-		unindentSelection.add(unindentOneLevel);
-
-		JMenuItem unindentTwoLevels = new JMenuItem("2 Levels");
-		unindentTwoLevels.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				if (mainGUI.getCurrentTab() != null) {
-					mainGUI.getCurrentTab().unindentSelection(2, false);
-				}
-			}
-		});
-		unindentSelection.add(unindentTwoLevels);
-
-		JMenuItem unindentFourLevels = new JMenuItem("4 Levels");
-		unindentFourLevels.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				if (mainGUI.getCurrentTab() != null) {
-					mainGUI.getCurrentTab().unindentSelection(4, false);
-				}
-			}
-		});
-		unindentSelection.add(unindentFourLevels);
-
-		JMenuItem unindentEightLevels = new JMenuItem("8 Levels");
-		unindentEightLevels.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				if (mainGUI.getCurrentTab() != null) {
-					mainGUI.getCurrentTab().unindentSelection(8, false);
-				}
-			}
-		});
-		unindentSelection.add(unindentEightLevels);
-
-		JMenuItem unindentAllLevels = new JMenuItem("All Levels");
-		unindentAllLevels.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				if (mainGUI.getCurrentTab() != null) {
-					mainGUI.getCurrentTab().unindentSelection(Integer.MAX_VALUE, false);
-				}
-			}
-		});
-		unindentSelection.add(unindentAllLevels);
-
-		JMenuItem forceUnindentOneLevel = new JMenuItem("Force Unindent One Level");
-		forceUnindentOneLevel.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				if (mainGUI.getCurrentTab() != null) {
-					mainGUI.getCurrentTab().unindentSelection(1, true);
-				}
-			}
-		});
-		unindentSelection.add(forceUnindentOneLevel);
-
-		JMenuItem forceUnindentTwoLevels = new JMenuItem("Force Unindent 2 Levels");
-		forceUnindentTwoLevels.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				if (mainGUI.getCurrentTab() != null) {
-					mainGUI.getCurrentTab().unindentSelection(2, true);
-				}
-			}
-		});
-		unindentSelection.add(forceUnindentTwoLevels);
-
-		JMenuItem forceUnindentFourLevels = new JMenuItem("Force Unindent 4 Levels");
-		forceUnindentFourLevels.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				if (mainGUI.getCurrentTab() != null) {
-					mainGUI.getCurrentTab().unindentSelection(4, true);
-				}
-			}
-		});
-		unindentSelection.add(forceUnindentFourLevels);
-
-		JMenuItem forceUnindentEightLevels = new JMenuItem("Force Unindent 8 Levels");
-		forceUnindentEightLevels.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				if (mainGUI.getCurrentTab() != null) {
-					mainGUI.getCurrentTab().unindentSelection(8, true);
-				}
-			}
-		});
-		unindentSelection.add(forceUnindentEightLevels);
-
 		edit.addSeparator();
 
 		JMenuItem writeLineNumbers = new JMenuItem("Write Line Numbers in Front of Each Line");
@@ -870,6 +677,317 @@ public class MainMenu {
 			}
 		});
 		code.add(addEquals);
+
+		code.addSeparator();
+
+		JMenu indentSelection = new JMenu("Indent Current Selection");
+		code.add(indentSelection);
+
+		JMenuItem indentByTab = new JMenuItem("By Tab");
+		indentByTab.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (mainGUI.getCurrentTab() != null) {
+					mainGUI.getCurrentTab().indentSelection("\t");
+				}
+			}
+		});
+		indentSelection.add(indentByTab);
+
+		JMenuItem indentByTwoTabs = new JMenuItem("By 2 Tabs");
+		indentByTwoTabs.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (mainGUI.getCurrentTab() != null) {
+					mainGUI.getCurrentTab().indentSelection("\t\t");
+				}
+			}
+		});
+		indentSelection.add(indentByTwoTabs);
+
+		JMenuItem indentByFourTabs = new JMenuItem("By 4 Tabs");
+		indentByFourTabs.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (mainGUI.getCurrentTab() != null) {
+					mainGUI.getCurrentTab().indentSelection("\t\t\t\t");
+				}
+			}
+		});
+		indentSelection.add(indentByFourTabs);
+
+		JMenuItem indentByEightTabs = new JMenuItem("By 8 Tabs");
+		indentByEightTabs.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (mainGUI.getCurrentTab() != null) {
+					mainGUI.getCurrentTab().indentSelection("\t\t\t\t\t\t\t\t");
+				}
+			}
+		});
+		indentSelection.add(indentByEightTabs);
+
+		JMenuItem indentBySpace = new JMenuItem("By Space");
+		indentBySpace.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (mainGUI.getCurrentTab() != null) {
+					mainGUI.getCurrentTab().indentSelection(" ");
+				}
+			}
+		});
+		indentSelection.add(indentBySpace);
+
+		JMenuItem indentByTwoSpaces = new JMenuItem("By 2 Spaces");
+		indentByTwoSpaces.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (mainGUI.getCurrentTab() != null) {
+					mainGUI.getCurrentTab().indentSelection("  ");
+				}
+			}
+		});
+		indentSelection.add(indentByTwoSpaces);
+
+		JMenuItem indentByFourSpaces = new JMenuItem("By 4 Spaces");
+		indentByFourSpaces.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (mainGUI.getCurrentTab() != null) {
+					mainGUI.getCurrentTab().indentSelection("    ");
+				}
+			}
+		});
+		indentSelection.add(indentByFourSpaces);
+
+		JMenuItem indentByEightSpaces = new JMenuItem("By 8 Spaces");
+		indentByEightSpaces.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (mainGUI.getCurrentTab() != null) {
+					mainGUI.getCurrentTab().indentSelection("        ");
+				}
+			}
+		});
+		indentSelection.add(indentByEightSpaces);
+
+		JMenu unindentSelection = new JMenu("Unindent Current Selection");
+		code.add(unindentSelection);
+
+		JMenuItem unindentOneLevel = new JMenuItem("One Level");
+		unindentOneLevel.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (mainGUI.getCurrentTab() != null) {
+					mainGUI.getCurrentTab().unindentSelection(1, false);
+				}
+			}
+		});
+		unindentSelection.add(unindentOneLevel);
+
+		JMenuItem unindentTwoLevels = new JMenuItem("2 Levels");
+		unindentTwoLevels.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (mainGUI.getCurrentTab() != null) {
+					mainGUI.getCurrentTab().unindentSelection(2, false);
+				}
+			}
+		});
+		unindentSelection.add(unindentTwoLevels);
+
+		JMenuItem unindentFourLevels = new JMenuItem("4 Levels");
+		unindentFourLevels.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (mainGUI.getCurrentTab() != null) {
+					mainGUI.getCurrentTab().unindentSelection(4, false);
+				}
+			}
+		});
+		unindentSelection.add(unindentFourLevels);
+
+		JMenuItem unindentEightLevels = new JMenuItem("8 Levels");
+		unindentEightLevels.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (mainGUI.getCurrentTab() != null) {
+					mainGUI.getCurrentTab().unindentSelection(8, false);
+				}
+			}
+		});
+		unindentSelection.add(unindentEightLevels);
+
+		JMenuItem unindentAllLevels = new JMenuItem("All Levels");
+		unindentAllLevels.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (mainGUI.getCurrentTab() != null) {
+					mainGUI.getCurrentTab().unindentSelection(Integer.MAX_VALUE, false);
+				}
+			}
+		});
+		unindentSelection.add(unindentAllLevels);
+
+		JMenuItem forceUnindentOneLevel = new JMenuItem("Force Unindent One Level");
+		forceUnindentOneLevel.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (mainGUI.getCurrentTab() != null) {
+					mainGUI.getCurrentTab().unindentSelection(1, true);
+				}
+			}
+		});
+		unindentSelection.add(forceUnindentOneLevel);
+
+		JMenuItem forceUnindentTwoLevels = new JMenuItem("Force Unindent 2 Levels");
+		forceUnindentTwoLevels.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (mainGUI.getCurrentTab() != null) {
+					mainGUI.getCurrentTab().unindentSelection(2, true);
+				}
+			}
+		});
+		unindentSelection.add(forceUnindentTwoLevels);
+
+		JMenuItem forceUnindentFourLevels = new JMenuItem("Force Unindent 4 Levels");
+		forceUnindentFourLevels.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (mainGUI.getCurrentTab() != null) {
+					mainGUI.getCurrentTab().unindentSelection(4, true);
+				}
+			}
+		});
+		unindentSelection.add(forceUnindentFourLevels);
+
+		JMenuItem forceUnindentEightLevels = new JMenuItem("Force Unindent 8 Levels");
+		forceUnindentEightLevels.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (mainGUI.getCurrentTab() != null) {
+					mainGUI.getCurrentTab().unindentSelection(8, true);
+				}
+			}
+		});
+		unindentSelection.add(forceUnindentEightLevels);
+
+		JMenuItem commentUsingSlashSlash = new JMenuItem("Comment Out Selection Using //");
+		addTextModificationAction(commentUsingSlashSlash, new StringModifier() {
+			@Override
+			public String modify(String str) {
+				String[] linesIn = str.split("\n");
+				List<String> lines = new ArrayList<>();
+				for (String line : linesIn) {
+					if (line.trim().length() > 0) {
+						String whitespace = "";
+						int i = 0;
+						for (; i < line.length(); i++) {
+							char c = line.charAt(i);
+							if ((c == ' ') || (c == '\t')) {
+								whitespace += c;
+							} else {
+								break;
+							}
+						}
+						line = whitespace + "// " + line.substring(i);
+					}
+					lines.add(line);
+				}
+				return StrUtils.join("\n", lines);
+			}
+		});
+		code.add(commentUsingSlashSlash);
+
+		JMenuItem commentUsingHash = new JMenuItem("Comment Out Selection Using #");
+		addTextModificationAction(commentUsingHash, new StringModifier() {
+			@Override
+			public String modify(String str) {
+				String[] linesIn = str.split("\n");
+				List<String> lines = new ArrayList<>();
+				for (String line : linesIn) {
+					if (line.trim().length() > 0) {
+						String whitespace = "";
+						int i = 0;
+						for (; i < line.length(); i++) {
+							char c = line.charAt(i);
+							if ((c == ' ') || (c == '\t')) {
+								whitespace += c;
+							} else {
+								break;
+							}
+						}
+						line = whitespace + "# " + line.substring(i);
+					}
+					lines.add(line);
+				}
+				return StrUtils.join("\n", lines);
+			}
+		});
+		code.add(commentUsingHash);
+
+		JMenuItem uncommentUsingSlashSlash = new JMenuItem("Un-Comment Selection Using //");
+		addTextModificationAction(uncommentUsingSlashSlash, new StringModifier() {
+			@Override
+			public String modify(String str) {
+				String[] linesIn = str.split("\n");
+				List<String> lines = new ArrayList<>();
+				for (String line : linesIn) {
+					if (line.trim().length() > 0) {
+						String whitespace = "";
+						int i = 0;
+						for (; i < line.length(); i++) {
+							char c = line.charAt(i);
+							if ((c == ' ') || (c == '\t')) {
+								whitespace += c;
+							} else {
+								break;
+							}
+						}
+						if (line.substring(i).startsWith("// ")) {
+							line = whitespace + line.substring(i + 3);
+						} else if (line.substring(i).startsWith("//")) {
+							line = whitespace + line.substring(i + 2);
+						}
+					}
+					lines.add(line);
+				}
+				return StrUtils.join("\n", lines);
+			}
+		});
+		code.add(uncommentUsingSlashSlash);
+
+		JMenuItem uncommentUsingHash = new JMenuItem("Un-Comment Selection Using #");
+		addTextModificationAction(uncommentUsingHash, new StringModifier() {
+			@Override
+			public String modify(String str) {
+				String[] linesIn = str.split("\n");
+				List<String> lines = new ArrayList<>();
+				for (String line : linesIn) {
+					if (line.trim().length() > 0) {
+						String whitespace = "";
+						int i = 0;
+						for (; i < line.length(); i++) {
+							char c = line.charAt(i);
+							if ((c == ' ') || (c == '\t')) {
+								whitespace += c;
+							} else {
+								break;
+							}
+						}
+						if (line.substring(i).startsWith("# ")) {
+							line = whitespace + line.substring(i + 2);
+						} else if (line.substring(i).startsWith("#")) {
+							line = whitespace + line.substring(i + 1);
+						}
+					}
+					lines.add(line);
+				}
+				return StrUtils.join("\n", lines);
+			}
+		});
+		code.add(uncommentUsingHash);
 
 		code.addSeparator();
 
