@@ -36,32 +36,6 @@ public class AssEditor {
 	private final static List<FancyCodeEditor> wantStamps = new ArrayList<>();
 
 
-	/**
-	 * TODO:
-	 * enable stats at the bottom
-	 * add highlighting for datex
-	 * enable hex view
-	 * add compiler call, and report results
-	 * ask to save before closing if files are unsaved
-	 * replace also including newlines etc.! (so have a little button next to the search bar which shows either "text matching" or "extended (\n, \r, \t)")
-	 * let user remove and reorder workspaces
-	 * not only call resizeNameLabel() in the AugFileTab.show(), but also in an onResize event!
-	 * show "changemark *" at the top also
-	 * disable "reorganize imports" in the menu when the highlighter does not support it
-	 * add git diff as another file type (for .diff and .patch)
-	 * add a context menu popup to the AugFileTab's code editor (e.g. for undo + redo also there, cut copy paste, etc.)
-	 * only show undo and redo enabled when undoing / redoing curly possible
-	 * get redo to actually work 100% properly ;)
-	 * when showing functions on the right, highlight whichever one we are curly inside
-	 * when we are saving the test_rest.sh file, if there is no trailing newline, a " is added ON SAVE... fix that!
-	 * show (and allow us to change) whether Windows or Unix line endings are used
-	 * make scroll speed configurable (currently set to 99 in the AugFileTab)
-	 * when opening file through ctrl click, first search in all currently open folders - not just the folder of the current AugFileTab (so that we get Toolbox stuff more likely e.g.)
-	 * also allow importing workspaces
-	 * let the text oscillate its colors by re-assigning the attributes in the Code class? :)
-	 * only refresh the Code Editor once all the character attributes have been set...
-	 * (just setting a switch to return from the paintComponent call in the CodeEditor class does work somewhat-ly...)
-	 */
 	public static void main(String[] args) {
 
 		// let the Utils know in what program it is being used
