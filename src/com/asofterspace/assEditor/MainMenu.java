@@ -677,7 +677,7 @@ public class MainMenu {
 			}
 		});
 		code.add(addEquals);
-/*
+
 		JMenuItem extractString = new JMenuItem("Extract String with Cursor inside into Constant Field");
 		extractString.addActionListener(new ActionListener() {
 			@Override
@@ -688,7 +688,7 @@ public class MainMenu {
 			}
 		});
 		code.add(extractString);
-*/
+
 		code.addSeparator();
 
 		JMenu indentSelection = new JMenu("Indent Current Selection");

@@ -948,6 +948,11 @@ public class AugFileTab implements FileTab {
 		highlighter.unindentSelection(levelAmount, forceUnindent, unindentWithWhat);
 	}
 
+	public void extractString() {
+
+		highlighter.extractString();
+	}
+
 	private void setCaretPos(int newSelStart, int newSelEnd) {
 
 		fileContentMemo.setCaretPosition(newSelStart);
