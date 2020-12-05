@@ -943,9 +943,9 @@ public class AugFileTab implements FileTab {
 		highlighter.indentSelection(indentWithWhat);
 	}
 
-	public void unindentSelection(int levelAmount, boolean forceUnindent) {
+	public void unindentSelection(int levelAmount, boolean forceUnindent, String unindentWithWhat) {
 
-		highlighter.unindentSelection(levelAmount, forceUnindent);
+		highlighter.unindentSelection(levelAmount, forceUnindent, unindentWithWhat);
 	}
 
 	private void setCaretPos(int newSelStart, int newSelEnd) {

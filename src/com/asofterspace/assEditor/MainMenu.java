@@ -677,7 +677,18 @@ public class MainMenu {
 			}
 		});
 		code.add(addEquals);
-
+/*
+		JMenuItem extractString = new JMenuItem("Extract String with Cursor inside into Constant Field");
+		extractString.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (mainGUI.getCurrentTab() != null) {
+					mainGUI.getCurrentTab().extractString();
+				}
+			}
+		});
+		code.add(extractString);
+*/
 		code.addSeparator();
 
 		JMenu indentSelection = new JMenu("Indent Current Selection");
@@ -779,18 +790,29 @@ public class MainMenu {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (mainGUI.getCurrentTab() != null) {
-					mainGUI.getCurrentTab().unindentSelection(1, false);
+					mainGUI.getCurrentTab().unindentSelection(1, false, null);
 				}
 			}
 		});
 		unindentSelection.add(unindentOneLevel);
+
+		JMenuItem unindentTwoSpaces = new JMenuItem("2 Spaces");
+		unindentTwoSpaces.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (mainGUI.getCurrentTab() != null) {
+					mainGUI.getCurrentTab().unindentSelection(2, false, " ");
+				}
+			}
+		});
+		unindentSelection.add(unindentTwoSpaces);
 
 		JMenuItem unindentTwoLevels = new JMenuItem("2 Levels");
 		unindentTwoLevels.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (mainGUI.getCurrentTab() != null) {
-					mainGUI.getCurrentTab().unindentSelection(2, false);
+					mainGUI.getCurrentTab().unindentSelection(2, false, null);
 				}
 			}
 		});
@@ -801,7 +823,7 @@ public class MainMenu {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (mainGUI.getCurrentTab() != null) {
-					mainGUI.getCurrentTab().unindentSelection(4, false);
+					mainGUI.getCurrentTab().unindentSelection(4, false, null);
 				}
 			}
 		});
@@ -812,7 +834,7 @@ public class MainMenu {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (mainGUI.getCurrentTab() != null) {
-					mainGUI.getCurrentTab().unindentSelection(8, false);
+					mainGUI.getCurrentTab().unindentSelection(8, false, null);
 				}
 			}
 		});
@@ -823,7 +845,7 @@ public class MainMenu {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (mainGUI.getCurrentTab() != null) {
-					mainGUI.getCurrentTab().unindentSelection(Integer.MAX_VALUE, false);
+					mainGUI.getCurrentTab().unindentSelection(Integer.MAX_VALUE, false, null);
 				}
 			}
 		});
@@ -834,7 +856,7 @@ public class MainMenu {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (mainGUI.getCurrentTab() != null) {
-					mainGUI.getCurrentTab().unindentSelection(1, true);
+					mainGUI.getCurrentTab().unindentSelection(1, true, null);
 				}
 			}
 		});
@@ -845,7 +867,7 @@ public class MainMenu {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (mainGUI.getCurrentTab() != null) {
-					mainGUI.getCurrentTab().unindentSelection(2, true);
+					mainGUI.getCurrentTab().unindentSelection(2, true, null);
 				}
 			}
 		});
@@ -856,7 +878,7 @@ public class MainMenu {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (mainGUI.getCurrentTab() != null) {
-					mainGUI.getCurrentTab().unindentSelection(4, true);
+					mainGUI.getCurrentTab().unindentSelection(4, true, null);
 				}
 			}
 		});
@@ -867,7 +889,7 @@ public class MainMenu {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (mainGUI.getCurrentTab() != null) {
-					mainGUI.getCurrentTab().unindentSelection(8, true);
+					mainGUI.getCurrentTab().unindentSelection(8, true, null);
 				}
 			}
 		});
