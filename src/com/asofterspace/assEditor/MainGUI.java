@@ -76,6 +76,7 @@ public class MainGUI extends MainWindow {
 	private AugFileCtrl augFileCtrl;
 	private MainMenu mainMenu;
 	private MainPopupMenu mainPopupMenu;
+	private EditorPopupMenu editorPopupMenu;
 
 	private JPanel mainPanelRight;
 
@@ -335,7 +336,8 @@ public class MainGUI extends MainWindow {
 		mainMenu.createMenu();
 
 		this.mainPopupMenu = new MainPopupMenu(this, mainFrame, standalone);
-		mainPopupMenu.createPopupMenu();
+
+		this.editorPopupMenu = new EditorPopupMenu(this, mainFrame, standalone);
 
 		createMainPanel(mainFrame);
 
@@ -2138,6 +2140,10 @@ public class MainGUI extends MainWindow {
 
 	public MainPopupMenu getMainPopupMenu() {
 		return mainPopupMenu;
+	}
+
+	public EditorPopupMenu getEditorPopupMenu() {
+		return editorPopupMenu;
 	}
 
 }

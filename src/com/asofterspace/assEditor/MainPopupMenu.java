@@ -34,6 +34,9 @@ public class MainPopupMenu {
 	private JMenu moveFilesToWorkspacePopup;
 	private JMenu duplicateFilesToWorkspacePopup;
 
+	private boolean initAugFilesExist = false;
+	private boolean initFileIsSelected = false;
+
 
 	public MainPopupMenu(MainGUI mainGUI, JFrame parent, boolean standalone) {
 
@@ -136,6 +139,8 @@ public class MainPopupMenu {
 		});
 		popupMenu.add(openFolder);
 
+		reEnableDisableMenuItems(initAugFilesExist, initFileIsSelected);
+
 		// don't do the following:
 		//   fileListComponent.setComponentPopupMenu(popupMenu);
 		// instead manually show the popup when the right mouse key is pressed in the mouselistener
@@ -146,20 +151,32 @@ public class MainPopupMenu {
 	}
 
 	public JPopupMenu getPopupMenu() {
+		// lazy initialization - create popup menu when it is first opened
+		if (popupMenu == null) {
+			return createPopupMenu();
+		}
 		return popupMenu;
 	}
 
 	public void reEnableDisableMenuItems(boolean augFilesExist, boolean fileIsSelected) {
-		saveFilePopup.setEnabled(fileIsSelected);
-		deleteFilePopup.setEnabled(fileIsSelected);
-		closeFilePopup.setEnabled(fileIsSelected);
+		initAugFilesExist = augFilesExist;
+		initFileIsSelected = fileIsSelected;
+		if (popupMenu != null) {
+			saveFilePopup.setEnabled(fileIsSelected);
+			deleteFilePopup.setEnabled(fileIsSelected);
+			closeFilePopup.setEnabled(fileIsSelected);
+		}
 	}
 
 	public void refreshWorkspaces() {
 
-		WorkspaceUtils.createWorkspaceMenuEntries(moveFilesToWorkspacePopup, WorkspaceAction.MOVE_FILES, mainGUI);
+		if (moveFilesToWorkspacePopup != null) {
+			WorkspaceUtils.createWorkspaceMenuEntries(moveFilesToWorkspacePopup, WorkspaceAction.MOVE_FILES, mainGUI);
+		}
 
-		WorkspaceUtils.createWorkspaceMenuEntries(duplicateFilesToWorkspacePopup, WorkspaceAction.DUPLICATE_FILES, mainGUI);
+		if (duplicateFilesToWorkspacePopup != null) {
+			WorkspaceUtils.createWorkspaceMenuEntries(duplicateFilesToWorkspacePopup, WorkspaceAction.DUPLICATE_FILES, mainGUI);
+		}
 	}
 
 }

@@ -50,6 +50,7 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
+import javax.swing.JPopupMenu;
 import javax.swing.JRadioButtonMenuItem;
 import javax.swing.KeyStroke;
 
@@ -612,82 +613,7 @@ public class MainMenu {
 		JMenu code = new JMenu("Code");
 		menu.add(code);
 
-		JMenuItem addConstructorJava = new JMenuItem("Add Constructor based on Selected Fields");
-		addConstructorJava.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				if (mainGUI.getCurrentTab() != null) {
-					mainGUI.getCurrentTab().addConstructor();
-				}
-			}
-		});
-		code.add(addConstructorJava);
-
-		JMenuItem addGettersJava = new JMenuItem("Add Getters for Selected Fields");
-		addGettersJava.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				if (mainGUI.getCurrentTab() != null) {
-					mainGUI.getCurrentTab().addGetters();
-				}
-			}
-		});
-		code.add(addGettersJava);
-
-		JMenuItem addSettersJava = new JMenuItem("Add Setters for Selected Fields");
-		addSettersJava.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				if (mainGUI.getCurrentTab() != null) {
-					mainGUI.getCurrentTab().addSetters();
-				}
-			}
-		});
-		code.add(addSettersJava);
-
-		JMenuItem addGettersAndSettersJava = new JMenuItem("Add Getters and Setters for Selected Fields");
-		addGettersAndSettersJava.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				if (mainGUI.getCurrentTab() != null) {
-					mainGUI.getCurrentTab().addGettersAndSetters();
-				}
-			}
-		});
-		code.add(addGettersAndSettersJava);
-
-		JMenuItem addToString = new JMenuItem("Add toString() for Selected Fields");
-		addToString.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				if (mainGUI.getCurrentTab() != null) {
-					mainGUI.getCurrentTab().addToString();
-				}
-			}
-		});
-		code.add(addToString);
-
-		JMenuItem addEquals = new JMenuItem("Add equals() and hashCode() for Selected Fields");
-		addEquals.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				if (mainGUI.getCurrentTab() != null) {
-					mainGUI.getCurrentTab().addEquals();
-				}
-			}
-		});
-		code.add(addEquals);
-
-		JMenuItem extractString = new JMenuItem("Extract String with Cursor inside into Constant Field");
-		extractString.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				if (mainGUI.getCurrentTab() != null) {
-					mainGUI.getCurrentTab().extractString();
-				}
-			}
-		});
-		code.add(extractString);
+		addMainCodeCommands(code);
 
 		code.addSeparator();
 
@@ -2193,5 +2119,99 @@ public class MainMenu {
 				}
 			}
 		});
+	}
+
+	public void addMainCodeCommands(Object menu) {
+
+		JMenuItem addConstructorJava = new JMenuItem("Add Constructor based on Selected Fields");
+		addConstructorJava.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (mainGUI.getCurrentTab() != null) {
+					mainGUI.getCurrentTab().addConstructor();
+				}
+			}
+		});
+
+		JMenuItem addGettersJava = new JMenuItem("Add Getters for Selected Fields");
+		addGettersJava.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (mainGUI.getCurrentTab() != null) {
+					mainGUI.getCurrentTab().addGetters();
+				}
+			}
+		});
+
+		JMenuItem addSettersJava = new JMenuItem("Add Setters for Selected Fields");
+		addSettersJava.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (mainGUI.getCurrentTab() != null) {
+					mainGUI.getCurrentTab().addSetters();
+				}
+			}
+		});
+
+		JMenuItem addGettersAndSettersJava = new JMenuItem("Add Getters and Setters for Selected Fields");
+		addGettersAndSettersJava.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (mainGUI.getCurrentTab() != null) {
+					mainGUI.getCurrentTab().addGettersAndSetters();
+				}
+			}
+		});
+
+		JMenuItem addToString = new JMenuItem("Add toString() for Selected Fields");
+		addToString.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (mainGUI.getCurrentTab() != null) {
+					mainGUI.getCurrentTab().addToString();
+				}
+			}
+		});
+
+		JMenuItem addEquals = new JMenuItem("Add equals() and hashCode() for Selected Fields");
+		addEquals.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (mainGUI.getCurrentTab() != null) {
+					mainGUI.getCurrentTab().addEquals();
+				}
+			}
+		});
+
+		JMenuItem extractString = new JMenuItem("Extract String with Cursor inside into Constant Field");
+		extractString.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (mainGUI.getCurrentTab() != null) {
+					mainGUI.getCurrentTab().extractString();
+				}
+			}
+		});
+
+		// WHY IN THE WORLDS DOES JPOPUP NOT EXTEND JMENU AAAARGHS?!?
+		if (menu instanceof JMenu) {
+			JMenu code = (JMenu) menu;
+			code.add(addConstructorJava);
+			code.add(addGettersJava);
+			code.add(addSettersJava);
+			code.add(addGettersAndSettersJava);
+			code.add(addToString);
+			code.add(addEquals);
+			code.add(extractString);
+		} else {
+			JPopupMenu code = (JPopupMenu) menu;
+			code.add(addConstructorJava);
+			code.add(addGettersJava);
+			code.add(addSettersJava);
+			code.add(addGettersAndSettersJava);
+			code.add(addToString);
+			code.add(addEquals);
+			code.add(extractString);
+		}
 	}
 }

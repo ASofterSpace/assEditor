@@ -177,6 +177,41 @@ public class AugFileTab implements FileTab {
 		fileContentMemo = new CodeEditor();
 		fileContentMemo.enableStartLine(true);
 		fileContentMemo.enableHorzLine(true);
+
+		fileContentMemo.addMouseListener(new MouseListener() {
+
+			@Override
+			public void mouseClicked(MouseEvent e) {
+			}
+
+			@Override
+			public void mousePressed(MouseEvent e) {
+				showPopup(e);
+			}
+
+			@Override
+			public void mouseEntered(MouseEvent e) {
+			}
+
+			@Override
+			public void mouseExited(MouseEvent e) {
+			}
+
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				showPopup(e);
+			}
+
+			private void showPopup(MouseEvent e) {
+				if (e.isPopupTrigger()) {
+					EditorPopupMenu editorPopupMenu = mainGUI.getEditorPopupMenu();
+					editorPopupMenu.setCurrentEditor(fileContentMemo);
+					editorPopupMenu.getPopupMenu().show(fileContentMemo, e.getX(), e.getY());
+				}
+			}
+		});
+
+
 		lineMemo = new CodeEditorLineMemo();
 		lineNumbers = new LineNumbering(lineMemo, fileContentMemo);
 
