@@ -26,6 +26,7 @@ import com.asofterspace.toolbox.coders.Utf8Encoder;
 import com.asofterspace.toolbox.coders.UuidEncoderDecoder;
 import com.asofterspace.toolbox.gui.FileTab;
 import com.asofterspace.toolbox.gui.GuiUtils;
+import com.asofterspace.toolbox.gui.MenuItemForMainMenu;
 import com.asofterspace.toolbox.io.File;
 import com.asofterspace.toolbox.io.HTML;
 import com.asofterspace.toolbox.io.JSON;
@@ -39,6 +40,8 @@ import com.asofterspace.toolbox.utils.TextEncoding;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
@@ -1961,6 +1964,11 @@ public class MainMenu {
 		huh.add(about);
 		menu.add(huh);
 
+		addCharCopyItem("|", menu);
+		addCharCopyItem("0", menu);
+		addCharCopyItem("=", menu);
+		addCharCopyItem("}", menu);
+
 		mainFrame.setJMenuBar(menu);
 
 		return menu;
@@ -2119,6 +2127,21 @@ public class MainMenu {
 				}
 			}
 		});
+	}
+
+	private void addCharCopyItem(String character, JMenuBar menu) {
+
+		MenuItemForMainMenu item = new MenuItemForMainMenu(character);
+		item.addMouseListener(new MouseAdapter() {
+			  public void mouseClicked(MouseEvent e) {
+				AugFileTab tab = mainGUI.getCurrentTab();
+				if (tab != null) {
+					tab.insertText(character);
+				}
+			}
+		});
+
+		menu.add(item);
 	}
 
 	public void addMainCodeCommands(Object menu) {

@@ -845,7 +845,7 @@ public class AugFileTab implements FileTab {
 		sourceCode = sourceCode.substring(0, selStart) + midStr + sourceCode.substring(selEnd);
 
 		fileContentMemo.setText(sourceCode);
-		if (carPos > selStart) {
+		if (carPos >= selStart) {
 			fileContentMemo.setCaretPosition(selStart + midStr.length());
 		} else {
 			fileContentMemo.setCaretPosition(carPos);
