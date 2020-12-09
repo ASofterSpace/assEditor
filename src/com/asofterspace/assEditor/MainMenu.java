@@ -2133,7 +2133,8 @@ public class MainMenu {
 
 		MenuItemForMainMenu item = new MenuItemForMainMenu(character);
 		item.addMouseListener(new MouseAdapter() {
-			  public void mouseClicked(MouseEvent e) {
+			@Override
+			public void mouseClicked(MouseEvent e) {
 				AugFileTab tab = mainGUI.getCurrentTab();
 				if (tab != null) {
 					tab.insertText(character);
