@@ -64,7 +64,7 @@ public class WorkspaceSearchGUI {
 
 		// Populate the window
 		JLabel explanationLabel = new JLabel();
-		explanationLabel.setText("Enter the text you are searching for:");
+		explanationLabel.setText("Enter the text you are searching for - this does NOT ignore capitalization:");
 		searchInWorkspaceDialog.add(explanationLabel, new Arrangement(0, 0, 1.0, 0.0));
 
 		workspaceSearchField = new JTextField();
@@ -138,7 +138,7 @@ public class WorkspaceSearchGUI {
 
 		// Set the preferred size of the dialog
 		int width = 1200;
-		int height = 800;
+		int height = 700;
 		searchInWorkspaceDialog.setSize(width, height);
 		searchInWorkspaceDialog.setPreferredSize(new Dimension(width, height));
 
