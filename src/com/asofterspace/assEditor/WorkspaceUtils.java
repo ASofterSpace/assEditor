@@ -36,49 +36,57 @@ public class WorkspaceUtils {
 			workspaceNames = mainGUI.getAugFileCtrl().getArchivedWorkspaces();
 		}
 
+		// if there are more than 20 workspaces, apply grouping based on first word in the workspace name
+		boolean doGrouping = workspaceNames.size() > 20;
+
 		for (int i = 0; i < workspaceNames.size(); i++) {
+
 			final String workspaceName = workspaceNames.get(i);
-			if (i + 1 < workspaceNames.size()) {
-				final String nextWorkspaceName = workspaceNames.get(i + 1);
-				int wNIndex = workspaceName.indexOf(" ");
-				if (wNIndex < 0) {
-					wNIndex = workspaceName.length();
-				}
-				int nextWNIndex = nextWorkspaceName.indexOf(" ");
-				if (nextWNIndex < 0) {
-					nextWNIndex = nextWorkspaceName.length();
-				}
-				// we want to check that " " is not in the first position (therefore > 0)
-				if ((wNIndex > 0) && (nextWNIndex > 0)) {
-					String workspaceNamePrefix = workspaceName.substring(0, wNIndex);
-					String nextWorkspaceNamePrefix = nextWorkspaceName.substring(0, nextWNIndex);
-					if (workspaceNamePrefix.equals(nextWorkspaceNamePrefix)) {
-						// actually group the workspaces together!
-						JMenu submenu = new JMenu(workspaceNamePrefix);
 
-						for (; i < workspaceNames.size(); i++) {
-							final String innerWorkspaceName = workspaceNames.get(i);
-							if (!(innerWorkspaceName + " ").startsWith(workspaceNamePrefix + " ")) {
-								break;
+			if (doGrouping) {
+				if (i + 1 < workspaceNames.size()) {
+					final String nextWorkspaceName = workspaceNames.get(i + 1);
+					int wNIndex = workspaceName.indexOf(" ");
+					if (wNIndex < 0) {
+						wNIndex = workspaceName.length();
+					}
+					int nextWNIndex = nextWorkspaceName.indexOf(" ");
+					if (nextWNIndex < 0) {
+						nextWNIndex = nextWorkspaceName.length();
+					}
+					// we want to check that " " is not in the first position (therefore > 0)
+					if ((wNIndex > 0) && (nextWNIndex > 0)) {
+						String workspaceNamePrefix = workspaceName.substring(0, wNIndex);
+						String nextWorkspaceNamePrefix = nextWorkspaceName.substring(0, nextWNIndex);
+						if (workspaceNamePrefix.equals(nextWorkspaceNamePrefix)) {
+							// actually group the workspaces together!
+							JMenu submenu = new JMenu(workspaceNamePrefix);
+
+							for (; i < workspaceNames.size(); i++) {
+								final String innerWorkspaceName = workspaceNames.get(i);
+								if (!(innerWorkspaceName + " ").startsWith(workspaceNamePrefix + " ")) {
+									break;
+								}
+								JMenuItem workspace = createWorkspace(innerWorkspaceName, onClickAction, mainGUI);
+								submenu.add(workspace);
+								workspaces.add(workspace);
 							}
-							JMenuItem workspace = createWorkspace(innerWorkspaceName, onClickAction, mainGUI);
-							submenu.add(workspace);
-							workspaces.add(workspace);
+
+							// we break the inner for, then continue the outer for,
+							// so we do a ++ before the next outer for loop,
+							// so we do a -- here to undo that
+							// (or think about it this way: we have two nested loops,
+							// EACH doing i++, but we only want one ++, so we do a --
+							// to counterbalance one of the ++)
+							i--;
+
+							parentElem.add(submenu);
+							continue;
 						}
-
-						// we break the inner for, then continue the outer for,
-						// so we do a ++ before the next outer for loop,
-						// so we do a -- here to undo that
-						// (or think about it this way: we have two nested loops,
-						// EACH doing i++, but we only want one ++, so we do a --
-						// to counterbalance one of the ++)
-						i--;
-
-						parentElem.add(submenu);
-						continue;
 					}
 				}
 			}
+
 			JMenuItem workspace = createWorkspace(workspaceName, onClickAction, mainGUI);
 			parentElem.add(workspace);
 			workspaces.add(workspace);
