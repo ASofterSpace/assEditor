@@ -1237,12 +1237,16 @@ public class MainGUI extends MainWindow {
 			case GuiUtils.LIGHT_SCHEME:
 				Code.setLightSchemeForAllEditors();
 				noteArea.setForeground(Color.black);
+				noteArea.setCaretColor(Color.black);
 				noteArea.setBackground(Color.white);
 				searchField.setForeground(Color.black);
+				searchField.setCaretColor(Color.black);
 				searchField.setBackground(Color.white);
 				jumpToFileField.setForeground(Color.black);
+				jumpToFileField.setCaretColor(Color.black);
 				jumpToFileField.setBackground(Color.white);
 				replaceField.setForeground(Color.black);
+				replaceField.setCaretColor(Color.black);
 				replaceField.setBackground(Color.white);
 				fileListComponent.setForeground(Color.black);
 				fileListComponent.setBackground(Color.white);
@@ -1252,12 +1256,16 @@ public class MainGUI extends MainWindow {
 			case GuiUtils.DARK_SCHEME:
 				Code.setDarkSchemeForAllEditors();
 				noteArea.setForeground(Color.white);
+				noteArea.setCaretColor(Color.white);
 				noteArea.setBackground(Color.black);
 				searchField.setForeground(Color.white);
+				searchField.setCaretColor(Color.white);
 				searchField.setBackground(Color.black);
 				jumpToFileField.setForeground(Color.white);
+				jumpToFileField.setCaretColor(Color.white);
 				jumpToFileField.setBackground(Color.black);
 				replaceField.setForeground(Color.white);
+				replaceField.setCaretColor(Color.white);
 				replaceField.setBackground(Color.black);
 				fileListComponent.setForeground(Color.white);
 				fileListComponent.setBackground(Color.black);
