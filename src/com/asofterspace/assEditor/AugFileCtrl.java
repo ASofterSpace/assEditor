@@ -275,6 +275,20 @@ public class AugFileCtrl {
 
 					CodeLanguage sourceLang = CodeLanguage.getFromString(recFile.getString(CONF_LANGUAGE));
 
+					// if we are in standalone mode...
+					if (STANDALONE_WORKSPACE_NAME.equals(workspace.getString(CONF_WORKSPACE_NAME))) {
+						// ... and have opened a file ...
+						AugFile openFile = null;
+						if (files.size() > 0) {
+							openFile = files.get(files.size() - 1);
+						}
+						if (openFile != null) {
+							// ... then base the code language on that file's name, rather than on what the
+							// configuration for our workspace might say!
+							sourceLang = CodeLanguage.getFromFilename(openFile.getFilename());
+						}
+					}
+
 					curFile.setSourceLanguage(sourceLang);
 
 					curFile.setLastAccessTime(DateUtils.parseDateTime(recFile.getString(CONF_ACCESS_TIME)));
