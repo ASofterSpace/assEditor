@@ -20,6 +20,7 @@ import com.asofterspace.toolbox.io.File;
 import com.asofterspace.toolbox.io.SimpleFile;
 import com.asofterspace.toolbox.io.XML;
 import com.asofterspace.toolbox.utils.Callback;
+import com.asofterspace.toolbox.utils.Pair;
 import com.asofterspace.toolbox.utils.SortOrder;
 import com.asofterspace.toolbox.utils.StringModifier;
 import com.asofterspace.toolbox.utils.StrUtils;
@@ -1106,19 +1107,38 @@ public class AugFileTab implements FileTab {
 
 		lastSearched = searchFor;
 
-		int nextpos = text.indexOf(searchFor, curpos);
-
-		if (nextpos < 0) {
-			nextpos = text.indexOf(searchFor);
-		}
-
-		if (nextpos >= 0) {
-			setCaretPos(nextpos, nextpos + searchFor.length());
-		}
-
+		// search via the highlighter (as it needs to do the search anyway to highlight all the matches)
 		highlighter.setSearchIgnoreCase(mainGUI.getSearchIgnoreCase());
 		highlighter.setSearchUseAsterisk(mainGUI.getSearchAsterisk());
 		highlighter.setSearchStr(searchFor);
+
+		List<Pair<Integer, Integer>> foundSites = highlighter.findSearchSites(text);
+
+		Integer nextpos = null;
+		Integer nextlength = 0;
+
+		for (Pair<Integer, Integer> site : foundSites) {
+
+			int pos = site.getLeft();
+
+			if (pos >= curpos) {
+				nextpos = pos;
+				nextlength = site.getRight();
+				break;
+			}
+		}
+
+		if (nextpos == null) {
+			for (Pair<Integer, Integer> site : foundSites) {
+				nextpos = site.getLeft();
+				nextlength = site.getRight();
+				break;
+			}
+		}
+
+		if (nextpos != null) {
+			setCaretPos(nextpos, nextpos + nextlength);
+		}
 	}
 
 	/**
