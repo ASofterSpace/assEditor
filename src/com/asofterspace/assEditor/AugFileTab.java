@@ -1116,6 +1116,7 @@ public class AugFileTab implements FileTab {
 			setCaretPos(nextpos, nextpos + searchFor.length());
 		}
 
+		highlighter.setSearchIgnoreCase(mainGUI.getSearchIgnoreCase());
 		highlighter.setSearchStr(searchFor);
 	}
 
