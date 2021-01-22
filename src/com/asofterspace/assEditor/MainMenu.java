@@ -1868,7 +1868,7 @@ public class MainMenu {
 		mainGUI.setSearchUseEscapedChars(mainGUI.getSearchUseEscapedChars());
 		settings.add(searchUseEscapedChars);
 
-		searchAsterisk = new JCheckBoxMenuItem("Use * in Search");
+		searchAsterisk = new JCheckBoxMenuItem("Use One * in Search");
 		searchAsterisk.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {

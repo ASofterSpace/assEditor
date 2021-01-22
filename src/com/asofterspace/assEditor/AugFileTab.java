@@ -1242,11 +1242,9 @@ public class AugFileTab implements FileTab {
 
 		String origText = text;
 
-		if (mainGUI.getSearchIgnoreCase()) {
-			text = StrUtils.replaceAllIgnoreCase(text, searchFor, replaceWith);
-		} else {
-			text = StrUtils.replaceAll(text, searchFor, replaceWith);
-		}
+		boolean ignoreCase = mainGUI.getSearchIgnoreCase();
+		boolean useAsterisk = mainGUI.getSearchAsterisk();
+		text = StrUtils.replaceAll(text, searchFor, replaceWith, ignoreCase, useAsterisk);
 
 		boolean foundIt = !text.equals(origText);
 
