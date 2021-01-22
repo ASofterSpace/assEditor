@@ -1173,7 +1173,36 @@ public class AugFileTab implements FileTab {
 			textToSearch = text.toLowerCase();
 		}
 
+		// remove leading and trailing asterisks as they have no impact anyway and would lead
+		// to infinite loops later on
+		if (mainGUI.getSearchAsterisk()) {
+			while (searchFor.startsWith("*")) {
+				searchFor = searchFor.substring(1);
+			}
+			while (searchFor.endsWith("*")) {
+				searchFor = searchFor.substring(0, searchFor.length() - 1);
+			}
+		}
+
+		int asteriskPos = searchFor.indexOf("*");
+
+		String searchForSecond = null;
+
+		if (mainGUI.getSearchAsterisk() && (asteriskPos >= 0)) {
+			searchForSecond = searchFor.substring(asteriskPos + 1);
+			searchFor = searchFor.substring(0, asteriskPos);
+		}
+
+		// nextpos is the position of the first match if there is only one,
+		// of the position of the second match if there are two separated by an asterisk
 		int nextpos = textToSearch.indexOf(searchFor);
+
+		// nextposStart is always the position of the first match
+		int nextposFirst = nextpos;
+
+		if ((searchForSecond != null) && (nextpos >= 0)) {
+			nextpos = textToSearch.indexOf(searchForSecond, nextpos + 1);
+		}
 
 		if (nextpos < 0) {
 			// un-highlight, nothing was found
@@ -1193,10 +1222,20 @@ public class AugFileTab implements FileTab {
 
 		while (nextpos >= 0) {
 
-			int line = StrUtils.getLineNumberFromPosition(nextpos, textToSearch);
+			int newfrom;
+			int newto;
 
-			int newfrom = line - 1;
-			int newto = line + 1;
+			// if we found one result not broken by an asterisk...
+			if (nextpos == nextposFirst) {
+				// ... then report that one result!
+				int line = StrUtils.getLineNumberFromPosition(nextpos, textToSearch);
+				newfrom = line - 1;
+				newto = line + 1;
+			} else {
+				// otherwise, report from the result's start up to its end!
+				newfrom = StrUtils.getLineNumberFromPosition(nextposFirst, textToSearch) - 1;
+				newto = StrUtils.getLineNumberFromPosition(nextpos, textToSearch) + 1;
+			}
 
 			if (newfrom <= oldto) {
 				// let's group matches
@@ -1208,6 +1247,12 @@ public class AugFileTab implements FileTab {
 			}
 
 			nextpos = textToSearch.indexOf(searchFor, nextpos + 1);
+
+			nextposFirst = nextpos;
+
+			if ((searchForSecond != null) && (nextpos >= 0)) {
+				nextpos = textToSearch.indexOf(searchForSecond, nextpos + 1);
+			}
 
 			matchAmount++;
 		}
