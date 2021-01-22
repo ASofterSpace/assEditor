@@ -94,13 +94,15 @@ public class MainMenu {
 	JCheckBoxMenuItem reorganizeImportsOnSaveCompatibleItem;
 	JCheckBoxMenuItem removeUnusedImportsOnSaveItem;
 	JCheckBoxMenuItem automagicallyAddSemicolonsOnSaveItem;
-	JCheckBoxMenuItem copyOnEnterItem;
 	JCheckBoxMenuItem usingUTF8WithBOM;
 	JCheckBoxMenuItem usingUTF8WithoutBOM;
 	JCheckBoxMenuItem usingISOLatin1;
 	JCheckBoxMenuItem tabEntireBlocksItem;
 	JCheckBoxMenuItem proposeTokenAutoCompleteItem;
 	JCheckBoxMenuItem showFilesInTreeItem;
+	JCheckBoxMenuItem searchIgnoreCase;
+	JCheckBoxMenuItem searchUseEscapedChars;
+	JCheckBoxMenuItem searchAsterisk;
 	private JMenuItem close;
 	private List<JMenuItem> codeKindItems;
 	private List<JCheckBoxMenuItem> codeKindItemsCurrent;
@@ -1840,6 +1842,41 @@ public class MainMenu {
 		});
 		mainGUI.setProposeTokenAutoComplete(mainGUI.getProposeTokenAutoComplete());
 		settings.add(proposeTokenAutoCompleteItem);
+
+		settings.addSeparator();
+
+		JMenuItem searchSettings = new JMenuItem("Search Settings:");
+		settings.add(searchSettings);
+
+		searchIgnoreCase = new JCheckBoxMenuItem("Ignore Case in Search");
+		searchIgnoreCase.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				mainGUI.setSearchIgnoreCase(!mainGUI.getSearchIgnoreCase());
+			}
+		});
+		mainGUI.setSearchIgnoreCase(mainGUI.getSearchIgnoreCase());
+		settings.add(searchIgnoreCase);
+
+		searchUseEscapedChars = new JCheckBoxMenuItem("Use \\n, \\r and \\t in Search and Replace");
+		searchUseEscapedChars.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				mainGUI.setSearchUseEscapedChars(!mainGUI.getSearchUseEscapedChars());
+			}
+		});
+		mainGUI.setSearchUseEscapedChars(mainGUI.getSearchUseEscapedChars());
+		settings.add(searchUseEscapedChars);
+
+		searchAsterisk = new JCheckBoxMenuItem("Use * in Search");
+		searchAsterisk.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				mainGUI.setSearchAsterisk(!mainGUI.getSearchAsterisk());
+			}
+		});
+		mainGUI.setSearchAsterisk(mainGUI.getSearchAsterisk());
+		settings.add(searchAsterisk);
 
 		JMenu window = new JMenu("Window");
 

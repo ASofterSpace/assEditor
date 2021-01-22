@@ -1093,6 +1093,17 @@ public class AugFileTab implements FileTab {
 			}
 		}
 
+		if (mainGUI.getSearchUseEscapedChars()) {
+			searchFor = StrUtils.replaceAll(searchFor, "\\n", "\n");
+			searchFor = StrUtils.replaceAll(searchFor, "\\r", "\r");
+			searchFor = StrUtils.replaceAll(searchFor, "\\t", "\t");
+		}
+
+		if (mainGUI.getSearchIgnoreCase()) {
+			searchFor = searchFor.toLowerCase();
+			text = text.toLowerCase();
+		}
+
 		lastSearched = searchFor;
 
 		int nextpos = text.indexOf(searchFor, curpos);
@@ -1196,39 +1207,47 @@ public class AugFileTab implements FileTab {
 	 */
 	public boolean replaceAll(String searchFor, String replaceWith) {
 
-		boolean foundIt;
+		if (mainGUI.getSearchUseEscapedChars()) {
+			searchFor = StrUtils.replaceAll(searchFor, "\\n", "\n");
+			searchFor = StrUtils.replaceAll(searchFor, "\\r", "\r");
+			searchFor = StrUtils.replaceAll(searchFor, "\\t", "\t");
+			replaceWith = StrUtils.replaceAll(replaceWith, "\\n", "\n");
+			replaceWith = StrUtils.replaceAll(replaceWith, "\\r", "\r");
+			replaceWith = StrUtils.replaceAll(replaceWith, "\\t", "\t");
+		}
+
+		String text;
 
 		if (loaded) {
+			text = fileContentMemo.getText();
+		} else {
+			text = augFile.getContent();
+		}
 
-			String text = fileContentMemo.getText();
+		String origText = text;
 
-			foundIt = text.contains(searchFor);
+		if (mainGUI.getSearchIgnoreCase()) {
+			text = StrUtils.replaceAllIgnoreCase(text, searchFor, replaceWith);
+		} else {
+			text = StrUtils.replaceAll(text, searchFor, replaceWith);
+		}
 
-			if (foundIt) {
+		boolean foundIt = !text.equals(origText);
 
-				text = text.replace(searchFor, replaceWith);
+		if (foundIt) {
+
+			if (loaded) {
 
 				fileContentMemo.setText(text);
 
 				highlighter.setSearchStr("");
 
-				this.onChangeCallback.call();
-			}
-
-		} else {
-
-			String text = augFile.getContent();
-
-			foundIt = text.contains(searchFor);
-
-			if (foundIt) {
-
-				text = text.replace(searchFor, replaceWith);
+			} else {
 
 				augFile.setContent(text);
-
-				this.onChangeCallback.call();
 			}
+
+			this.onChangeCallback.call();
 		}
 
 		return foundIt;

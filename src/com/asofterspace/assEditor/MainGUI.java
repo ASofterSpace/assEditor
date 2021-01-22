@@ -149,6 +149,9 @@ public class MainGUI extends MainWindow {
 	Boolean tabEntireBlocks;
 	Boolean proposeTokenAutoComplete;
 	Boolean showFilesInTree;
+	Boolean searchIgnoreCase;
+	Boolean searchUseEscapedChars;
+	Boolean searchAsterisk;
 	boolean showFiles;
 	boolean standalone;
 	String defaultIndentationStr;
@@ -1596,6 +1599,7 @@ public class MainGUI extends MainWindow {
 		}
 	}
 
+	/*
 	private void setCopyOnEnter(Boolean setTo) {
 
 		if (setTo == null) {
@@ -1610,6 +1614,7 @@ public class MainGUI extends MainWindow {
 
 		updateHighlightersOnAllTabs();
 	}
+	*/
 
 	public boolean getTabEntireBlocks() {
 		return tabEntireBlocks;
@@ -2152,6 +2157,45 @@ public class MainGUI extends MainWindow {
 
 	public EditorPopupMenu getEditorPopupMenu() {
 		return editorPopupMenu;
+	}
+
+	public boolean getSearchIgnoreCase() {
+		if (searchIgnoreCase == null) {
+			return false;
+		}
+		return searchIgnoreCase;
+	}
+
+	public void setSearchIgnoreCase(Boolean searchIgnoreCase) {
+		this.searchIgnoreCase = searchIgnoreCase;
+
+		mainMenu.searchIgnoreCase.setSelected(getSearchIgnoreCase());
+	}
+
+	public boolean getSearchUseEscapedChars() {
+		if (searchUseEscapedChars == null) {
+			return false;
+		}
+		return searchUseEscapedChars;
+	}
+
+	public void setSearchUseEscapedChars(Boolean searchUseEscapedChars) {
+		this.searchUseEscapedChars = searchUseEscapedChars;
+
+		mainMenu.searchUseEscapedChars.setSelected(getSearchUseEscapedChars());
+	}
+
+	public boolean getSearchAsterisk() {
+		if (searchAsterisk == null) {
+			return false;
+		}
+		return searchAsterisk;
+	}
+
+	public void setSearchAsterisk(Boolean searchAsterisk) {
+		this.searchAsterisk = searchAsterisk;
+
+		mainMenu.searchAsterisk.setSelected(getSearchAsterisk());
 	}
 
 }
