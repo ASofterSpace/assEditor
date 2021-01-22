@@ -1129,15 +1129,30 @@ public class AugFileTab implements FileTab {
 		// do not ensure loaded, as it is enough for the file contents to be loaded,
 		// while it is NOT necessary for this tab to actually load the file contents
 
-		String text = augFile.getContent();
+		String text;
 
 		if (fileContentMemo != null) {
 			text = fileContentMemo.getText();
+		} else {
+			text = augFile.getContent();
 		}
 
 		int matchAmount = 0;
 
-		int nextpos = text.indexOf(searchFor);
+		if (mainGUI.getSearchUseEscapedChars()) {
+			searchFor = StrUtils.replaceAll(searchFor, "\\n", "\n");
+			searchFor = StrUtils.replaceAll(searchFor, "\\r", "\r");
+			searchFor = StrUtils.replaceAll(searchFor, "\\t", "\t");
+		}
+
+		String textToSearch = text;
+
+		if (mainGUI.getSearchIgnoreCase()) {
+			searchFor = searchFor.toLowerCase();
+			textToSearch = text.toLowerCase();
+		}
+
+		int nextpos = textToSearch.indexOf(searchFor);
 
 		if (nextpos < 0) {
 			// un-highlight, nothing was found
@@ -1157,7 +1172,7 @@ public class AugFileTab implements FileTab {
 
 		while (nextpos >= 0) {
 
-			int line = StrUtils.getLineNumberFromPosition(nextpos, text);
+			int line = StrUtils.getLineNumberFromPosition(nextpos, textToSearch);
 
 			int newfrom = line - 1;
 			int newto = line + 1;
@@ -1171,7 +1186,7 @@ public class AugFileTab implements FileTab {
 				oldto = newto;
 			}
 
-			nextpos = text.indexOf(searchFor, nextpos + 1);
+			nextpos = textToSearch.indexOf(searchFor, nextpos + 1);
 
 			matchAmount++;
 		}
