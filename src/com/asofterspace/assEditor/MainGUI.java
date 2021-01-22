@@ -112,6 +112,9 @@ public class MainGUI extends MainWindow {
 	private final static String CONFIG_KEY_TOP = "mainFrameTop";
 	private final static String CONFIG_KEY_FONT_SIZE = "fontSize";
 	private final static String CONFIG_KEY_SHOW_FILES_IN_TREE = "showFilesInTree";
+	private final static String CONFIG_KEY_SEARCH_IGNORE_CASE = "searchIgnoreCase";
+	private final static String CONFIG_KEY_SEARCH_USE_ESCAPED_CHARS = "searchUseEscapedChars";
+	private final static String CONFIG_KEY_SEARCH_ASTERISK = "searchAsterisk";
 
 	public final static int DEFAULT_FONT_SIZE = 14;
 
@@ -289,6 +292,10 @@ public class MainGUI extends MainWindow {
 		fontSize = configuration.getInteger(CONFIG_KEY_FONT_SIZE, DEFAULT_FONT_SIZE);
 
 		showFilesInTree = configuration.getBoolean(CONFIG_KEY_SHOW_FILES_IN_TREE, true);
+
+		searchIgnoreCase = configuration.getBoolean(CONFIG_KEY_SEARCH_IGNORE_CASE, false);
+		searchUseEscapedChars = configuration.getBoolean(CONFIG_KEY_SEARCH_USE_ESCAPED_CHARS, false);
+		searchAsterisk = configuration.getBoolean(CONFIG_KEY_SEARCH_ASTERISK, false);
 
 		Thread backupThread = new Thread(new Runnable() {
 			@Override
@@ -2169,6 +2176,8 @@ public class MainGUI extends MainWindow {
 	public void setSearchIgnoreCase(Boolean searchIgnoreCase) {
 		this.searchIgnoreCase = searchIgnoreCase;
 
+		configuration.set(CONFIG_KEY_SEARCH_IGNORE_CASE, searchIgnoreCase);
+
 		mainMenu.searchIgnoreCase.setSelected(getSearchIgnoreCase());
 	}
 
@@ -2182,6 +2191,8 @@ public class MainGUI extends MainWindow {
 	public void setSearchUseEscapedChars(Boolean searchUseEscapedChars) {
 		this.searchUseEscapedChars = searchUseEscapedChars;
 
+		configuration.set(CONFIG_KEY_SEARCH_USE_ESCAPED_CHARS, searchUseEscapedChars);
+
 		mainMenu.searchUseEscapedChars.setSelected(getSearchUseEscapedChars());
 	}
 
@@ -2194,6 +2205,8 @@ public class MainGUI extends MainWindow {
 
 	public void setSearchAsterisk(Boolean searchAsterisk) {
 		this.searchAsterisk = searchAsterisk;
+
+		configuration.set(CONFIG_KEY_SEARCH_ASTERISK, searchAsterisk);
 
 		mainMenu.searchAsterisk.setSelected(getSearchAsterisk());
 	}
