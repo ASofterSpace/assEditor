@@ -452,6 +452,8 @@ public class AugFileTab implements FileTab {
 
 		highlighter = CodeHighlighterFactory.getHighlighterForLanguage(codeKind, fileContentMemo);
 
+		highlighter.setFilename(augFile.getFilename());
+
 		highlighter.setDefaultIndentation(defaultIndentationStr);
 
 		if (highlighter.suppliesFunctions()) {
