@@ -81,8 +81,8 @@ public class MainGUI extends MainWindow {
 	private JPanel mainPanelRight;
 
 	private JPanel searchPanel;
-	private JTextField searchField;
-	private JTextField replaceField;
+	private JTextArea searchField;
+	private JTextArea replaceField;
 
 	private JPanel jumpToFilePanel;
 	private JTextField jumpToFileField;
@@ -620,7 +620,14 @@ public class MainGUI extends MainWindow {
 		searchPanel.setLayout(new GridBagLayout());
 		searchPanel.setVisible(false);
 
-		searchField = new JTextField();
+		JPanel searchPanelSearchLine = new JPanel();
+		searchPanelSearchLine.setLayout(new GridBagLayout());
+		JPanel searchPanelReplaceLine = new JPanel();
+		searchPanelReplaceLine.setLayout(new GridBagLayout());
+		searchPanel.add(searchPanelSearchLine, new Arrangement(0, 0, 1.0, 1.0));
+		searchPanel.add(searchPanelReplaceLine, new Arrangement(0, 1, 1.0, 1.0));
+
+		searchField = new JTextArea();
 
 		// listen to text updates
 		searchField.getDocument().addDocumentListener(new DocumentListener() {
@@ -645,18 +652,6 @@ public class MainGUI extends MainWindow {
 			}
 		});
 
-		// listen to the enter key being pressed (which does not create text updates)
-		searchField.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				String searchFor = searchField.getText();
-
-				if (currentlyShownTab != null) {
-					currentlyShownTab.search(searchFor);
-				}
-			}
-		});
-
 		// listen to being focused, and when it happens, select all the current content
 		searchField.addFocusListener(new FocusListener() {
 			@Override
@@ -668,11 +663,21 @@ public class MainGUI extends MainWindow {
 			}
 		});
 
-		replaceField = new JTextField();
+		JButton searchButton = new JButton("Search");
+		searchButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				String searchFor = searchField.getText();
 
-		// listen to the enter key being pressed (which does not create text updates)
-		replaceField.addActionListener(new ActionListener() {
-			@Override
+				if (currentlyShownTab != null) {
+					currentlyShownTab.search(searchFor);
+				}
+			}
+		});
+
+		replaceField = new JTextArea();
+
+		JButton replaceButton = new JButton("Replace");
+		replaceButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				String searchFor = searchField.getText();
 				String replaceWith = replaceField.getText();
@@ -694,8 +699,10 @@ public class MainGUI extends MainWindow {
 			}
 		});
 
-		searchPanel.add(searchField, new Arrangement(0, 0, 1.0, 1.0));
-		searchPanel.add(replaceField, new Arrangement(0, 1, 1.0, 1.0));
+		searchPanelSearchLine.add(searchField, new Arrangement(0, 0, 1.0, 1.0));
+		searchPanelSearchLine.add(searchButton, new Arrangement(1, 0, 0.1, 1.0));
+		searchPanelReplaceLine.add(replaceField, new Arrangement(0, 0, 1.0, 1.0));
+		searchPanelReplaceLine.add(replaceButton, new Arrangement(1, 0, 0.1, 1.0));
 
 
 		// create note area
