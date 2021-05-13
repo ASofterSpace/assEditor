@@ -501,7 +501,7 @@ public class AugFileTab implements FileTab {
 				GuiUtils.setCornerColor(sideScrollPane, JScrollPane.LOWER_RIGHT_CORNER, new Color(235, 215, 255));
 				fileContentMemo.setStartLineColor(Color.lightGray);
 				fileContentMemo.setHorzLineColor(Color.lightGray);
-				fileContentMemo.setChangedLineBackgroundColor(Color.lightGray);
+				fileContentMemo.setChangedLineBackgroundColor(new Color(235, 215, 255));
 				break;
 			case GuiUtils.DARK_SCHEME:
 				tab.setForeground(new Color(255, 245, 255));
@@ -512,7 +512,7 @@ public class AugFileTab implements FileTab {
 				GuiUtils.setCornerColor(sideScrollPane, JScrollPane.LOWER_RIGHT_CORNER, Color.black);
 				fileContentMemo.setStartLineColor(Color.darkGray);
 				fileContentMemo.setHorzLineColor(Color.darkGray);
-				fileContentMemo.setChangedLineBackgroundColor(Color.darkGray);
+				fileContentMemo.setChangedLineBackgroundColor(new Color(16, 0, 24));
 				break;
 		}
 
