@@ -94,6 +94,8 @@ public class AugFileTab implements FileTab {
 	private int selectionOrder = 0;
 	private String defaultIndentationStr = "\t";
 
+	private Color highlightColor = Color.black;
+
 
 	public AugFileTab(JPanel parentPanel, AugFile augFile, final MainGUI mainGUI, AugFileCtrl augFileCtrl) {
 
@@ -109,8 +111,7 @@ public class AugFileTab implements FileTab {
 		this.onChangeCallback = new Callback() {
 			public void call() {
 				if (!changed) {
-					changed = true;
-					repaintAugFileListWhileWeAreVisible();
+					setChanged(true);
 				}
 			}
 		};
@@ -410,6 +411,20 @@ public class AugFileTab implements FileTab {
 	public void setChanged(boolean changed) {
 
 		this.changed = changed;
+
+		repaintAugFileListWhileWeAreVisible();
+
+		if (changed) {
+			nameLabel.setText(getFilePath() + GuiUtils.CHANGE_INDICATOR);
+			nameLabel.setForeground(new Color(255, 128, 196));
+			topHUD.setBackground(getHighlightColor());
+		} else {
+			nameLabel.setText(getFilePath());
+			nameLabel.setForeground(tab.getForeground());
+			if (tab != null) {
+				topHUD.setBackground(tab.getBackground());
+			}
+		}
 	}
 
 	public void show() {
@@ -495,31 +510,31 @@ public class AugFileTab implements FileTab {
 			case GuiUtils.LIGHT_SCHEME:
 				tab.setForeground(Color.black);
 				tab.setBackground(new Color(235, 215, 255));
-				nameLabel.setForeground(Color.black);
-				nameLabel.setBackground(new Color(235, 215, 255));
 				GuiUtils.setCornerColor(sourceCodeScroller, JScrollPane.LOWER_RIGHT_CORNER, new Color(235, 215, 255));
 				GuiUtils.setCornerColor(sideScrollPane, JScrollPane.LOWER_RIGHT_CORNER, new Color(235, 215, 255));
 				fileContentMemo.setStartLineColor(Color.lightGray);
 				fileContentMemo.setHorzLineColor(Color.lightGray);
 				fileContentMemo.setChangedLineBackgroundColor(new Color(245, 235, 255));
 				fileContentMemo.setChangedLineHighlightColor(new Color(235, 215, 255));
+				setHighlightColor(new Color(235, 215, 255));
 				break;
 			case GuiUtils.DARK_SCHEME:
 				tab.setForeground(new Color(255, 245, 255));
 				tab.setBackground(Color.black);
-				nameLabel.setForeground(new Color(255, 245, 255));
-				nameLabel.setBackground(Color.black);
 				GuiUtils.setCornerColor(sourceCodeScroller, JScrollPane.LOWER_RIGHT_CORNER, Color.black);
 				GuiUtils.setCornerColor(sideScrollPane, JScrollPane.LOWER_RIGHT_CORNER, Color.black);
 				fileContentMemo.setStartLineColor(Color.darkGray);
 				fileContentMemo.setHorzLineColor(Color.darkGray);
 				fileContentMemo.setChangedLineBackgroundColor(new Color(16, 0, 24));
 				fileContentMemo.setChangedLineHighlightColor(new Color(40, 0, 80));
+				setHighlightColor(new Color(60, 0, 80));
 				break;
 		}
 
 		topHUD.setForeground(tab.getForeground());
 		topHUD.setBackground(tab.getBackground());
+		nameLabel.setForeground(tab.getForeground());
+		nameLabel.setBackground(tab.getBackground());
 
 		showGoBack(goBackEnabled);
 		goBackLabel.setBackground(nameLabel.getBackground());
@@ -1411,13 +1426,11 @@ public class AugFileTab implements FileTab {
 			augFile.setContent(contentText);
 		}
 
-		changed = false;
-
 		augFile.ensureContents();
 
 		augFile.save();
 
-		repaintAugFileListWhileWeAreVisible();
+		setChanged(false);
 	}
 
 	public void addMissingImports() {
@@ -1784,11 +1797,11 @@ public class AugFileTab implements FileTab {
 
 	public void setEncoding(TextEncoding encoding) {
 
-		boolean changed = augFile.getEncoding() != encoding;
+		boolean didChange = augFile.getEncoding() != encoding;
 
 		augFile.setEncoding(encoding);
 
-		if (changed) {
+		if (didChange) {
 			this.onChangeCallback.call();
 		}
 	}
@@ -1947,6 +1960,14 @@ public class AugFileTab implements FileTab {
 	@Override
 	public int getSelectionOrder() {
 		return selectionOrder;
+	}
+
+	public Color getHighlightColor() {
+		return highlightColor;
+	}
+
+	public void setHighlightColor(Color highlightColor) {
+		this.highlightColor = highlightColor;
 	}
 
 	@Override
