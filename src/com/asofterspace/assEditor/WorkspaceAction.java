@@ -16,9 +16,12 @@ public enum WorkspaceAction {
 	// unarchive the workspace
 	UNARCHIVE,
 
+	// delete the (archived) workspace,
+	DELETE,
+
 	// move files into the workspace
 	MOVE_FILES,
 
 	// duplicate files into the workspace
-	DUPLICATE_FILES
+	DUPLICATE_FILES;
 }

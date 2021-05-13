@@ -181,6 +181,42 @@ public class AugFileCtrl {
 		archiveOrUnarchiveWorkspace(workspace, CONF_ARCHIVED_WORKSPACES, CONF_WORKSPACES, false);
 	}
 
+	public void deleteWorkspace(String workspace) {
+
+		if (workspace == null) {
+			return;
+		}
+
+		// delete from workspaces
+		List<Record> recWorkspaces = configuration.getAllContents().getArray(CONF_WORKSPACES);
+		List<Record> newWorkspaces = new ArrayList<>();
+
+		// add all others to the new list
+		for (Record cur : recWorkspaces) {
+			if (!workspace.equals(cur.getString(CONF_WORKSPACE_NAME))) {
+				newWorkspaces.add(cur);
+			}
+		}
+
+		configuration.getAllContents().setArray(CONF_WORKSPACES, newWorkspaces);
+
+		// delete from archived workspaces
+		recWorkspaces = configuration.getAllContents().getArray(CONF_ARCHIVED_WORKSPACES);
+		newWorkspaces = new ArrayList<>();
+
+		// add all others to the new list
+		for (Record cur : recWorkspaces) {
+			if (!workspace.equals(cur.getString(CONF_WORKSPACE_NAME))) {
+				newWorkspaces.add(cur);
+			}
+		}
+
+		configuration.getAllContents().setArray(CONF_ARCHIVED_WORKSPACES, newWorkspaces);
+
+		// save config
+		configuration.create();
+	}
+
 	/**
 	 * Move a workspace from the archive to the main list - or the other way around. :)
 	 * (And optionally sort the target list afterwards.)

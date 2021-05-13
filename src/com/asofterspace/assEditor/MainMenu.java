@@ -2052,8 +2052,11 @@ public class MainMenu {
 
 		switchWorkspace.addSeparator();
 
-		JMenuItem editWorkspaces = new JMenuItem("Edit Workspaces");
-		editWorkspaces.addActionListener(new ActionListener() {
+		JMenu editWorkspaces = new JMenu("Edit Workspaces");
+		switchWorkspace.add(editWorkspaces);
+
+		JMenuItem addWorkspace = new JMenuItem("Add Workspace");
+		addWorkspace.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// show the workspace editing GUI
@@ -2063,17 +2066,22 @@ public class MainMenu {
 				workspaceGUI.show();
 			}
 		});
-		switchWorkspace.add(editWorkspaces);
+		editWorkspaces.add(addWorkspace);
 
 		JMenu archiveWorkspace = new JMenu("Archive a Workspace");
-		switchWorkspace.add(archiveWorkspace);
+		editWorkspaces.add(archiveWorkspace);
 
 		WorkspaceUtils.createWorkspaceMenuEntries(archiveWorkspace, WorkspaceAction.ARCHIVE, mainGUI);
 
 		JMenu unarchiveWorkspace = new JMenu("Unarchive a Workspace");
-		switchWorkspace.add(unarchiveWorkspace);
+		editWorkspaces.add(unarchiveWorkspace);
 
 		WorkspaceUtils.createWorkspaceMenuEntries(unarchiveWorkspace, WorkspaceAction.UNARCHIVE, mainGUI);
+
+		JMenu deleteWorkspace = new JMenu("Delete an Archived Workspace");
+		editWorkspaces.add(deleteWorkspace);
+
+		WorkspaceUtils.createWorkspaceMenuEntries(deleteWorkspace, WorkspaceAction.DELETE, mainGUI);
 
 		JMenuItem exportWorkspace = new JMenuItem("Export Current Workspace");
 		exportWorkspace.addActionListener(new ActionListener() {

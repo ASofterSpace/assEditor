@@ -45,7 +45,7 @@ public class WorkspaceGUI {
 		// TODO :: and existing ones can be moved up and down
 
 		// Create the window
-		final JDialog editWorkitemsDialog = new JDialog(mainGUI.getMainFrame(), "Edit Workspaces", true);
+		final JDialog editWorkitemsDialog = new JDialog(mainGUI.getMainFrame(), "Add Workspace", true);
 		GridLayout editWorkitemsDialogLayout = new GridLayout(4, 1);
 		editWorkitemsDialogLayout.setVgap(8);
 		editWorkitemsDialog.setLayout(editWorkitemsDialogLayout);
