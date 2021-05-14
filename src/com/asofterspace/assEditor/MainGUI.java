@@ -1714,15 +1714,19 @@ public class MainGUI extends MainWindow {
 		newListOfPreviousTabs.add(currentlyShownTab);
 		listOfPreviousTabs = newListOfPreviousTabs;
 
+		// adjust the increasingly intense highlighting for opened tabs
+		List<AugFileTab> listOfHighlightedTabs = new ArrayList<>();
+		listOfHighlightedTabs.addAll(listOfPreviousTabs);
+		listOfHighlightedTabs.add(tabToShow);
 		for (AugFileTab tab : augFileTabs) {
 			tab.setSelectionOrder(0);
 		}
-		for (int i = listOfPreviousTabs.size() - FileTreeCellRenderer.PREV_SELECTED_TAB_AMOUNT; i < listOfPreviousTabs.size(); i++) {
+		for (int i = listOfHighlightedTabs.size() - FileTreeCellRenderer.PREV_SELECTED_TAB_AMOUNT; i < listOfHighlightedTabs.size(); i++) {
 			if (i < 0) {
 				continue;
 			}
-			int selOrder = i - (listOfPreviousTabs.size() - FileTreeCellRenderer.PREV_SELECTED_TAB_AMOUNT);
-			listOfPreviousTabs.get(i).setSelectionOrder(selOrder);
+			int selOrder = i - (listOfHighlightedTabs.size() - FileTreeCellRenderer.PREV_SELECTED_TAB_AMOUNT);
+			listOfHighlightedTabs.get(i).setSelectionOrder(selOrder);
 		}
 
 		showTabInternal(tabToShow, highlightTab);
@@ -1739,6 +1743,13 @@ public class MainGUI extends MainWindow {
 
 		int listSize = listOfPreviousTabs.size();
 
+		// prevent an entry being on the previous and future list
+		while ((listSize > 0) && currentlyShownTab.equals(listOfPreviousTabs.get(listSize - 1))) {
+			listOfPreviousTabs.remove(listSize - 1);
+			listSize--;
+		}
+
+		// if there is a previous tab, go to that one
 		if (listSize > 0) {
 			AugFileTab tabToShow = listOfPreviousTabs.get(listSize - 1);
 			listOfPreviousTabs.remove(listSize - 1);
@@ -1752,12 +1763,23 @@ public class MainGUI extends MainWindow {
 
 		int listSize = listOfFutureTabs.size();
 
+		// prevent an entry being on the previous and future list
+		while ((listSize > 0) && currentlyShownTab.equals(listOfFutureTabs.get(listSize - 1))) {
+			listOfFutureTabs.remove(listSize - 1);
+			listSize--;
+		}
+
+		// if there is a next tab, go to that one
 		if (listSize > 0) {
 			AugFileTab tabToShow = listOfFutureTabs.get(listSize - 1);
 			listOfFutureTabs.remove(listSize - 1);
 			listOfPreviousTabs.add(currentlyShownTab);
 
 			showTabInternal(tabToShow, true);
+
+		} else {
+			// if there is no next tab, go to the previous one as next one
+			goToPreviousTab();
 		}
 	}
 
@@ -1777,7 +1799,7 @@ public class MainGUI extends MainWindow {
 		}
 
 		tabToShow.showGoBack(listOfPreviousTabs.size() > 0);
-		tabToShow.showGoForward(listOfFutureTabs.size() > 0);
+		tabToShow.showGoForward((listOfFutureTabs.size() > 0) || (listOfPreviousTabs.size() > 0));
 	}
 
 	private void setCurrentlyShownTab(AugFileTab tab) {
