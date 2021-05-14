@@ -1699,23 +1699,20 @@ public class MainGUI extends MainWindow {
 	 */
 	public void showTab(AugFileTab tabToShow, boolean highlightTab) {
 
-		// only add the current tab to the list of previous ones...
-		if (currentlyShownTab != null) {
-			// ... if the current tab is not also the new one ...
-			if (!currentlyShownTab.equals(tabToShow)) {
-				// ... and if that list is empty ...
-				if (listOfPreviousTabs.size() > 0) {
-					// ... or has a different tab at its end (such that the same one does not get added twice in a row)
-					if (!currentlyShownTab.equals(listOfPreviousTabs.get(listOfPreviousTabs.size() - 1))) {
-						listOfPreviousTabs.add(currentlyShownTab);
-					}
-				} else {
-					listOfPreviousTabs.add(currentlyShownTab);
+		// add current tab to the list of previous tabs
+		List<AugFileTab> newListOfPreviousTabs = new ArrayList<>();
+		listOfPreviousTabs.addAll(listOfFutureTabs);
+		listOfFutureTabs = new ArrayList<>();
+		for (int i = 0; i < listOfPreviousTabs.size(); i++) {
+			AugFileTab curTab = listOfPreviousTabs.get(i);
+			if (!curTab.equals(currentlyShownTab)) {
+				if (!newListOfPreviousTabs.contains(curTab)) {
+					newListOfPreviousTabs.add(curTab);
 				}
 			}
 		}
-
-		listOfFutureTabs = new ArrayList<>();
+		newListOfPreviousTabs.add(currentlyShownTab);
+		listOfPreviousTabs = newListOfPreviousTabs;
 
 		for (AugFileTab tab : augFileTabs) {
 			tab.setSelectionOrder(0);
