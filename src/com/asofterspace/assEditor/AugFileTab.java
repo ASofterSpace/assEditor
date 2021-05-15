@@ -77,6 +77,7 @@ public class AugFileTab implements FileTab {
 	private JPanel topHUD;
 	private JLabel goBackLabel;
 	private JLabel goForwardLabel;
+	private JLabel scrollToLabel;
 	private boolean goBackEnabled = true;
 	private boolean goForwardEnabled = true;
 	private JLabel nameLabel;
@@ -96,8 +97,11 @@ public class AugFileTab implements FileTab {
 
 	private Color highlightColor = Color.black;
 
+	private boolean standalone = false;
 
-	public AugFileTab(JPanel parentPanel, AugFile augFile, final MainGUI mainGUI, AugFileCtrl augFileCtrl) {
+
+	public AugFileTab(JPanel parentPanel, AugFile augFile, final MainGUI mainGUI, AugFileCtrl augFileCtrl,
+		boolean standalone) {
 
 		this.parent = parentPanel;
 
@@ -107,6 +111,8 @@ public class AugFileTab implements FileTab {
 		this.augFileCtrl = augFileCtrl;
 
 		this.mainGUI = mainGUI;
+
+		this.standalone = standalone;
 
 		this.onChangeCallback = new Callback() {
 			public void call() {
@@ -135,6 +141,7 @@ public class AugFileTab implements FileTab {
 		topHUD.setLayout(new GridBagLayout());
 
 		goBackLabel = new JLabel("  < ");
+		goBackLabel.setVisible(!standalone);
 		topHUD.add(goBackLabel, new Arrangement(0, 0, 0.0, 0.0));
 
 		goBackLabel.addMouseListener(new MouseAdapter() {
@@ -145,6 +152,7 @@ public class AugFileTab implements FileTab {
 		});
 
 		goForwardLabel = new JLabel(" > ");
+		goForwardLabel.setVisible(!standalone);
 		topHUD.add(goForwardLabel, new Arrangement(1, 0, 0.0, 0.0));
 
 		goForwardLabel.addMouseListener(new MouseAdapter() {
@@ -154,10 +162,21 @@ public class AugFileTab implements FileTab {
 			}
 		});
 
+		scrollToLabel = new JLabel(" ÷ ");
+		scrollToLabel.setVisible(!standalone);
+		topHUD.add(scrollToLabel, new Arrangement(2, 0, 0.0, 0.0));
+
+		scrollToLabel.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				mainGUI.scrollToCurrentTab();
+			}
+		});
+
 		nameLabel = new JLabel(getFilePath());
 		nameLabel.setPreferredSize(new Dimension(0, nameLabel.getPreferredSize().height*2));
 		nameLabel.setHorizontalAlignment(JLabel.CENTER);
-		topHUD.add(nameLabel, new Arrangement(2, 0, 1.0, 1.0));
+		topHUD.add(nameLabel, new Arrangement(3, 0, 1.0, 1.0));
 
 		nameLabel.addMouseListener(new MouseAdapter() {
 			@Override
@@ -540,6 +559,9 @@ public class AugFileTab implements FileTab {
 		goBackLabel.setBackground(nameLabel.getBackground());
 		showGoForward(goForwardEnabled);
 		goForwardLabel.setBackground(nameLabel.getBackground());
+
+		scrollToLabel.setForeground(nameLabel.getForeground());
+		scrollToLabel.setBackground(nameLabel.getBackground());
 
 		MainGUI.setScheme(scheme, sideScrollPane);
 		MainGUI.setScheme(scheme, sourceCodeScroller);

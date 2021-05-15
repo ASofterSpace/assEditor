@@ -855,7 +855,7 @@ public class MainGUI extends MainWindow {
 
 		if (newFile != null) {
 			// ... if not, add a tab for it
-			AugFileTab result = new AugFileTab(mainPanelRight, newFile, this, augFileCtrl);
+			AugFileTab result = new AugFileTab(mainPanelRight, newFile, this, augFileCtrl, standalone);
 			result.setDefaultIndent(defaultIndentationStr);
 			augFileTabs.add(result);
 			return result;
@@ -943,7 +943,7 @@ public class MainGUI extends MainWindow {
 			}
 		} else {
 			// ... if not, add a tab for it
-			loadedTab = new AugFileTab(mainPanelRight, newFile, this, augFileCtrl);
+			loadedTab = new AugFileTab(mainPanelRight, newFile, this, augFileCtrl, standalone);
 			loadedTab.setDefaultIndent(defaultIndentationStr);
 			augFileTabs.add(loadedTab);
 		}
@@ -1811,6 +1811,11 @@ public class MainGUI extends MainWindow {
 		tabToShow.showGoForward((listOfFutureTabs.size() > 0) || (listOfPreviousTabs.size() > 0));
 	}
 
+	public void scrollToCurrentTab() {
+		boolean resize = false;
+		highlightTabInLeftListOrTree(currentlyShownTab, resize);
+	}
+
 	private void setCurrentlyShownTab(AugFileTab tab) {
 
 		currentlyShownTab = tab;
@@ -2022,7 +2027,7 @@ public class MainGUI extends MainWindow {
 		List<AugFile> files = augFileCtrl.getFiles();
 		for (AugFile file : files) {
 			file.refreshContent();
-			AugFileTab newTab = new AugFileTab(mainPanelRight, file, this, augFileCtrl);
+			AugFileTab newTab = new AugFileTab(mainPanelRight, file, this, augFileCtrl, standalone);
 			newTab.setDefaultIndent(defaultIndentationStr);
 			augFileTabs.add(newTab);
 		}
