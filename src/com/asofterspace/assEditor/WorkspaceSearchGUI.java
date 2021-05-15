@@ -16,6 +16,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.util.ArrayList;
@@ -43,6 +45,8 @@ public class WorkspaceSearchGUI {
 	private JTextArea searchInWorkspaceOutputMemo;
 	private JLabel searchInWorkspaceOutputLabel;
 	private JTextField workspaceSearchField;
+
+	public final static String JUMP_TO = "Jump to ";
 
 
 	public WorkspaceSearchGUI(MainGUI mainGUI, JFrame mainFrame) {
@@ -100,6 +104,37 @@ public class WorkspaceSearchGUI {
 		});
 
 		searchInWorkspaceOutputMemo = new JTextArea();
+
+		MouseAdapter mouseListener = new MouseAdapter() {
+
+			@Override
+			public void mouseReleased(MouseEvent event) {
+				jumpToClickedFile();
+			}
+
+			@Override
+			public void mouseClicked(MouseEvent event) {
+				jumpToClickedFile();
+			}
+
+			private void jumpToClickedFile() {
+				int pos = searchInWorkspaceOutputMemo.getCaretPosition();
+				String text = searchInWorkspaceOutputMemo.getText();
+				String clickedLine = StrUtils.getLineFromPosition(pos, text);
+				if (clickedLine.startsWith(JUMP_TO) && clickedLine.endsWith(":")) {
+					String filename = clickedLine.substring(JUMP_TO.length());
+					filename = filename.substring(0, filename.length() - ":".length());
+					AugFileTab tabToShow = mainGUI.getTabWithFilename(filename);
+					if (tabToShow != null) {
+						boolean highlightTab = true;
+						mainGUI.showTab(tabToShow, highlightTab);
+					}
+				}
+			}
+		};
+
+		searchInWorkspaceOutputMemo.addMouseListener(mouseListener);
+
 		JScrollPane outputMemoScroller = new JScrollPane(searchInWorkspaceOutputMemo);
 		searchInWorkspaceDialog.add(outputMemoScroller, new Arrangement(0, 4, 1.0, 1.0));
 

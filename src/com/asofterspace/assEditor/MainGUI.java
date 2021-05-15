@@ -1080,6 +1080,15 @@ public class MainGUI extends MainWindow {
 		return augFileTabs;
 	}
 
+	public AugFileTab getTabWithFilename(String filename) {
+		for (AugFileTab tab : augFileTabs) {
+			if (filename.equals(tab.getFilePath())) {
+				return tab;
+			}
+		}
+		return null;
+	}
+
 	public AugFileTab getCurrentTab() {
 
 		return currentlyShownTab;

@@ -1235,6 +1235,7 @@ public class AugFileTab implements FileTab {
 		// highlight, as something was found in this file!
 		this.highlighted = true;
 
+		result.append(WorkspaceSearchGUI.JUMP_TO);
 		result.append(getFilePath());
 		result.append(":\n\n");
 
