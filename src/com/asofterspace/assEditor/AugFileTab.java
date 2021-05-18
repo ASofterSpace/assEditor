@@ -761,6 +761,16 @@ public class AugFileTab implements FileTab {
 	}
 
 	public void duplicateCurrentLine() {
+		boolean empty = false;
+		duplicateCurrentLine(empty);
+	}
+
+	public void duplicateCurrentLineEmpty() {
+		boolean empty = true;
+		duplicateCurrentLine(empty);
+	}
+
+	private void duplicateCurrentLine(boolean empty) {
 
 		ensureLoaded();
 
@@ -791,6 +801,40 @@ public class AugFileTab implements FileTab {
 			if (insertStr.startsWith("\npackage ")) {
 				insertStr = "\nimport " + insertStr.substring(9);
 			}
+		}
+
+		if (empty) {
+			StringBuilder newStr = new StringBuilder();
+			boolean inDoubleStr = false; // in "..."
+			boolean inSingleStr = false; // in '...'
+			for (int i = 0; i < insertStr.length(); i++) {
+				char c = insertStr.charAt(i);
+				if (c == '"') {
+					if (!inSingleStr) {
+						if (inDoubleStr) {
+							inDoubleStr = false;
+						} else {
+							inDoubleStr = true;
+							newStr.append(c);
+						}
+					}
+				}
+				if (c == '\'') {
+					if (!inDoubleStr) {
+						if (inSingleStr) {
+							inSingleStr = false;
+						} else {
+							inSingleStr = true;
+							newStr.append(c);
+						}
+					}
+				}
+				if (inDoubleStr || inSingleStr) {
+					continue;
+				}
+				newStr.append(c);
+			}
+			insertStr = newStr.toString();
 		}
 
 		sourceCode = sourceCode.substring(0, lineEnd) + insertStr + sourceCode.substring(lineEnd);

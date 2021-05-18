@@ -407,6 +407,18 @@ public class MainMenu {
 		});
 		edit.add(duplicateCurrentLineCtrl);
 
+		JMenuItem duplicateCurrentLineEmpty = new JMenuItem("Duplicate Current Line Empty");
+		duplicateCurrentLineEmpty.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_E, ActionEvent.CTRL_MASK));
+		duplicateCurrentLineEmpty.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (mainGUI.getCurrentTab() != null) {
+					mainGUI.getCurrentTab().duplicateCurrentLineEmpty();
+				}
+			}
+		});
+		edit.add(duplicateCurrentLineEmpty);
+
 		JMenuItem deleteCurrentLine = new JMenuItem("Delete Current Line");
 		deleteCurrentLine.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_D, ActionEvent.CTRL_MASK));
 		deleteCurrentLine.addActionListener(new ActionListener() {
