@@ -800,6 +800,47 @@ public class AugFileTab implements FileTab {
 		fileContentMemo.setCaretPosition(carPos + insertStr.length());
 	}
 
+	public void moveCurrentLineAbove() {
+
+		ensureLoaded();
+
+		String sourceCode = fileContentMemo.getText();
+
+		int carPos = fileContentMemo.getCaretPosition();
+
+		int selStart = highlighter.getSelStart();
+		int selEnd = highlighter.getSelEnd();
+
+		if (selStart > selEnd) {
+			int selMid = selEnd;
+			selEnd = selStart;
+			selStart = selMid;
+		}
+
+		int lineStart = StrUtils.getLineStartFromPosition(selStart, sourceCode);
+		int lineEnd = StrUtils.getLineEndFromPosition(selEnd, sourceCode);
+		int prevLineStart = StrUtils.getLineStartFromPosition(lineStart - 1, sourceCode);
+
+		String lineToGoAbove = sourceCode.substring(lineStart, lineEnd);
+
+		// if we are at the very top already, just add a new line below ours
+		String lineToGoBelow = "";
+		int carPosModifier = 1;
+
+		// if not...
+		if (prevLineStart < lineStart) {
+			lineToGoBelow = sourceCode.substring(prevLineStart, lineStart - 1);
+			carPosModifier = 0;
+		}
+
+		sourceCode = sourceCode.substring(0, prevLineStart) + lineToGoAbove + "\n" + lineToGoBelow +
+			sourceCode.substring(lineEnd);
+
+		fileContentMemo.setText(sourceCode);
+
+		fileContentMemo.setCaretPosition(carPos + carPosModifier - lineToGoBelow.length() - 1);
+	}
+
 	public void moveCurrentLineBelow() {
 
 		ensureLoaded();

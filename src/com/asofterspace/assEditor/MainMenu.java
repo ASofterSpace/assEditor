@@ -419,8 +419,20 @@ public class MainMenu {
 		});
 		edit.add(deleteCurrentLine);
 
+		JMenuItem moveCurrentLineAbove = new JMenuItem("Move Current Line One Line Above");
+		moveCurrentLineAbove.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_UP, ActionEvent.CTRL_MASK));
+		moveCurrentLineAbove.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (mainGUI.getCurrentTab() != null) {
+					mainGUI.getCurrentTab().moveCurrentLineAbove();
+				}
+			}
+		});
+		edit.add(moveCurrentLineAbove);
+
 		JMenuItem moveCurrentLineBelow = new JMenuItem("Move Current Line One Line Below");
-		moveCurrentLineBelow.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_B, ActionEvent.CTRL_MASK));
+		moveCurrentLineBelow.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, ActionEvent.CTRL_MASK));
 		moveCurrentLineBelow.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
