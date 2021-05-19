@@ -991,9 +991,10 @@ public class MainMenu {
 				String sep = "";
 				for (String line : linesIn) {
 					result.append(sep);
-					sep = " +\n";
-					result.append("\"" + line + "\"");
+					sep = "\\n\" +\n";
+					result.append("\"" + StrUtils.replaceAll(line, "\"", "\\\""));
 				}
+				result.append("\"");
 				return result.toString();
 			}
 		});
@@ -1012,11 +1013,20 @@ public class MainMenu {
 						line = line.substring(0, line.length() - 1);
 						line = line.trim();
 					}
+					if (line.startsWith("\"")) {
+						line = StrUtils.replaceAll(line, "\\\"", "\"");
+					}
+					if (line.startsWith("'")) {
+						line = StrUtils.replaceAll(line, "\\'", "'");
+					}
 					if (line.startsWith("\"") || line.startsWith("'")) {
 						line = line.substring(1);
 					}
 					if (line.endsWith("\"") || line.endsWith("'")) {
 						line = line.substring(0, line.length() - 1);
+					}
+					if (line.endsWith("\\n")) {
+						line = line.substring(0, line.length() - 2);
 					}
 					result.append(sep);
 					sep = "\n";
@@ -2077,6 +2087,37 @@ public class MainMenu {
 			}
 		});
 		huh.add(openBackupPath);
+
+		JMenuItem cheatSheet = new JMenuItem("Cheat Sheet");
+		cheatSheet.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				GuiUtils.notify(
+					"[Ctrl]+[S] save\n" +
+					"[Ctrl]+[D] delete cur line(s)\n" +
+					"[Ctrl]+[UP] move current line one up\n" +
+					"[Ctrl]+[DOWN] move current line one below\n" +
+					"[Shift]+[UP] / [Shift]+[DOWN] to mark entire rows\n" +
+					"[Shift]+[Enter] / [Ctrl]+[Enter] duplicate cur line(s)\n" +
+					"[Ctrl]+[E] duplicate cur line(s) empty (so every \"...\" is replaced by \"\")\n" +
+					"[Tab] tab entire selection\n" +
+					"[Ctrl / Shift] + [Tab] un-tab entire selection\n" +
+					"[Ctrl]+[J] open tab, with [:] inside to jump to line\n" +
+					"[Ctrl]+[I] up+lowcase current word\n" +
+					"use [UP] and [DOWN] to highlight proposed tokens\n" +
+					"use [TAB] to tab complete with the selected token\n" +
+					"use [Shift]+[Click] to select from current cursor pos to clicked cursor pos\n" +
+					"in Java code:\n" +
+					"if (a = b) && is autoexpanded to if ((a = b) && )\n" +
+					"switch (a) { is autoexpanded to a full switch statement\n" +
+					"List<A> a = new is autoexpanded to List<A> a = new ArrayList<>();\n" +
+					"for is expanded if there is Map< in the previous line\n" +
+					"use \" \" to type \" = \" quickly\n" +
+					"use \" ! \" to type \" != \" quickly"
+				);
+			}
+		});
+		huh.add(cheatSheet);
 
 		JMenuItem about = new JMenuItem("About");
 		about.addActionListener(new ActionListener() {
