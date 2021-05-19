@@ -982,6 +982,53 @@ public class MainMenu {
 
 		code.addSeparator();
 
+		JMenuItem multiLineStringify = new JMenuItem("Put Selection Into String (surround each line with \"...\")");
+		addTextModificationAction(multiLineStringify, new StringModifier() {
+			@Override
+			public String modify(String str) {
+				String[] linesIn = str.split("\n");
+				StringBuilder result = new StringBuilder();
+				String sep = "";
+				for (String line : linesIn) {
+					result.append(sep);
+					sep = " +\n";
+					result.append("\"" + line + "\"");
+				}
+				return result.toString();
+			}
+		});
+		code.add(multiLineStringify);
+
+		JMenuItem multiLineUnstringify = new JMenuItem("Take Selection Out of String");
+		addTextModificationAction(multiLineUnstringify, new StringModifier() {
+			@Override
+			public String modify(String str) {
+				String[] linesIn = str.split("\n");
+				StringBuilder result = new StringBuilder();
+				String sep = "";
+				for (String line : linesIn) {
+					line = line.trim();
+					if (line.endsWith("+")) {
+						line = line.substring(0, line.length() - 1);
+						line = line.trim();
+					}
+					if (line.startsWith("\"") || line.startsWith("'")) {
+						line = line.substring(1);
+					}
+					if (line.endsWith("\"") || line.endsWith("'")) {
+						line = line.substring(0, line.length() - 1);
+					}
+					result.append(sep);
+					sep = "\n";
+					result.append(line);
+				}
+				return result.toString();
+			}
+		});
+		code.add(multiLineUnstringify);
+
+		code.addSeparator();
+
 		JMenuItem removeDebugLines = new JMenuItem("Remove Lines Containing // DEBUG or # DEBUG");
 		removeDebugLines.addActionListener(new ActionListener() {
 			@Override
