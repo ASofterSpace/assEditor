@@ -1220,11 +1220,8 @@ public class MainMenu {
 		showCharacterAmount.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if (mainGUI.getCurrentTab() != null) {
-					GuiUtils.notify("The currently opened text contains " +
-						mainGUI.getCurrentTab().getContent().length() +
-						" characters.");
-				}
+				GuiUtils.notify("The currently opened text contains " +
+					getCharacterAmount() + " characters.");
 			}
 		});
 		stats.add(showCharacterAmount);
@@ -1233,20 +1230,8 @@ public class MainMenu {
 		showWordAmount.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if (mainGUI.getCurrentTab() != null) {
-					String content = mainGUI.getCurrentTab().getContent();
-					content = StrUtils.replaceAll(content, ".", " ");
-					content = StrUtils.replaceAll(content, ",", " ");
-					content = StrUtils.replaceAll(content, ";", " ");
-					content = StrUtils.replaceAll(content, "!", " ");
-					content = StrUtils.replaceAll(content, "?", " ");
-					content = StrUtils.replaceAll(content, "\t", " ");
-					content = StrUtils.replaceAll(content, "  ", " ");
-					content = content.trim();
-					int amount = StrUtils.countCharInString(' ', content) + 1;
-					GuiUtils.notify("The currently opened text contains " +
-						amount + " words.");
-				}
+				GuiUtils.notify("The currently opened text contains " +
+					getWordAmount() + " words.");
 			}
 		});
 		stats.add(showWordAmount);
@@ -1255,17 +1240,37 @@ public class MainMenu {
 		showLineAmount.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if (mainGUI.getCurrentTab() != null) {
-					String content = mainGUI.getCurrentTab().getContent();
-					content = content.trim();
-					int amount = StrUtils.countCharInString('\n', content) + 1;
-					GuiUtils.notify("The currently opened text contains " +
-						amount + " lines.");
-				}
+				GuiUtils.notify("The currently opened text contains " +
+					getLineAmount() + " lines.");
 			}
 		});
 		stats.add(showLineAmount);
 
+		JMenuItem showIndelAmount = new JMenuItem("Show Amount of Inserts / Deletes");
+		showIndelAmount.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				GuiUtils.notify("The currently opened text contains " +
+					getInsertAmount() + " inserts (lines starting with '+') and " +
+					getDeleteAmount() + " deletes (lines starting with '-').");
+			}
+		});
+		stats.add(showIndelAmount);
+
+		JMenuItem showAllStats = new JMenuItem("Show All Statistics");
+		showAllStats.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				GuiUtils.notify("The currently opened text contains:\n" +
+					getCharacterAmount() + " characters,\n" +
+					getWordAmount() + " words,\n" +
+					getLineAmount() + " lines,\n" +
+					getInsertAmount() + " inserts,\n" +
+					getDeleteAmount() + " deletes"
+				);
+			}
+		});
+		stats.add(showAllStats);
 
 		JMenu encodings = new JMenu("Encodings");
 		menu.add(encodings);
@@ -2321,4 +2326,63 @@ public class MainMenu {
 			code.add(extractString);
 		}
 	}
+
+	private Integer getCharacterAmount() {
+		if (mainGUI.getCurrentTab() != null) {
+			return mainGUI.getCurrentTab().getContent().length();
+		}
+		return null;
+	}
+
+	private Integer getWordAmount() {
+		if (mainGUI.getCurrentTab() != null) {
+			String content = mainGUI.getCurrentTab().getContent();
+			content = StrUtils.replaceAll(content, ".", " ");
+			content = StrUtils.replaceAll(content, ",", " ");
+			content = StrUtils.replaceAll(content, ";", " ");
+			content = StrUtils.replaceAll(content, "!", " ");
+			content = StrUtils.replaceAll(content, "?", " ");
+			content = StrUtils.replaceAll(content, "\t", " ");
+			content = StrUtils.replaceAll(content, "  ", " ");
+			content = content.trim();
+			return StrUtils.countCharInString(' ', content) + 1;
+		}
+		return null;
+	}
+
+	private Integer getLineAmount() {
+		if (mainGUI.getCurrentTab() != null) {
+			String content = mainGUI.getCurrentTab().getContent();
+			content = content.trim();
+			return StrUtils.countCharInString('\n', content) + 1;
+		}
+		return null;
+	}
+
+	private Integer getInsertAmount() {
+		if (mainGUI.getCurrentTab() != null) {
+			String content = mainGUI.getCurrentTab().getContent();
+			content = content.trim();
+			int inserts = StrUtils.countStringInString("\n+", content);
+			if (content.startsWith("+")) {
+				inserts++;
+			}
+			return inserts;
+		}
+		return null;
+	}
+
+	private Integer getDeleteAmount() {
+		if (mainGUI.getCurrentTab() != null) {
+			String content = mainGUI.getCurrentTab().getContent();
+			content = content.trim();
+			int deletes = StrUtils.countStringInString("\n-", content);
+			if (content.startsWith("-")) {
+				deletes++;
+			}
+			return deletes;
+		}
+		return null;
+	}
+
 }
