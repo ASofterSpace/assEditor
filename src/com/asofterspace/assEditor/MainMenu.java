@@ -1742,29 +1742,31 @@ public class MainMenu {
 		});
 		languageCurrent.add(ckCurDefault);
 
-		JMenu language = new JMenu("Code Language for All Files");
-		settings.add(language);
-		codeKindItems = new ArrayList<>();
-		for (final CodeLanguage ck : CodeLanguage.values()) {
-			JMenuItem ckItem = new JMenuItem(ck.toString());
-			ckItem.addActionListener(new ActionListener() {
+		if (!standalone) {
+			JMenu language = new JMenu("Code Language for All Files");
+			settings.add(language);
+			codeKindItems = new ArrayList<>();
+			for (final CodeLanguage ck : CodeLanguage.values()) {
+				JMenuItem ckItem = new JMenuItem(ck.toString());
+				ckItem.addActionListener(new ActionListener() {
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						mainGUI.setOrUnsetAllCodeLanguages(ck);
+					}
+				});
+				language.add(ckItem);
+				codeKindItems.add(ckItem);
+			}
+			language.addSeparator();
+			JMenuItem ckDefault = new JMenuItem("Default");
+			ckDefault.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					mainGUI.setOrUnsetAllCodeLanguages(ck);
+					mainGUI.setOrUnsetAllCodeLanguages(null);
 				}
 			});
-			language.add(ckItem);
-			codeKindItems.add(ckItem);
+			language.add(ckDefault);
 		}
-		language.addSeparator();
-		JMenuItem ckDefault = new JMenuItem("Default");
-		ckDefault.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				mainGUI.setOrUnsetAllCodeLanguages(null);
-			}
-		});
-		language.add(ckDefault);
 
 		settings.addSeparator();
 
@@ -2093,8 +2095,9 @@ public class MainMenu {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				GuiUtils.notify(
+					"in general:\n" +
 					"[Ctrl]+[S] save\n" +
-					"[Ctrl]+[D] delete cur line(s)\n" +
+					"[Ctrl]+[D] delete current line(s)\n" +
 					"[Ctrl]+[UP] move current line one up\n" +
 					"[Ctrl]+[DOWN] move current line one below\n" +
 					"[Shift]+[UP] / [Shift]+[DOWN] to mark entire rows\n" +
@@ -2107,6 +2110,7 @@ public class MainMenu {
 					"use [UP] and [DOWN] to highlight proposed tokens\n" +
 					"use [TAB] to tab complete with the selected token\n" +
 					"use [Shift]+[Click] to select from current cursor pos to clicked cursor pos\n" +
+					"\n" +
 					"in Java code:\n" +
 					"if (a = b) && is autoexpanded to if ((a = b) && )\n" +
 					"switch (a) { is autoexpanded to a full switch statement\n" +
