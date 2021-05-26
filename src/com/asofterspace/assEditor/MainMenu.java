@@ -986,12 +986,16 @@ public class MainMenu {
 		addTextModificationAction(multiLineStringify, new StringModifier() {
 			@Override
 			public String modify(String str) {
+				String stringConcatSign = "+";
+				if (CodeLanguage.PHP.equals(mainGUI.getCurrentTab().getSourceLanguage())) {
+					stringConcatSign = ".";
+				}
 				String[] linesIn = str.split("\n");
 				StringBuilder result = new StringBuilder();
 				String sep = "";
 				for (String line : linesIn) {
 					result.append(sep);
-					sep = "\\n\" +\n";
+					sep = "\\n\" " + stringConcatSign + "\n";
 					result.append("\"" + StrUtils.replaceAll(line, "\"", "\\\""));
 				}
 				result.append("\"");
@@ -1004,12 +1008,16 @@ public class MainMenu {
 		addTextModificationAction(multiLineUnstringify, new StringModifier() {
 			@Override
 			public String modify(String str) {
+				String stringConcatSign = "+";
+				if (CodeLanguage.PHP.equals(mainGUI.getCurrentTab().getSourceLanguage())) {
+					stringConcatSign = ".";
+				}
 				String[] linesIn = str.split("\n");
 				StringBuilder result = new StringBuilder();
 				String sep = "";
 				for (String line : linesIn) {
 					line = line.trim();
-					if (line.endsWith("+")) {
+					if (line.endsWith(stringConcatSign)) {
 						line = line.substring(0, line.length() - 1);
 						line = line.trim();
 					}
