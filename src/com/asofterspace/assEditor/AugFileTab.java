@@ -434,13 +434,19 @@ public class AugFileTab implements FileTab {
 		repaintAugFileListWhileWeAreVisible();
 
 		if (changed) {
-			nameLabel.setText(getFilePath() + GuiUtils.CHANGE_INDICATOR);
-			nameLabel.setForeground(new Color(255, 128, 196));
-			topHUD.setBackground(getHighlightColor());
+			if (nameLabel != null) {
+				nameLabel.setText(getFilePath() + GuiUtils.CHANGE_INDICATOR);
+				nameLabel.setForeground(new Color(255, 128, 196));
+			}
+			if (topHUD != null) {
+				topHUD.setBackground(getHighlightColor());
+			}
 		} else {
-			nameLabel.setText(getFilePath());
-			nameLabel.setForeground(tab.getForeground());
-			if (tab != null) {
+			if ((nameLabel != null) && (tab != null)) {
+				nameLabel.setText(getFilePath());
+				nameLabel.setForeground(tab.getForeground());
+			}
+			if ((topHUD != null) && (tab != null)) {
 				topHUD.setBackground(tab.getBackground());
 			}
 		}
