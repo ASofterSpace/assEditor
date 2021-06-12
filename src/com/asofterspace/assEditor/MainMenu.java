@@ -2405,6 +2405,26 @@ public class MainMenu {
 			}
 		});
 
+		JMenuItem extractAllStrings = new JMenuItem("Extract All Strings into Constant Fields");
+		extractAllStrings.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (mainGUI.getCurrentTab() != null) {
+					mainGUI.getCurrentTab().extractAllStrings();
+				}
+			}
+		});
+
+		JMenuItem extractAllRepeatedStrings = new JMenuItem("Extract All Repeated Strings into Constant Fields");
+		extractAllRepeatedStrings.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (mainGUI.getCurrentTab() != null) {
+					mainGUI.getCurrentTab().extractAllRepeatedStrings();
+				}
+			}
+		});
+
 		// WHY IN THE WORLDS DOES JPOPUP NOT EXTEND JMENU AAAARGHS?!?
 		if (menu instanceof JMenu) {
 			JMenu code = (JMenu) menu;
@@ -2415,6 +2435,8 @@ public class MainMenu {
 			code.add(addToString);
 			code.add(addEquals);
 			code.add(extractString);
+			code.add(extractAllStrings);
+			code.add(extractAllRepeatedStrings);
 		} else {
 			JPopupMenu code = (JPopupMenu) menu;
 			code.add(addConstructorJava);
@@ -2424,6 +2446,8 @@ public class MainMenu {
 			code.add(addToString);
 			code.add(addEquals);
 			code.add(extractString);
+			code.add(extractAllStrings);
+			code.add(extractAllRepeatedStrings);
 		}
 	}
 

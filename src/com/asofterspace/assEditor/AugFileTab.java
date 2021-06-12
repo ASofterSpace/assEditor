@@ -1162,6 +1162,16 @@ public class AugFileTab implements FileTab {
 		highlighter.extractString();
 	}
 
+	public void extractAllStrings() {
+
+		highlighter.extractAllStrings();
+	}
+
+	public void extractAllRepeatedStrings() {
+
+		highlighter.extractAllRepeatedStrings();
+	}
+
 	private void setCaretPos(int newSelStart, int newSelEnd) {
 
 		fileContentMemo.setCaretPosition(newSelStart);
