@@ -103,6 +103,7 @@ public class MainMenu {
 	JCheckBoxMenuItem searchIgnoreCase;
 	JCheckBoxMenuItem searchUseEscapedChars;
 	JCheckBoxMenuItem searchAsterisk;
+	JCheckBoxMenuItem addPrefixWhenExtracting;
 	private JMenuItem close;
 	private List<JMenuItem> codeKindItems;
 	private List<JCheckBoxMenuItem> codeKindItemsCurrent;
@@ -2400,7 +2401,7 @@ public class MainMenu {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (mainGUI.getCurrentTab() != null) {
-					mainGUI.getCurrentTab().extractString();
+					mainGUI.getCurrentTab().extractString(addPrefixWhenExtracting.isSelected());
 				}
 			}
 		});
@@ -2410,7 +2411,7 @@ public class MainMenu {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (mainGUI.getCurrentTab() != null) {
-					mainGUI.getCurrentTab().extractAllStrings();
+					mainGUI.getCurrentTab().extractAllStrings(addPrefixWhenExtracting.isSelected());
 				}
 			}
 		});
@@ -2420,10 +2421,12 @@ public class MainMenu {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (mainGUI.getCurrentTab() != null) {
-					mainGUI.getCurrentTab().extractAllRepeatedStrings();
+					mainGUI.getCurrentTab().extractAllRepeatedStrings(addPrefixWhenExtracting.isSelected());
 				}
 			}
 		});
+
+		addPrefixWhenExtracting = new JCheckBoxMenuItem("Add 'StrConstants.' in front of String when Extracting");
 
 		// WHY IN THE WORLDS DOES JPOPUP NOT EXTEND JMENU AAAARGHS?!?
 		if (menu instanceof JMenu) {
@@ -2434,9 +2437,11 @@ public class MainMenu {
 			code.add(addGettersAndSettersJava);
 			code.add(addToString);
 			code.add(addEquals);
+			code.addSeparator();
 			code.add(extractString);
 			code.add(extractAllStrings);
 			code.add(extractAllRepeatedStrings);
+			code.add(addPrefixWhenExtracting);
 		} else {
 			JPopupMenu code = (JPopupMenu) menu;
 			code.add(addConstructorJava);
@@ -2445,9 +2450,11 @@ public class MainMenu {
 			code.add(addGettersAndSettersJava);
 			code.add(addToString);
 			code.add(addEquals);
+			code.addSeparator();
 			code.add(extractString);
 			code.add(extractAllStrings);
 			code.add(extractAllRepeatedStrings);
+			// leave out addPrefixWhenExtracting as there shall be only one of them
 		}
 	}
 

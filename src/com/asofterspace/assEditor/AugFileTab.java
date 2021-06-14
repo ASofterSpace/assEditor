@@ -1157,19 +1157,19 @@ public class AugFileTab implements FileTab {
 		highlighter.unindentSelection(levelAmount, forceUnindent, unindentWithWhat);
 	}
 
-	public void extractString() {
+	public void extractString(boolean addPrefix) {
 
-		highlighter.extractString();
+		highlighter.extractString(addPrefix);
 	}
 
-	public void extractAllStrings() {
+	public void extractAllStrings(boolean addPrefix) {
 
-		highlighter.extractAllStrings();
+		highlighter.extractAllStrings(addPrefix);
 	}
 
-	public void extractAllRepeatedStrings() {
+	public void extractAllRepeatedStrings(boolean addPrefix) {
 
-		highlighter.extractAllRepeatedStrings();
+		highlighter.extractAllRepeatedStrings(addPrefix);
 	}
 
 	private void setCaretPos(int newSelStart, int newSelEnd) {
