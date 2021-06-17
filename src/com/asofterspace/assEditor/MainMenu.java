@@ -1210,7 +1210,7 @@ public class MainMenu {
 
 		operations.addSeparator();
 
-		JMenuItem remTextUntil = new JMenuItem("Remove Text Until First Text In Search Field From Each Line");
+		JMenuItem remTextUntil = new JMenuItem("Remove Text From Each Line Until First Instance Of Text In Search Field");
 		remTextUntil.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -1221,7 +1221,7 @@ public class MainMenu {
 		});
 		operations.add(remTextUntil);
 
-		JMenuItem remTextAfter = new JMenuItem("Remove Text After Last Text In Search Field From Each Line");
+		JMenuItem remTextAfter = new JMenuItem("Remove Text From Each Line After Last Instace Of Text In Search Field");
 		remTextAfter.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
