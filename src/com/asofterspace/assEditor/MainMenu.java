@@ -2148,6 +2148,8 @@ public class MainMenu {
 		addCharCopyItem("|", menu);
 		addCharCopyItem("0", menu);
 		addCharCopyItem("=", menu);
+		addCharCopyItem("\\", menu);
+		addCharCopyItem("{", menu);
 		addCharCopyItem("}", menu);
 
 		mainFrame.setJMenuBar(menu);
