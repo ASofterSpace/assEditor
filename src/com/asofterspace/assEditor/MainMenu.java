@@ -2145,15 +2145,18 @@ public class MainMenu {
 		huh.add(about);
 		menu.add(huh);
 
-		addCharCopyItem("@", menu);
+		addCharCopyItem("/", menu);
 		addCharCopyItem("|", menu);
+		addCharCopyItem("\\", menu);
+		addCharCopyItem("@", menu);
 		addCharCopyItem("0", menu);
 		addCharCopyItem("=", menu);
-		addCharCopyItem("\\", menu);
 		addCharCopyItem("{", menu);
 		addCharCopyItem("}", menu);
 		addCharCopyItem("[", menu);
 		addCharCopyItem("]", menu);
+		addCharCopyItem("<", menu);
+		addCharCopyItem(">", menu);
 
 		mainFrame.setJMenuBar(menu);
 
