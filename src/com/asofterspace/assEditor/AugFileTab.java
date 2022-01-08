@@ -1209,6 +1209,60 @@ public class AugFileTab implements FileTab {
 		setCaretPos(newSelStart, newSelEnd);
 	}
 
+	public void selectFromHereLine() {
+
+		ensureLoaded();
+
+		String content = fileContentMemo.getText();
+
+		int newSelStart = fileContentMemo.getCaretPosition();
+		int newSelEnd = newSelStart;
+
+		while ((newSelEnd < content.length()) && (content.charAt(newSelEnd) != '\n')) {
+			newSelEnd++;
+		}
+
+		setCaretPos(newSelStart, newSelEnd);
+	}
+
+	public void selectToHereLine() {
+
+		ensureLoaded();
+
+		String content = fileContentMemo.getText();
+
+		int newSelStart = fileContentMemo.getCaretPosition();
+		int newSelEnd = newSelStart;
+
+		while ((newSelStart >= 0) && (content.charAt(newSelStart) != '\n')) {
+			newSelStart--;
+		}
+		newSelStart++;
+
+		setCaretPos(newSelStart, newSelEnd);
+	}
+
+	public void selectCurrentLine() {
+
+		ensureLoaded();
+
+		String content = fileContentMemo.getText();
+
+		int newSelStart = fileContentMemo.getCaretPosition();
+		int newSelEnd = newSelStart;
+
+		while ((newSelStart >= 0) && (content.charAt(newSelStart) != '\n')) {
+			newSelStart--;
+		}
+		newSelStart++;
+
+		while ((newSelEnd < content.length()) && (content.charAt(newSelEnd) != '\n')) {
+			newSelEnd++;
+		}
+
+		setCaretPos(newSelStart, newSelEnd);
+	}
+
 	private String lastSearched = null;
 
 	public void search(String searchFor) {

@@ -370,6 +370,39 @@ public class MainMenu {
 		});
 		edit.add(selectFromHere);
 
+		JMenuItem selectToHereLine = new JMenuItem("Select from Start of Line to Here");
+		selectToHereLine.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (mainGUI.getCurrentTab() != null) {
+					mainGUI.getCurrentTab().selectToHereLine();
+				}
+			}
+		});
+		edit.add(selectToHereLine);
+
+		JMenuItem selectFromHereLine = new JMenuItem("Select from Here to End of Line");
+		selectFromHereLine.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (mainGUI.getCurrentTab() != null) {
+					mainGUI.getCurrentTab().selectFromHereLine();
+				}
+			}
+		});
+		edit.add(selectFromHereLine);
+
+		JMenuItem selectCurLine = new JMenuItem("Select Current Line");
+		selectCurLine.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (mainGUI.getCurrentTab() != null) {
+					mainGUI.getCurrentTab().selectCurrentLine();
+				}
+			}
+		});
+		edit.add(selectCurLine);
+
 		JMenuItem selectAll = new JMenuItem("Select All");
 		selectAll.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A, ActionEvent.CTRL_MASK));
 		selectAll.addActionListener(new ActionListener() {
