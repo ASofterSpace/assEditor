@@ -12,6 +12,8 @@ import com.asofterspace.toolbox.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.SwingUtilities;
+
 
 public class AugFileOpenCallback implements OpenFileCallback {
 
@@ -97,20 +99,25 @@ public class AugFileOpenCallback implements OpenFileCallback {
 		// if the new file does not exist at the determined path name, then the package must belong to a different repository... uwäh!
 		// sooo try to go further up and check some other directories...
 		// basically, we have to search for the file everywhere xD
-		// we here specify how many directories we are willing to go up at most to search for the file
-		// (if this is too small, we will not find the file; if this is too large, we will take forever and crash the application...
-		// TODO :: put this into a thread?)
-		int maxUpDirs = 4;
-		Directory currentBaseDir = baseDirectory;
-		while (maxUpDirs > 0) {
-			currentBaseDir = new Directory(currentBaseDir.getAbsoluteDirname() + "/..");
-			File newFile = currentBaseDir.findFileFromList(localNames);
-			if ((newFile != null) && newFile.exists()) {
-				mainGUI.loadFile(newFile);
-				return true;
+		new Thread(new Runnable() {
+			public void run() {
+				Directory currentBaseDir = new Directory(localDirectory.getAbsoluteDirname());
+				long startTime = System.currentTimeMillis();
+				// do not search for more than a minute
+				while (System.currentTimeMillis() - startTime < 60*1000) {
+					File newFile = currentBaseDir.findFileFromList(localNames);
+					if ((newFile != null) && newFile.exists()) {
+						SwingUtilities.invokeLater(new Runnable() {
+							public void run() {
+								mainGUI.loadFile(newFile);
+							}
+						});
+						return;
+					}
+					currentBaseDir = new Directory(currentBaseDir.getAbsoluteDirname() + "/..");
+				}
 			}
-			maxUpDirs--;
-		}
+		}).start();
 
 		return false;
 	}
