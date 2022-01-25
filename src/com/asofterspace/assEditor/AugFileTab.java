@@ -1266,6 +1266,14 @@ public class AugFileTab implements FileTab {
 	private String lastSearched = null;
 
 	public void search(String searchFor) {
+		searchInADirection(searchFor, true);
+	}
+
+	public void searchUp(String searchFor) {
+		searchInADirection(searchFor, false);
+	}
+
+	public void searchInADirection(String searchFor, boolean searchDown) {
 
 		ensureLoaded();
 
@@ -1273,20 +1281,22 @@ public class AugFileTab implements FileTab {
 
 		int curpos = fileContentMemo.getCaretPosition();
 
-		// if we already searched for the exact same string before, but it was shorter (or
-		// longer, but definitely not the same), then continue searching at the same position,
-		// so that we are not jumping around needlessly while someone is entering their search
-		// query letter-by-letter
-		if (lastSearched != null) {
-			if (searchFor != null) {
-				if (lastSearched.length() < searchFor.length()) {
-					if (searchFor.startsWith(lastSearched)) {
-						curpos -= searchFor.length();
+		if (searchDown) {
+			// if we already searched for the exact same string before, but it was shorter (or
+			// longer, but definitely not the same), then continue searching at the same position,
+			// so that we are not jumping around needlessly while someone is entering their search
+			// query letter-by-letter
+			if (lastSearched != null) {
+				if (searchFor != null) {
+					if (lastSearched.length() < searchFor.length()) {
+						if (searchFor.startsWith(lastSearched)) {
+							curpos -= searchFor.length();
+						}
 					}
-				}
-				if (lastSearched.length() > searchFor.length()) {
-					if (lastSearched.startsWith(searchFor)) {
-						curpos -= lastSearched.length();
+					if (lastSearched.length() > searchFor.length()) {
+						if (lastSearched.startsWith(searchFor)) {
+							curpos -= lastSearched.length();
+						}
 					}
 				}
 			}
@@ -1315,14 +1325,20 @@ public class AugFileTab implements FileTab {
 		Integer nextpos = null;
 		Integer nextlength = 0;
 
-		for (Pair<Integer, Integer> site : foundSites) {
-
-			int pos = site.getLeft();
-
-			if (pos >= curpos) {
-				nextpos = pos;
-				nextlength = site.getRight();
-				break;
+		if (searchDown) {
+			for (Pair<Integer, Integer> site : foundSites) {
+				if (site.getLeft() >= curpos) {
+					nextpos = site.getLeft();
+					nextlength = site.getRight();
+					break;
+				}
+			}
+		} else {
+			for (Pair<Integer, Integer> site : foundSites) {
+				if (site.getLeft() + site.getRight() < curpos) {
+					nextpos = site.getLeft();
+					nextlength = site.getRight();
+				}
 			}
 		}
 
@@ -1330,7 +1346,12 @@ public class AugFileTab implements FileTab {
 			for (Pair<Integer, Integer> site : foundSites) {
 				nextpos = site.getLeft();
 				nextlength = site.getRight();
-				break;
+
+				// if searching down, and did overflow, go to the front, so break...
+				if (searchDown) {
+					break;
+				}
+				// else: do not break and go all the way to the end!
 			}
 		}
 

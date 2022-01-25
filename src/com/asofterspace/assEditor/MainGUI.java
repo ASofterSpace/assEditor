@@ -663,7 +663,7 @@ public class MainGUI extends MainWindow {
 			}
 		});
 
-		JButton searchButton = new JButton("Search");
+		JButton searchButton = new JButton("Search Down");
 		searchButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				String searchFor = searchField.getText();
@@ -674,9 +674,20 @@ public class MainGUI extends MainWindow {
 			}
 		});
 
+		JButton searchUpButton = new JButton("Search Up");
+		searchUpButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				String searchFor = searchField.getText();
+
+				if (currentlyShownTab != null) {
+					currentlyShownTab.searchUp(searchFor);
+				}
+			}
+		});
+
 		replaceField = new JTextArea();
 
-		JButton replaceButton = new JButton("Replace");
+		JButton replaceButton = new JButton("Replace All");
 		replaceButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				String searchFor = searchField.getText();
@@ -700,7 +711,8 @@ public class MainGUI extends MainWindow {
 		});
 
 		searchPanelSearchLine.add(searchField, new Arrangement(0, 0, 1.0, 1.0));
-		searchPanelSearchLine.add(searchButton, new Arrangement(1, 0, 0.1, 1.0));
+		searchPanelSearchLine.add(searchButton, new Arrangement(1, 0, 0.02, 1.0));
+		searchPanelSearchLine.add(searchUpButton, new Arrangement(2, 0, 0.02, 1.0));
 		searchPanelReplaceLine.add(replaceField, new Arrangement(0, 0, 1.0, 1.0));
 		searchPanelReplaceLine.add(replaceButton, new Arrangement(1, 0, 0.1, 1.0));
 
