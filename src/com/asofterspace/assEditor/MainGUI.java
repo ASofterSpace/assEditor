@@ -25,6 +25,7 @@ import com.asofterspace.toolbox.io.JSON;
 import com.asofterspace.toolbox.io.SimpleFile;
 import com.asofterspace.toolbox.utils.CallbackWithStatus;
 import com.asofterspace.toolbox.utils.Record;
+import com.asofterspace.toolbox.utils.StrUtils;
 import com.asofterspace.toolbox.Utils;
 
 import java.awt.BorderLayout;
@@ -60,12 +61,14 @@ import javax.swing.JButton;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.plaf.basic.BasicScrollBarUI;
+import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.tree.TreeCellEditor;
 import javax.swing.tree.TreePath;
@@ -131,6 +134,8 @@ public class MainGUI extends MainWindow {
 	private JTextArea noteArea;
 	private JScrollPane noteAreaScroller;
 	private SimpleFile noteAreaFile;
+	private JLabel searchStatsLabel;
+	private JPanel searchPanelReplaceLine;
 
 	private Integer currentBackup;
 
@@ -622,7 +627,7 @@ public class MainGUI extends MainWindow {
 
 		JPanel searchPanelSearchLine = new JPanel();
 		searchPanelSearchLine.setLayout(new GridBagLayout());
-		JPanel searchPanelReplaceLine = new JPanel();
+		searchPanelReplaceLine = new JPanel();
 		searchPanelReplaceLine.setLayout(new GridBagLayout());
 		searchPanel.add(searchPanelSearchLine, new Arrangement(0, 0, 1.0, 1.0));
 		searchPanel.add(searchPanelReplaceLine, new Arrangement(0, 1, 1.0, 1.0));
@@ -710,11 +715,16 @@ public class MainGUI extends MainWindow {
 			}
 		});
 
+		searchStatsLabel = new JLabel();
+		searchStatsLabel.setText("");
+		searchStatsLabel.setHorizontalAlignment(SwingConstants.CENTER);
+
 		searchPanelSearchLine.add(searchField, new Arrangement(0, 0, 1.0, 1.0));
 		searchPanelSearchLine.add(searchButton, new Arrangement(1, 0, 0.02, 1.0));
 		searchPanelSearchLine.add(searchUpButton, new Arrangement(2, 0, 0.02, 1.0));
 		searchPanelReplaceLine.add(replaceField, new Arrangement(0, 0, 1.0, 1.0));
-		searchPanelReplaceLine.add(replaceButton, new Arrangement(1, 0, 0.1, 1.0));
+		searchPanelReplaceLine.add(replaceButton, new Arrangement(1, 0, 0.02, 1.0));
+		searchPanelReplaceLine.add(searchStatsLabel, new Arrangement(2, 0, 0.02, 1.0));
 
 
 		// create note area
@@ -1288,6 +1298,9 @@ public class MainGUI extends MainWindow {
 				replaceField.setBackground(Color.white);
 				fileListComponent.setForeground(Color.black);
 				fileListComponent.setBackground(Color.white);
+				searchStatsLabel.setForeground(Color.black);
+				searchStatsLabel.setBackground(Color.white);
+				searchPanelReplaceLine.setBackground(Color.white);
 				GuiUtils.setCornerColor(augFileListScroller, JScrollPane.LOWER_RIGHT_CORNER, Color.white);
 				GuiUtils.setCornerColor(augFileTreeScroller, JScrollPane.LOWER_RIGHT_CORNER, Color.white);
 				break;
@@ -1307,6 +1320,9 @@ public class MainGUI extends MainWindow {
 				replaceField.setBackground(Color.black);
 				fileListComponent.setForeground(Color.white);
 				fileListComponent.setBackground(Color.black);
+				searchStatsLabel.setForeground(Color.white);
+				searchStatsLabel.setBackground(Color.black);
+				searchPanelReplaceLine.setBackground(Color.black);
 				GuiUtils.setCornerColor(augFileListScroller, JScrollPane.LOWER_RIGHT_CORNER, Color.black);
 				GuiUtils.setCornerColor(augFileTreeScroller, JScrollPane.LOWER_RIGHT_CORNER, Color.black);
 				break;
@@ -2261,6 +2277,12 @@ public class MainGUI extends MainWindow {
 		configuration.set(CONFIG_KEY_SEARCH_ASTERISK, searchAsterisk);
 
 		mainMenu.searchAsterisk.setSelected(getSearchAsterisk());
+	}
+
+	public void setSearchStats(int amountFound) {
+		if (this.searchStatsLabel != null) {
+			this.searchStatsLabel.setText("found " + StrUtils.thingOrThings(amountFound, "time"));
+		}
 	}
 
 }

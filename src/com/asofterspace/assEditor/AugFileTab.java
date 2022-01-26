@@ -1322,6 +1322,8 @@ public class AugFileTab implements FileTab {
 
 		List<Pair<Integer, Integer>> foundSites = highlighter.findSearchSites(text);
 
+		mainGUI.setSearchStats(foundSites.size());
+
 		Integer nextpos = null;
 		Integer nextlength = 0;
 
