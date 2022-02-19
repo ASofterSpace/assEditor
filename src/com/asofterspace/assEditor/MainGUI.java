@@ -135,6 +135,9 @@ public class MainGUI extends MainWindow {
 	private JScrollPane noteAreaScroller;
 	private SimpleFile noteAreaFile;
 	private JLabel searchStatsLabel;
+	private JLabel ignoreCapsInSearchLabel;
+	private JLabel useEscapedCharsInSearchLabel;
+	private JLabel useAsteriskInSearchLabel;
 	private JPanel searchPanelReplaceLine;
 
 	private Integer currentBackup;
@@ -719,12 +722,45 @@ public class MainGUI extends MainWindow {
 		searchStatsLabel.setText("");
 		searchStatsLabel.setHorizontalAlignment(SwingConstants.CENTER);
 
+		ignoreCapsInSearchLabel = new JLabel();
+		ignoreCapsInSearchLabel.setHorizontalAlignment(SwingConstants.CENTER);
+		ignoreCapsInSearchLabel.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				setSearchIgnoreCase(!searchIgnoreCase);
+			}
+		});
+		updateIgnoreCapsInSearchLabel();
+
+		useEscapedCharsInSearchLabel = new JLabel();
+		useEscapedCharsInSearchLabel.setHorizontalAlignment(SwingConstants.CENTER);
+		useEscapedCharsInSearchLabel.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				setSearchUseEscapedChars(!searchUseEscapedChars);
+			}
+		});
+		updateUseEscapedCharsInSearchLabel();
+
+		useAsteriskInSearchLabel = new JLabel();
+		useAsteriskInSearchLabel.setHorizontalAlignment(SwingConstants.CENTER);
+		useAsteriskInSearchLabel.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				setSearchAsterisk(!searchAsterisk);
+			}
+		});
+		updateUseAsteriskInSearchLabel();
+
 		searchPanelSearchLine.add(searchField, new Arrangement(0, 0, 1.0, 1.0));
 		searchPanelSearchLine.add(searchButton, new Arrangement(1, 0, 0.02, 1.0));
 		searchPanelSearchLine.add(searchUpButton, new Arrangement(2, 0, 0.02, 1.0));
 		searchPanelReplaceLine.add(replaceField, new Arrangement(0, 0, 1.0, 1.0));
 		searchPanelReplaceLine.add(replaceButton, new Arrangement(1, 0, 0.02, 1.0));
 		searchPanelReplaceLine.add(searchStatsLabel, new Arrangement(2, 0, 0.02, 1.0));
+		searchPanelReplaceLine.add(ignoreCapsInSearchLabel, new Arrangement(3, 0, 0.02, 1.0));
+		searchPanelReplaceLine.add(useEscapedCharsInSearchLabel, new Arrangement(4, 0, 0.02, 1.0));
+		searchPanelReplaceLine.add(useAsteriskInSearchLabel, new Arrangement(5, 0, 0.02, 1.0));
 
 
 		// create note area
@@ -1300,6 +1336,12 @@ public class MainGUI extends MainWindow {
 				fileListComponent.setBackground(Color.white);
 				searchStatsLabel.setForeground(Color.black);
 				searchStatsLabel.setBackground(Color.white);
+				ignoreCapsInSearchLabel.setForeground(Color.black);
+				ignoreCapsInSearchLabel.setBackground(Color.white);
+				useEscapedCharsInSearchLabel.setForeground(Color.black);
+				useEscapedCharsInSearchLabel.setBackground(Color.white);
+				useAsteriskInSearchLabel.setForeground(Color.black);
+				useAsteriskInSearchLabel.setBackground(Color.white);
 				searchPanelReplaceLine.setBackground(Color.white);
 				GuiUtils.setCornerColor(augFileListScroller, JScrollPane.LOWER_RIGHT_CORNER, Color.white);
 				GuiUtils.setCornerColor(augFileTreeScroller, JScrollPane.LOWER_RIGHT_CORNER, Color.white);
@@ -1322,6 +1364,12 @@ public class MainGUI extends MainWindow {
 				fileListComponent.setBackground(Color.black);
 				searchStatsLabel.setForeground(Color.white);
 				searchStatsLabel.setBackground(Color.black);
+				ignoreCapsInSearchLabel.setForeground(Color.white);
+				ignoreCapsInSearchLabel.setBackground(Color.black);
+				useEscapedCharsInSearchLabel.setForeground(Color.white);
+				useEscapedCharsInSearchLabel.setBackground(Color.black);
+				useAsteriskInSearchLabel.setForeground(Color.white);
+				useAsteriskInSearchLabel.setBackground(Color.black);
 				searchPanelReplaceLine.setBackground(Color.black);
 				GuiUtils.setCornerColor(augFileListScroller, JScrollPane.LOWER_RIGHT_CORNER, Color.black);
 				GuiUtils.setCornerColor(augFileTreeScroller, JScrollPane.LOWER_RIGHT_CORNER, Color.black);
@@ -2247,6 +2295,22 @@ public class MainGUI extends MainWindow {
 		configuration.set(CONFIG_KEY_SEARCH_IGNORE_CASE, searchIgnoreCase);
 
 		mainMenu.searchIgnoreCase.setSelected(getSearchIgnoreCase());
+
+		updateIgnoreCapsInSearchLabel();
+
+		if (currentlyShownTab != null) {
+			currentlyShownTab.repeatLastSearch();
+		}
+	}
+
+	public void updateIgnoreCapsInSearchLabel() {
+		if (ignoreCapsInSearchLabel != null) {
+			if (this.searchIgnoreCase) {
+				ignoreCapsInSearchLabel.setText("ignoring caps");
+			} else {
+				ignoreCapsInSearchLabel.setText("caps must match");
+			}
+		}
 	}
 
 	public boolean getSearchUseEscapedChars() {
@@ -2262,6 +2326,22 @@ public class MainGUI extends MainWindow {
 		configuration.set(CONFIG_KEY_SEARCH_USE_ESCAPED_CHARS, searchUseEscapedChars);
 
 		mainMenu.searchUseEscapedChars.setSelected(getSearchUseEscapedChars());
+
+		updateUseEscapedCharsInSearchLabel();
+
+		if (currentlyShownTab != null) {
+			currentlyShownTab.repeatLastSearch();
+		}
+	}
+
+	public void updateUseEscapedCharsInSearchLabel() {
+		if (useEscapedCharsInSearchLabel != null) {
+			if (this.searchUseEscapedChars) {
+				useEscapedCharsInSearchLabel.setText("use \\n, \\r and \\t");
+			} else {
+				useEscapedCharsInSearchLabel.setText("take '\\' literally");
+			}
+		}
 	}
 
 	public boolean getSearchAsterisk() {
@@ -2277,6 +2357,22 @@ public class MainGUI extends MainWindow {
 		configuration.set(CONFIG_KEY_SEARCH_ASTERISK, searchAsterisk);
 
 		mainMenu.searchAsterisk.setSelected(getSearchAsterisk());
+
+		updateUseAsteriskInSearchLabel();
+
+		if (currentlyShownTab != null) {
+			currentlyShownTab.repeatLastSearch();
+		}
+	}
+
+	public void updateUseAsteriskInSearchLabel() {
+		if (useAsteriskInSearchLabel != null) {
+			if (this.searchAsterisk) {
+				useAsteriskInSearchLabel.setText("use * as wildcard");
+			} else {
+				useAsteriskInSearchLabel.setText("take '*' literally");
+			}
+		}
 	}
 
 	public void setSearchStats(int amountFound) {
