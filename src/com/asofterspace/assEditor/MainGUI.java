@@ -138,6 +138,7 @@ public class MainGUI extends MainWindow {
 	private JLabel ignoreCapsInSearchLabel;
 	private JLabel useEscapedCharsInSearchLabel;
 	private JLabel useAsteriskInSearchLabel;
+	private JPanel searchPanelSearchLine;
 	private JPanel searchPanelReplaceLine;
 
 	private Integer currentBackup;
@@ -628,7 +629,7 @@ public class MainGUI extends MainWindow {
 		searchPanel.setLayout(new GridBagLayout());
 		searchPanel.setVisible(false);
 
-		JPanel searchPanelSearchLine = new JPanel();
+		searchPanelSearchLine = new JPanel();
 		searchPanelSearchLine.setLayout(new GridBagLayout());
 		searchPanelReplaceLine = new JPanel();
 		searchPanelReplaceLine.setLayout(new GridBagLayout());
@@ -755,12 +756,12 @@ public class MainGUI extends MainWindow {
 		searchPanelSearchLine.add(searchField, new Arrangement(0, 0, 1.0, 1.0));
 		searchPanelSearchLine.add(searchButton, new Arrangement(1, 0, 0.02, 1.0));
 		searchPanelSearchLine.add(searchUpButton, new Arrangement(2, 0, 0.02, 1.0));
+		searchPanelSearchLine.add(searchStatsLabel, new Arrangement(3, 0, 0.02, 1.0));
 		searchPanelReplaceLine.add(replaceField, new Arrangement(0, 0, 1.0, 1.0));
 		searchPanelReplaceLine.add(replaceButton, new Arrangement(1, 0, 0.02, 1.0));
-		searchPanelReplaceLine.add(searchStatsLabel, new Arrangement(2, 0, 0.02, 1.0));
-		searchPanelReplaceLine.add(ignoreCapsInSearchLabel, new Arrangement(3, 0, 0.02, 1.0));
-		searchPanelReplaceLine.add(useEscapedCharsInSearchLabel, new Arrangement(4, 0, 0.02, 1.0));
-		searchPanelReplaceLine.add(useAsteriskInSearchLabel, new Arrangement(5, 0, 0.02, 1.0));
+		searchPanelReplaceLine.add(ignoreCapsInSearchLabel, new Arrangement(2, 0, 0.02, 1.0));
+		searchPanelReplaceLine.add(useEscapedCharsInSearchLabel, new Arrangement(3, 0, 0.02, 1.0));
+		searchPanelReplaceLine.add(useAsteriskInSearchLabel, new Arrangement(4, 0, 0.02, 1.0));
 
 
 		// create note area
@@ -1342,6 +1343,7 @@ public class MainGUI extends MainWindow {
 				useEscapedCharsInSearchLabel.setBackground(Color.white);
 				useAsteriskInSearchLabel.setForeground(Color.black);
 				useAsteriskInSearchLabel.setBackground(Color.white);
+				searchPanelSearchLine.setBackground(Color.white);
 				searchPanelReplaceLine.setBackground(Color.white);
 				GuiUtils.setCornerColor(augFileListScroller, JScrollPane.LOWER_RIGHT_CORNER, Color.white);
 				GuiUtils.setCornerColor(augFileTreeScroller, JScrollPane.LOWER_RIGHT_CORNER, Color.white);
@@ -1370,6 +1372,7 @@ public class MainGUI extends MainWindow {
 				useEscapedCharsInSearchLabel.setBackground(Color.black);
 				useAsteriskInSearchLabel.setForeground(Color.white);
 				useAsteriskInSearchLabel.setBackground(Color.black);
+				searchPanelSearchLine.setBackground(Color.black);
 				searchPanelReplaceLine.setBackground(Color.black);
 				GuiUtils.setCornerColor(augFileListScroller, JScrollPane.LOWER_RIGHT_CORNER, Color.black);
 				GuiUtils.setCornerColor(augFileTreeScroller, JScrollPane.LOWER_RIGHT_CORNER, Color.black);
