@@ -100,6 +100,7 @@ public class AugFileTab implements FileTab {
 	private boolean standalone = false;
 
 	private String lastSearched = null;
+	private String lastSearchedOrigCaps = null;
 	private boolean lastSearchDirection = true;
 
 
@@ -1275,10 +1276,13 @@ public class AugFileTab implements FileTab {
 	}
 
 	public void repeatLastSearch() {
-		searchInADirection(lastSearched, lastSearchDirection);
+		searchInADirection(lastSearchedOrigCaps, lastSearchDirection);
 	}
 
 	public void searchInADirection(String searchFor, boolean searchDown) {
+
+		lastSearchedOrigCaps = searchFor;
+		lastSearchDirection = searchDown;
 
 		ensureLoaded();
 
@@ -1319,7 +1323,6 @@ public class AugFileTab implements FileTab {
 		}
 
 		lastSearched = searchFor;
-		lastSearchDirection = searchDown;
 
 		// search via the highlighter (as it needs to do the search anyway to highlight all the matches)
 		highlighter.setSearchIgnoreCase(mainGUI.getSearchIgnoreCase());
