@@ -1007,7 +1007,7 @@ public class AugFileTab implements FileTab {
 	/**
 	 * Inserts text at the cursor position
 	 */
-	public void insertText(String text) {
+	public void insertText(String text, int selAdjust) {
 
 		ensureLoaded();
 
@@ -1023,7 +1023,7 @@ public class AugFileTab implements FileTab {
 
 		fileContentMemo.setText(sourceCode);
 		if (carPos >= selStart) {
-			fileContentMemo.setCaretPosition(selStart + midStr.length());
+			fileContentMemo.setCaretPosition(selStart + midStr.length() + selAdjust);
 		} else {
 			fileContentMemo.setCaretPosition(carPos);
 		}

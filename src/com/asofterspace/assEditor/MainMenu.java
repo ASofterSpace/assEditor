@@ -1680,7 +1680,7 @@ public class MainMenu {
 			public void actionPerformed(ActionEvent e) {
 				AugFileTab tab = mainGUI.getCurrentTab();
 				if (tab != null) {
-					tab.insertText(UuidEncoderDecoder.generateJavaUUID());
+					tab.insertText(UuidEncoderDecoder.generateJavaUUID(), 0);
 				}
 			}
 		});
@@ -2178,18 +2178,18 @@ public class MainMenu {
 		huh.add(about);
 		menu.add(huh);
 
-		addCharCopyItem("/", menu);
-		addCharCopyItem("|", menu);
-		addCharCopyItem("\\", menu);
-		addCharCopyItem("@", menu);
-		addCharCopyItem("0", menu);
-		addCharCopyItem("=", menu);
-		addCharCopyItem("{", menu);
-		addCharCopyItem("}", menu);
-		addCharCopyItem("[", menu);
-		addCharCopyItem("]", menu);
-		addCharCopyItem("<", menu);
-		addCharCopyItem(">", menu);
+		addCharCopyItem("/", 0, menu);
+		addCharCopyItem("|", 0, menu);
+		addCharCopyItem("\\", 0, menu);
+		addCharCopyItem("@", 0, menu);
+		addCharCopyItem("0", 0, menu);
+		addCharCopyItem("=", 0, menu);
+		addCharCopyItem("{}", -1, menu);
+		addCharCopyItem("}", 0, menu);
+		addCharCopyItem("[]", -1, menu);
+		addCharCopyItem("]", 0, menu);
+		addCharCopyItem("<", 0, menu);
+		addCharCopyItem(">", 0, menu);
 
 		mainFrame.setJMenuBar(menu);
 
@@ -2359,7 +2359,7 @@ public class MainMenu {
 		});
 	}
 
-	private void addCharCopyItem(String character, JMenuBar menu) {
+	private void addCharCopyItem(String character, int selAdjust, JMenuBar menu) {
 
 		MenuItemForMainMenu item = new MenuItemForMainMenu(character);
 		item.addMouseListener(new MouseAdapter() {
@@ -2367,7 +2367,7 @@ public class MainMenu {
 			public void mouseClicked(MouseEvent e) {
 				AugFileTab tab = mainGUI.getCurrentTab();
 				if (tab != null) {
-					tab.insertText(character);
+					tab.insertText(character, selAdjust);
 				}
 			}
 		});
