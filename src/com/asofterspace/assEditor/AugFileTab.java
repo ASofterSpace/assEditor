@@ -81,6 +81,10 @@ public class AugFileTab implements FileTab {
 	private boolean goBackEnabled = true;
 	private boolean goForwardEnabled = true;
 	private JLabel nameLabel;
+	private JLabel scrollToCursorLabel;
+	private JLabel scrollToChangedAreaLabelTop;
+	private JLabel scrollToChangedAreaLabelMid;
+	private JLabel scrollToChangedAreaLabelBtm;
 	private JTextPane lineMemo;
 	private CodeEditor fileContentMemo;
 	private JScrollPane sourceCodeScroller;
@@ -144,9 +148,22 @@ public class AugFileTab implements FileTab {
 		topHUD = new JPanel();
 		topHUD.setLayout(new GridBagLayout());
 
-		goBackLabel = new JLabel("  < ");
+		scrollToLabel = new JLabel("  ÷ ");
+		scrollToLabel.setToolTipText("Scroll to Current Tab in File Explorer");
+		scrollToLabel.setVisible(!standalone);
+		topHUD.add(scrollToLabel, new Arrangement(0, 0, 0.0, 0.0));
+
+		scrollToLabel.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				mainGUI.scrollToCurrentTab();
+			}
+		});
+
+		goBackLabel = new JLabel(" < ");
+		goBackLabel.setToolTipText("Go to Previous Tab");
 		goBackLabel.setVisible(!standalone);
-		topHUD.add(goBackLabel, new Arrangement(0, 0, 0.0, 0.0));
+		topHUD.add(goBackLabel, new Arrangement(1, 0, 0.0, 0.0));
 
 		goBackLabel.addMouseListener(new MouseAdapter() {
 			@Override
@@ -156,24 +173,14 @@ public class AugFileTab implements FileTab {
 		});
 
 		goForwardLabel = new JLabel(" > ");
+		goForwardLabel.setToolTipText("Go to Next Tab");
 		goForwardLabel.setVisible(!standalone);
-		topHUD.add(goForwardLabel, new Arrangement(1, 0, 0.0, 0.0));
+		topHUD.add(goForwardLabel, new Arrangement(2, 0, 0.0, 0.0));
 
 		goForwardLabel.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				mainGUI.goToNextTab();
-			}
-		});
-
-		scrollToLabel = new JLabel(" ÷ ");
-		scrollToLabel.setVisible(!standalone);
-		topHUD.add(scrollToLabel, new Arrangement(2, 0, 0.0, 0.0));
-
-		scrollToLabel.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				mainGUI.scrollToCurrentTab();
 			}
 		});
 
@@ -188,6 +195,62 @@ public class AugFileTab implements FileTab {
 				StringSelection selection = new StringSelection(getFilePath());
 				Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
 				clipboard.setContents(selection, selection);
+			}
+		});
+
+		scrollToCursorLabel = new JLabel(" ÷ ");
+		scrollToCursorLabel.setToolTipText("Scroll Code Editor to Cursor Pos");
+		scrollToCursorLabel.setHorizontalAlignment(JLabel.RIGHT);
+		topHUD.add(scrollToCursorLabel, new Arrangement(4, 0, 0.0, 0.0));
+
+		scrollToCursorLabel.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				ensureLoaded();
+				scrollTo(fileContentMemo.getCaretPosition());
+			}
+		});
+
+		scrollToChangedAreaLabelTop = new JLabel(" +");
+		scrollToChangedAreaLabelTop.setToolTipText("Scroll Code Editor to Top of Changed Area");
+		scrollToChangedAreaLabelTop.setHorizontalAlignment(JLabel.RIGHT);
+		topHUD.add(scrollToChangedAreaLabelTop, new Arrangement(5, 0, 0.0, 0.0));
+
+		scrollToChangedAreaLabelTop.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				ensureLoaded();
+				int firstDiffAt = fileContentMemo.getFirstDiffAt();
+				scrollTo(firstDiffAt);
+			}
+		});
+
+		scrollToChangedAreaLabelMid = new JLabel("/");
+		scrollToChangedAreaLabelMid.setToolTipText("Scroll Code Editor to Middle of Changed Area");
+		scrollToChangedAreaLabelMid.setHorizontalAlignment(JLabel.RIGHT);
+		topHUD.add(scrollToChangedAreaLabelMid, new Arrangement(6, 0, 0.0, 0.0));
+
+		scrollToChangedAreaLabelMid.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				ensureLoaded();
+				int firstDiffAt = fileContentMemo.getFirstDiffAt();
+				int lastDiffAt = fileContentMemo.getLastDiffAt();
+				scrollTo(firstDiffAt + ((lastDiffAt - firstDiffAt) / 2));
+			}
+		});
+
+		scrollToChangedAreaLabelBtm = new JLabel("-  ");
+		scrollToChangedAreaLabelBtm.setToolTipText("Scroll Code Editor to Bottom of Changed Area");
+		scrollToChangedAreaLabelBtm.setHorizontalAlignment(JLabel.RIGHT);
+		topHUD.add(scrollToChangedAreaLabelBtm, new Arrangement(7, 0, 0.0, 0.0));
+
+		scrollToChangedAreaLabelBtm.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				ensureLoaded();
+				int lastDiffAt = fileContentMemo.getLastDiffAt();
+				scrollTo(lastDiffAt);
 			}
 		});
 
@@ -303,27 +366,9 @@ public class AugFileTab implements FileTab {
 					return;
 				}
 
-				highlighter.stopFunctionHighlighting();
+				int targetCaretPos = curFunction.getCaretPos();
 
-				final int targetCaretPos = curFunction.getCaretPos();
-
-				// jump to the end...
-				fileContentMemo.setCaretPosition(fileContentMemo.getText().length());
-				new Thread(new Runnable() {
-					public void run() {
-						try {
-							// ... and a couple milliseconds later...
-							Thread.sleep(50);
-						} catch (InterruptedException e) {
-							// ... or earlier, if you insist...
-						}
-						// ... jump to the actual location (such that the
-						// location is definitely at the TOP of the screen)
-						fileContentMemo.setCaretPosition(targetCaretPos);
-
-						highlighter.startFunctionHighlighting();
-					}
-				}).start();
+				scrollTo(targetCaretPos);
 			}
 		});
 
@@ -334,6 +379,29 @@ public class AugFileTab implements FileTab {
 		parent.add(tab);
 
 		return tab;
+	}
+
+	private void scrollTo(int targetCaretPos) {
+
+		highlighter.stopFunctionHighlighting();
+
+		// jump to the end...
+		fileContentMemo.setCaretPosition(fileContentMemo.getText().length());
+		new Thread(new Runnable() {
+			public void run() {
+				try {
+					// ... and a couple milliseconds later...
+					Thread.sleep(50);
+				} catch (InterruptedException e) {
+					// ... or earlier, if you insist...
+				}
+				// ... jump to the actual location (such that the
+				// location is definitely at the TOP of the screen)
+				fileContentMemo.setCaretPosition(targetCaretPos);
+
+				highlighter.startFunctionHighlighting();
+			}
+		}).start();
 	}
 
 	private void resizeNameLabel() {
@@ -572,6 +640,15 @@ public class AugFileTab implements FileTab {
 
 		scrollToLabel.setForeground(nameLabel.getForeground());
 		scrollToLabel.setBackground(nameLabel.getBackground());
+
+		scrollToCursorLabel.setForeground(nameLabel.getForeground());
+		scrollToCursorLabel.setBackground(nameLabel.getBackground());
+		scrollToChangedAreaLabelTop.setForeground(nameLabel.getForeground());
+		scrollToChangedAreaLabelTop.setBackground(nameLabel.getBackground());
+		scrollToChangedAreaLabelMid.setForeground(nameLabel.getForeground());
+		scrollToChangedAreaLabelMid.setBackground(nameLabel.getBackground());
+		scrollToChangedAreaLabelBtm.setForeground(nameLabel.getForeground());
+		scrollToChangedAreaLabelBtm.setBackground(nameLabel.getBackground());
 
 		MainGUI.setScheme(scheme, sideScrollPane);
 		MainGUI.setScheme(scheme, sourceCodeScroller);
