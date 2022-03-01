@@ -586,7 +586,7 @@ public class MainMenu {
 
 		edit.addSeparator();
 
-		JMenuItem sortDocumentAlph = new JMenuItem("Sort Entire Document Alphabetically");
+		JMenuItem sortDocumentAlph = new JMenuItem("Sort Lines of Entire Document Alphabetically");
 		sortDocumentAlph.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -597,7 +597,7 @@ public class MainMenu {
 		});
 		edit.add(sortDocumentAlph);
 
-		JMenuItem sortDocumentNum = new JMenuItem("Sort Entire Document Numerically");
+		JMenuItem sortDocumentNum = new JMenuItem("Sort Lines of Entire Document Numerically");
 		sortDocumentNum.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -608,7 +608,7 @@ public class MainMenu {
 		});
 		edit.add(sortDocumentNum);
 
-		JMenuItem reverseDocument = new JMenuItem("Reverse Entire Document");
+		JMenuItem reverseDocument = new JMenuItem("Reverse Lines of Entire Document");
 		reverseDocument.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -618,6 +618,17 @@ public class MainMenu {
 			}
 		});
 		edit.add(reverseDocument);
+
+		JMenuItem randomizeDocument = new JMenuItem("Randomize Lines of Entire Document");
+		randomizeDocument.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (mainGUI.getCurrentTab() != null) {
+					mainGUI.getCurrentTab().sortDocument(SortOrder.RANDOM);
+				}
+			}
+		});
+		edit.add(randomizeDocument);
 
 		JMenuItem sortSelectedLinesAlph = new JMenuItem("Sort Selected Lines Alphabetically");
 		sortSelectedLinesAlph.addActionListener(new ActionListener() {
