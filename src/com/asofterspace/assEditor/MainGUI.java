@@ -194,7 +194,7 @@ public class MainGUI extends MainWindow {
 				if (node instanceof FileTreeFile) {
 					FileTreeFile file = (FileTreeFile) node;
 					FileTab fileTab = file.getTab();
-					if (fileTab  instanceof AugFileTab) {
+					if (fileTab instanceof AugFileTab) {
 						AugFileTab tab = (AugFileTab) fileTab;
 
 						String oldName = tab.getName().trim();

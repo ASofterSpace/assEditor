@@ -25,8 +25,8 @@ import javax.swing.SwingUtilities;
 public class AssEditor {
 
 	public final static String PROGRAM_TITLE = "A Softer Space Editor";
-	public final static String VERSION_NUMBER = "0.0.6.0(" + Utils.TOOLBOX_VERSION_NUMBER + ")";
-	public final static String VERSION_DATE = "18. December 2018 - 19. February 2022";
+	public final static String VERSION_NUMBER = "0.0.6.1(" + Utils.TOOLBOX_VERSION_NUMBER + ")";
+	public final static String VERSION_DATE = "18. December 2018 - 26. March 2022";
 
 	private final static String CONFIG_KEY_BACKUP_SETTINGS_NUM = "backupSettingsNum";
 
@@ -88,9 +88,7 @@ public class AssEditor {
 
 		augFileCtrl = new AugFileCtrl(config, standalone, openFilenames.size() < 1);
 
-		for (String filename : openFilenames) {
-			augFileCtrl.loadAnotherFileWithoutSaving(new File(filename));
-		}
+		augFileCtrl.loadSeveralFilesAtStartup(openFilenames);
 
 		SwingUtilities.invokeLater(new MainGUI(augFileCtrl, config, standalone));
 	}

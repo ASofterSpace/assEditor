@@ -7,6 +7,7 @@ package com.asofterspace.assEditor;
 import com.asofterspace.toolbox.codeeditor.utils.CodeLanguage;
 import com.asofterspace.toolbox.configuration.ConfigFile;
 import com.asofterspace.toolbox.io.File;
+import com.asofterspace.toolbox.io.SimpleFile;
 import com.asofterspace.toolbox.utils.DateUtils;
 import com.asofterspace.toolbox.utils.Record;
 
@@ -389,6 +390,16 @@ public class AugFileCtrl {
 		}
 
 		return result;
+	}
+
+	public void loadSeveralFilesAtStartup(List<String> openFilenames) {
+
+		synchronized (files) {
+			for (String filename : openFilenames) {
+				AugFile result = new AugFile(this,  new SimpleFile(filename));
+				files.add(result);
+			}
+		}
 	}
 
 	public AugFile loadAnotherFile(File fileToLoad) {
