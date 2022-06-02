@@ -2277,7 +2277,7 @@ public class MainMenu {
 				workspaceExportGUI.displayCurrentWorkspace();
 			}
 		});
-		switchWorkspace.add(exportWorkspace);
+		editWorkspaces.add(exportWorkspace);
 	}
 
 	public void uncheckWorkspaces() {
