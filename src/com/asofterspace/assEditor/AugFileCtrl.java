@@ -7,7 +7,6 @@ package com.asofterspace.assEditor;
 import com.asofterspace.toolbox.codeeditor.utils.CodeLanguage;
 import com.asofterspace.toolbox.configuration.ConfigFile;
 import com.asofterspace.toolbox.io.File;
-import com.asofterspace.toolbox.io.SimpleFile;
 import com.asofterspace.toolbox.utils.DateUtils;
 import com.asofterspace.toolbox.utils.Record;
 
@@ -39,10 +38,8 @@ public class AugFileCtrl {
 
 	private Record activeWorkspace;
 
-	private Thread saveConfigThread;
 
-
-	public AugFileCtrl(ConfigFile configuration, boolean standalone, boolean addStandaloneFile) {
+	public AugFileCtrl(ConfigFile configuration, boolean standalone, List<String> openFilenames) {
 
 		this.configuration = configuration;
 
@@ -57,7 +54,8 @@ public class AugFileCtrl {
 
 			List<Record> recFiles = standaloneWorkspace.getArray(CONF_WORKSPACE_FILES);
 
-			if (addStandaloneFile) {
+			// if we are in standalone mode, but no files are being opened, create a standalone one
+			if (openFilenames.size() < 1) {
 				Record recFile = new Record();
 
 				recFile.set(CONF_FILENAME, "untitled");
@@ -70,6 +68,8 @@ public class AugFileCtrl {
 		}
 
 		switchToWorkspace(activeWorkspaceName);
+
+		loadSeveralFilesAtStartup(openFilenames);
 	}
 
 	public String getWorkspaceName() {
@@ -375,30 +375,27 @@ public class AugFileCtrl {
 
 		String newFilename = fileToLoad.getCanonicalFilename();
 
-		// first of all check that the file has not already been loaded!
-		for (AugFile oldFile : files) {
-			if (newFilename.equals(oldFile.getFilename())) {
-				// indeed! we found one that we already got!
-				return null;
-			}
-		}
-
-		AugFile result = new AugFile(this, fileToLoad);
-
 		synchronized (files) {
-			files.add(result);
-		}
+			// first of all check that the file has not already been loaded!
+			for (AugFile oldFile : files) {
+				if (newFilename.equals(oldFile.getFilename())) {
+					// indeed! we found one that we already got!
+					return null;
+				}
+			}
 
-		return result;
+			AugFile result = new AugFile(this, fileToLoad);
+
+			files.add(result);
+
+			return result;
+		}
 	}
 
-	public void loadSeveralFilesAtStartup(List<String> openFilenames) {
+	private void loadSeveralFilesAtStartup(List<String> openFilenames) {
 
-		synchronized (files) {
-			for (String filename : openFilenames) {
-				AugFile result = new AugFile(this,  new SimpleFile(filename));
-				files.add(result);
-			}
+		for (String filename : openFilenames) {
+			loadAnotherFileWithoutSaving(new File(filename));
 		}
 	}
 
