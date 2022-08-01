@@ -144,8 +144,12 @@ public class AugFile {
 		file.delete();
 	}
 
-	public void save() {
-		file.save();
+	public String getOriginalLineEndStr() {
+		return file.getOriginalLineEndStr();
+	}
+
+	public void save(String lineEndStr) {
+		file.saveWithLineEndings(lineEndStr);
 	}
 
 }

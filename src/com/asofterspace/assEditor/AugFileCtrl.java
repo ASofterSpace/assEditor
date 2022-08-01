@@ -496,16 +496,4 @@ public class AugFileCtrl {
 		configuration.create();
 	}
 
-	/**
-	 * This saves all entries
-	 */
-	public void save() {
-
-		synchronized (files) {
-			for (AugFile file : files) {
-				file.save();
-			}
-		}
-	}
-
 }

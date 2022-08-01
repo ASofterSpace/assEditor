@@ -65,6 +65,9 @@ public class AugFileTab implements FileTab {
 	// has the file been loaded from the drive?
 	private boolean loaded = false;
 
+	// the line end str that is in use in this file (as long as loaded is true, this contains a value)
+	private String lineEndStr;
+
 	// has the file been changed since loading?
 	private boolean changed = false;
 
@@ -1591,6 +1594,15 @@ public class AugFileTab implements FileTab {
 		}
 	}
 
+	public String getLineEndStr() {
+		return lineEndStr;
+	}
+
+	public void setLineEndStr(String leStr) {
+		this.lineEndStr = leStr;
+		setChanged(true);
+	}
+
 	/**
 	 * Searches for a text and replaces it with a different text
 	 * Returns true if at least one match was found
@@ -1656,66 +1668,63 @@ public class AugFileTab implements FileTab {
 
 	public void save() {
 
-		if (loaded) {
+		ensureLoaded();
 
-			String contentText = fileContentMemo.getText();
+		String contentText = fileContentMemo.getText();
 
-			origCaretPos = fileContentMemo.getCaretPosition();
+		origCaretPos = fileContentMemo.getCaretPosition();
 
-			if (mainGUI.addMissingImportsOnSave) {
+		if (mainGUI.addMissingImportsOnSave) {
 
-				contentText = highlighter.addMissingImports(contentText);
-			}
-
-			if (mainGUI.removeUnusedImportsOnSave) {
-
-				contentText = highlighter.removeUnusedImports(contentText);
-			}
-
-			if (mainGUI.reorganizeImportsOnSave) {
-
-				contentText = highlighter.reorganizeImports(contentText);
-			}
-
-			if (mainGUI.reorganizeImportsOnSaveCompatible) {
-
-				contentText = highlighter.reorganizeImportsCompatible(contentText);
-			}
-
-			if (mainGUI.replaceWhitespacesWithTabsOnSave) {
-
-				contentText = replaceLeadingWhitespacesWithTabs(contentText);
-			}
-
-			if (mainGUI.replaceTabsWithWhitespacesOnSave) {
-
-				contentText = replaceLeadingTabsWithWhitespaces(contentText);
-			}
-
-			if (mainGUI.removeTrailingWhitespaceOnSave) {
-
-				contentText = removeTrailingWhitespace(contentText);
-			}
-
-			if (mainGUI.automagicallyAddSemicolonsOnSave) {
-
-				contentText = highlighter.automagicallyAddSemicolons(contentText);
-			}
-
-			fileContentMemo.setText(contentText);
-
-			if (origCaretPos > contentText.length()) {
-				origCaretPos = contentText.length();
-			}
-
-			fileContentMemo.setCaretPosition(origCaretPos);
-
-			augFile.setContent(contentText);
+			contentText = highlighter.addMissingImports(contentText);
 		}
 
-		augFile.ensureContents();
+		if (mainGUI.removeUnusedImportsOnSave) {
 
-		augFile.save();
+			contentText = highlighter.removeUnusedImports(contentText);
+		}
+
+		if (mainGUI.reorganizeImportsOnSave) {
+
+			contentText = highlighter.reorganizeImports(contentText);
+		}
+
+		if (mainGUI.reorganizeImportsOnSaveCompatible) {
+
+			contentText = highlighter.reorganizeImportsCompatible(contentText);
+		}
+
+		if (mainGUI.replaceWhitespacesWithTabsOnSave) {
+
+			contentText = replaceLeadingWhitespacesWithTabs(contentText);
+		}
+
+		if (mainGUI.replaceTabsWithWhitespacesOnSave) {
+
+			contentText = replaceLeadingTabsWithWhitespaces(contentText);
+		}
+
+		if (mainGUI.removeTrailingWhitespaceOnSave) {
+
+			contentText = removeTrailingWhitespace(contentText);
+		}
+
+		if (mainGUI.automagicallyAddSemicolonsOnSave) {
+
+			contentText = highlighter.automagicallyAddSemicolons(contentText);
+		}
+
+		fileContentMemo.setText(contentText);
+
+		if (origCaretPos > contentText.length()) {
+			origCaretPos = contentText.length();
+		}
+
+		fileContentMemo.setCaretPosition(origCaretPos);
+
+		augFile.setContent(contentText);
+
+		augFile.save(lineEndStr);
 
 		setChanged(false);
 	}
@@ -2143,6 +2152,8 @@ public class AugFileTab implements FileTab {
 			visualPanel = createVisualPanel();
 
 			String content = augFile.getContent();
+
+			lineEndStr = augFile.getOriginalLineEndStr();
 
 			fileContentMemo.setText(content);
 

@@ -1458,6 +1458,65 @@ public class MainMenu {
 			encodings.add(allUsingISOLatin1);
 		}
 
+		encodings.addSeparator();
+
+		JMenuItem transferLEstoWindows = new JMenuItem("Transfer Line Endings to Windows (CR+LF / \\r\\n)");
+		transferLEstoWindows.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (mainGUI.getCurrentTab() != null) {
+					mainGUI.getCurrentTab().setLineEndStr("\r\n");
+				}
+			}
+		});
+		encodings.add(transferLEstoWindows);
+
+		JMenuItem transferLEstoLinux = new JMenuItem("Transfer Line Endings to Linux / OSX (LF / \\n)");
+		transferLEstoLinux.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (mainGUI.getCurrentTab() != null) {
+					mainGUI.getCurrentTab().setLineEndStr("\n");
+				}
+			}
+		});
+		encodings.add(transferLEstoLinux);
+
+		JMenuItem transferLEstoMacOS = new JMenuItem("Transfer Line Endings to Legacy MacOS (CR / \\r)");
+		transferLEstoMacOS.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (mainGUI.getCurrentTab() != null) {
+					mainGUI.getCurrentTab().setLineEndStr("\r");
+				}
+			}
+		});
+		encodings.add(transferLEstoMacOS);
+
+		encodings.addSeparator();
+
+		JMenuItem showLineEndings = new JMenuItem("Show Current Line Endings");
+		showLineEndings.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (mainGUI.getCurrentTab() != null) {
+					String lineEndStr = mainGUI.getCurrentTab().getLineEndStr();
+					String leStr = "unknown";
+					if (lineEndStr.equals("\r\n")) {
+						leStr = "Windows";
+					} else if (lineEndStr.equals("\n")) {
+						leStr = "Linux / OSX";
+					} else if (lineEndStr.equals("\r")) {
+						leStr = "Legacy MacOS";
+					}
+					GuiUtils.notify("The currently opened text's line endings seem to align with:\n" + leStr);
+				} else {
+					GuiUtils.notify("No text seems to currently be opened!");
+				}
+			}
+		});
+		encodings.add(showLineEndings);
+
 
 		JMenu conversions = new JMenu("Conversions");
 		menu.add(conversions);
