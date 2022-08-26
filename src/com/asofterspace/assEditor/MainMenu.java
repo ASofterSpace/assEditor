@@ -348,6 +348,41 @@ public class MainMenu {
 
 		edit.addSeparator();
 
+		JMenuItem copyBtn = new JMenuItem("Copy");
+		copyBtn.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (mainGUI.getCurrentTab() != null) {
+					mainGUI.getCurrentTab().getMemo().copy();
+				}
+			}
+		});
+		edit.add(copyBtn);
+
+		JMenuItem cutBtn = new JMenuItem("Cut");
+		cutBtn.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (mainGUI.getCurrentTab() != null) {
+					mainGUI.getCurrentTab().getMemo().cut();
+				}
+			}
+		});
+		edit.add(cutBtn);
+
+		JMenuItem pasteBtn = new JMenuItem("Paste");
+		pasteBtn.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (mainGUI.getCurrentTab() != null) {
+					mainGUI.getCurrentTab().getMemo().paste();
+				}
+			}
+		});
+		edit.add(pasteBtn);
+
+		edit.addSeparator();
+
 		JMenuItem selectToHere = new JMenuItem("Select from Start to Here");
 		selectToHere.addActionListener(new ActionListener() {
 			@Override

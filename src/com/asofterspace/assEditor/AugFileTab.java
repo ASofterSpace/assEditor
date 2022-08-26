@@ -2244,6 +2244,13 @@ public class AugFileTab implements FileTab {
 		return fileContentMemo.getText();
 	}
 
+	public CodeEditor getMemo() {
+
+		ensureLoaded();
+
+		return fileContentMemo;
+	}
+
 	public void setContent(String newContent) {
 
 		ensureLoaded();
