@@ -88,6 +88,8 @@ public class AugFileTab implements FileTab {
 	private JLabel scrollToChangedAreaLabelTop;
 	private JLabel scrollToChangedAreaLabelMid;
 	private JLabel scrollToChangedAreaLabelBtm;
+	private JPanel errorBanner;
+	private JLabel errorBannerLabel;
 	private JTextPane lineMemo;
 	private CodeEditor fileContentMemo;
 	private JScrollPane sourceCodeScroller;
@@ -259,6 +261,17 @@ public class AugFileTab implements FileTab {
 
 		tab.add(topHUD, new Arrangement(0, 0, 1.0, 0.0));
 
+
+		errorBanner = new JPanel();
+		errorBanner.setLayout(new GridBagLayout());
+		errorBanner.setVisible(false);
+
+		errorBannerLabel = new JLabel("There is an error uiuiui!");
+		errorBanner.add(errorBannerLabel, new Arrangement(0, 0, 1.0, 1.0));
+
+		tab.add(errorBanner, new Arrangement(0, 1, 1.0, 0.0));
+
+
 		JPanel mainPart = new JPanel();
 		mainPart.setLayout(new GridBagLayout());
 
@@ -375,7 +388,7 @@ public class AugFileTab implements FileTab {
 			}
 		});
 
-		tab.add(mainPart, new Arrangement(0, 1, 1.0, 1.0));
+		tab.add(mainPart, new Arrangement(0, 2, 1.0, 1.0));
 
 		tab.setVisible(false);
 
@@ -652,6 +665,9 @@ public class AugFileTab implements FileTab {
 		scrollToChangedAreaLabelMid.setBackground(nameLabel.getBackground());
 		scrollToChangedAreaLabelBtm.setForeground(nameLabel.getForeground());
 		scrollToChangedAreaLabelBtm.setBackground(nameLabel.getBackground());
+
+		errorBannerLabel.setForeground(new Color(255, 255, 255));
+		errorBanner.setBackground(new Color(192, 0, 0));
 
 		MainGUI.setScheme(scheme, sideScrollPane);
 		MainGUI.setScheme(scheme, sourceCodeScroller);
@@ -1727,6 +1743,8 @@ public class AugFileTab implements FileTab {
 		augFile.save(lineEndStr);
 
 		setChanged(false);
+
+		checkForErrors();
 	}
 
 	public void addMissingImports() {
@@ -2171,6 +2189,8 @@ public class AugFileTab implements FileTab {
 			}
 
 			setCodeLanguageAndCreateHighlighter();
+
+			checkForErrors();
 		}
 	}
 
@@ -2273,6 +2293,19 @@ public class AugFileTab implements FileTab {
 
 	public void setHighlightColor(Color highlightColor) {
 		this.highlightColor = highlightColor;
+	}
+
+	private void checkForErrors() {
+
+		ensureLoaded();
+
+		List<String> errors = highlighter.getErrors();
+
+		if (errors.size() > 0) {
+			errorBannerLabel.setText(" " + errors.get(0));
+		}
+
+		errorBanner.setVisible(errors.size() > 0);
 	}
 
 	@Override
