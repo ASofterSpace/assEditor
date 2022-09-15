@@ -1860,6 +1860,24 @@ public class MainMenu {
 		});
 		conversions.add(prettyEGSCC);
 
+		JMenuItem cdmEsc = new JMenuItem("CDM escape");
+		addTextModificationAction(cdmEsc, new StringModifier() {
+			@Override
+			public String modify(String str) {
+				return XML.escapeXMLstr(str, "&#xD;&#xA;");
+			}
+		});
+		conversions.add(cdmEsc);
+
+		JMenuItem cdmUnesc = new JMenuItem("CDM unescape");
+		addTextModificationAction(cdmUnesc, new StringModifier() {
+			@Override
+			public String modify(String str) {
+				return XML.unescapeXMLstr(str);
+			}
+		});
+		conversions.add(cdmUnesc);
+
 
 		JMenu settings = new JMenu("Settings");
 		menu.add(settings);
