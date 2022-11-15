@@ -1654,7 +1654,36 @@ public class MainMenu {
 
 		conversions.addSeparator();
 
-		JMenuItem htmlenc = new JMenuItem("HTML encode");
+		JMenuItem xmlenc = new JMenuItem("XML escape");
+		addTextModificationAction(xmlenc, new StringModifier() {
+			@Override
+			public String modify(String str) {
+				return XML.escapeXMLstr(str);
+			}
+		});
+		conversions.add(xmlenc);
+
+		JMenuItem xmldec = new JMenuItem("XML unescape");
+		addTextModificationAction(xmldec, new StringModifier() {
+			@Override
+			public String modify(String str) {
+				return XML.unescapeXMLstr(str);
+			}
+		});
+		conversions.add(xmldec);
+
+		JMenuItem removeXmlTags2 = new JMenuItem("Remove XML tags");
+		addTextModificationAction(removeXmlTags2, new StringModifier() {
+			@Override
+			public String modify(String str) {
+				return XML.removeXmlTagsFromText(str);
+			}
+		});
+		conversions.add(removeXmlTags2);
+
+		conversions.addSeparator();
+
+		JMenuItem htmlenc = new JMenuItem("HTML escape");
 		addTextModificationAction(htmlenc, new StringModifier() {
 			@Override
 			public String modify(String str) {
@@ -1663,7 +1692,7 @@ public class MainMenu {
 		});
 		conversions.add(htmlenc);
 
-		JMenuItem htmldec = new JMenuItem("HTML decode");
+		JMenuItem htmldec = new JMenuItem("HTML unescape");
 		addTextModificationAction(htmldec, new StringModifier() {
 			@Override
 			public String modify(String str) {
@@ -1671,24 +1700,6 @@ public class MainMenu {
 			}
 		});
 		conversions.add(htmldec);
-
-		JMenuItem htmlesc = new JMenuItem("HTML escape");
-		addTextModificationAction(htmlesc, new StringModifier() {
-			@Override
-			public String modify(String str) {
-				return HTML.escapeHTMLstr(str);
-			}
-		});
-		conversions.add(htmlesc);
-
-		JMenuItem htmlunesc = new JMenuItem("HTML unescape");
-		addTextModificationAction(htmlunesc, new StringModifier() {
-			@Override
-			public String modify(String str) {
-				return HTML.unescapeHTMLstr(str);
-			}
-		});
-		conversions.add(htmlunesc);
 
 		JMenuItem removeHtmlTags = new JMenuItem("Remove HTML tags");
 		addTextModificationAction(removeHtmlTags, new StringModifier() {
