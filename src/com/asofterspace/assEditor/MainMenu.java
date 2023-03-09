@@ -1552,6 +1552,20 @@ public class MainMenu {
 		});
 		encodings.add(showLineEndings);
 
+		encodings.addSeparator();
+
+		JMenuItem magicallyFix = new JMenuItem("Magically Fix Things");
+		magicallyFix.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (mainGUI.getCurrentTab() != null) {
+					mainGUI.getCurrentTab().magicallyFixThings();
+				} else {
+					GuiUtils.notify("No text seems to currently be opened!");
+				}
+			}
+		});
+		encodings.add(magicallyFix);
 
 		JMenu conversions = new JMenu("Conversions");
 		menu.add(conversions);

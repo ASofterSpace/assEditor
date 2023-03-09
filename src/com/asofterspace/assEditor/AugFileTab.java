@@ -9,6 +9,7 @@ import com.asofterspace.toolbox.codeeditor.utils.CodeHighlighterFactory;
 import com.asofterspace.toolbox.codeeditor.utils.CodeLanguage;
 import com.asofterspace.toolbox.codeeditor.utils.CodeSnippetWithLocation;
 import com.asofterspace.toolbox.codeeditor.utils.LineNumbering;
+import com.asofterspace.toolbox.coders.GenericPrettifier;
 import com.asofterspace.toolbox.gui.Arrangement;
 import com.asofterspace.toolbox.gui.CodeEditor;
 import com.asofterspace.toolbox.gui.CodeEditorLineMemo;
@@ -2057,6 +2058,17 @@ public class AugFileTab implements FileTab {
 		}
 
 		fileContentMemo.setText(result.toString());
+	}
+
+	public void magicallyFixThings() {
+
+		ensureLoaded();
+
+		String text = fileContentMemo.getText();
+
+		text = GenericPrettifier.magicallyFixText(text);
+
+		fileContentMemo.setText(text);
 	}
 
 	public void deleteAllLinesContainingText(String needle, boolean invert) {
