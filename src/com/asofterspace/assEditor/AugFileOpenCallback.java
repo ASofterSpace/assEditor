@@ -8,6 +8,7 @@ import com.asofterspace.toolbox.codeeditor.utils.CodeLanguage;
 import com.asofterspace.toolbox.codeeditor.utils.OpenFileCallback;
 import com.asofterspace.toolbox.io.Directory;
 import com.asofterspace.toolbox.io.File;
+import com.asofterspace.toolbox.utils.StrUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -88,11 +89,16 @@ public class AugFileOpenCallback implements OpenFileCallback {
 		}
 
 		// if we did not yet open the file, then let's try to go for the determined path name directly
-		for (String relativePath : relativePaths) {
-			File newFile = new File(baseDirectory.getAbsoluteDirname() + "/" + relativePath);
-			if (newFile.exists()) {
-				mainGUI.loadFile(newFile);
-				return true;
+		String replacedDirName = StrUtils.replaceAll(localDirectory.getAbsoluteDirname(), "\\", "/");
+		boolean searchForToolbox = extraInfo.startsWith("com.asofterspace.toolbox.") &&
+			replacedDirName.contains("/src/");
+		if (!searchForToolbox) {
+			for (String relativePath : relativePaths) {
+				File newFile = new File(baseDirectory.getAbsoluteDirname() + "/" + relativePath);
+				if (newFile.exists()) {
+					mainGUI.loadFile(newFile);
+					return true;
+				}
 			}
 		}
 
@@ -102,6 +108,11 @@ public class AugFileOpenCallback implements OpenFileCallback {
 		new Thread(new Runnable() {
 			public void run() {
 				Directory currentBaseDir = new Directory(localDirectory.getAbsoluteDirname());
+				if (searchForToolbox) {
+					String dirname = replacedDirName;
+					dirname = dirname.substring(0, dirname.indexOf("/src/"));
+					currentBaseDir = new Directory(dirname + "/../Toolbox-Java");
+				}
 				long startTime = System.currentTimeMillis();
 				// do not search for more than a minute
 				while (System.currentTimeMillis() - startTime < 60*1000) {
