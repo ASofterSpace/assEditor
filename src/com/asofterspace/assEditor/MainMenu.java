@@ -948,25 +948,7 @@ public class MainMenu {
 		addTextModificationAction(commentUsingSlashSlash, new StringModifier() {
 			@Override
 			public String modify(String str) {
-				String[] linesIn = str.split("\n");
-				List<String> lines = new ArrayList<>();
-				for (String line : linesIn) {
-					if (line.trim().length() > 0) {
-						String whitespace = "";
-						int i = 0;
-						for (; i < line.length(); i++) {
-							char c = line.charAt(i);
-							if ((c == ' ') || (c == '\t')) {
-								whitespace += c;
-							} else {
-								break;
-							}
-						}
-						line = whitespace + "// " + line.substring(i);
-					}
-					lines.add(line);
-				}
-				return StrUtils.join("\n", lines);
+				return comment(str, "//");
 			}
 		});
 		code.add(commentUsingSlashSlash);
@@ -975,56 +957,25 @@ public class MainMenu {
 		addTextModificationAction(commentUsingHash, new StringModifier() {
 			@Override
 			public String modify(String str) {
-				String[] linesIn = str.split("\n");
-				List<String> lines = new ArrayList<>();
-				for (String line : linesIn) {
-					if (line.trim().length() > 0) {
-						String whitespace = "";
-						int i = 0;
-						for (; i < line.length(); i++) {
-							char c = line.charAt(i);
-							if ((c == ' ') || (c == '\t')) {
-								whitespace += c;
-							} else {
-								break;
-							}
-						}
-						line = whitespace + "# " + line.substring(i);
-					}
-					lines.add(line);
-				}
-				return StrUtils.join("\n", lines);
+				return comment(str, "#");
 			}
 		});
 		code.add(commentUsingHash);
+
+		JMenuItem commentUsingDashDash = new JMenuItem("Comment Out Selection Using --");
+		addTextModificationAction(commentUsingDashDash, new StringModifier() {
+			@Override
+			public String modify(String str) {
+				return comment(str, "--");
+			}
+		});
+		code.add(commentUsingDashDash);
 
 		JMenuItem uncommentUsingSlashSlash = new JMenuItem("Un-Comment Selection Using //");
 		addTextModificationAction(uncommentUsingSlashSlash, new StringModifier() {
 			@Override
 			public String modify(String str) {
-				String[] linesIn = str.split("\n");
-				List<String> lines = new ArrayList<>();
-				for (String line : linesIn) {
-					if (line.trim().length() > 0) {
-						String whitespace = "";
-						int i = 0;
-						for (; i < line.length(); i++) {
-							char c = line.charAt(i);
-							if ((c == ' ') || (c == '\t')) {
-								whitespace += c;
-							} else {
-								break;
-							}
-						}
-						if (line.substring(i).startsWith("// ")) {
-							line = whitespace + line.substring(i + 3);
-						} else if (line.substring(i).startsWith("//")) {
-							line = whitespace + line.substring(i + 2);
-						}
-					}
-					lines.add(line);
-				}
-				return StrUtils.join("\n", lines);
+				return uncomment(str, "//");
 			}
 		});
 		code.add(uncommentUsingSlashSlash);
@@ -1033,32 +984,19 @@ public class MainMenu {
 		addTextModificationAction(uncommentUsingHash, new StringModifier() {
 			@Override
 			public String modify(String str) {
-				String[] linesIn = str.split("\n");
-				List<String> lines = new ArrayList<>();
-				for (String line : linesIn) {
-					if (line.trim().length() > 0) {
-						String whitespace = "";
-						int i = 0;
-						for (; i < line.length(); i++) {
-							char c = line.charAt(i);
-							if ((c == ' ') || (c == '\t')) {
-								whitespace += c;
-							} else {
-								break;
-							}
-						}
-						if (line.substring(i).startsWith("# ")) {
-							line = whitespace + line.substring(i + 2);
-						} else if (line.substring(i).startsWith("#")) {
-							line = whitespace + line.substring(i + 1);
-						}
-					}
-					lines.add(line);
-				}
-				return StrUtils.join("\n", lines);
+				return uncomment(str, "#");
 			}
 		});
 		code.add(uncommentUsingHash);
+
+		JMenuItem uncommentUsingDashDash = new JMenuItem("Un-Comment Selection Using --");
+		addTextModificationAction(uncommentUsingDashDash, new StringModifier() {
+			@Override
+			public String modify(String str) {
+				return uncomment(str, "--");
+			}
+		});
+		code.add(uncommentUsingDashDash);
 
 		code.addSeparator();
 
@@ -2342,6 +2280,55 @@ public class MainMenu {
 		mainFrame.setJMenuBar(menu);
 
 		return menu;
+	}
+
+	private String comment(String str, String startCommentLineStr) {
+		String[] linesIn = str.split("\n");
+		List<String> lines = new ArrayList<>();
+		for (String line : linesIn) {
+			if (line.trim().length() > 0) {
+				String whitespace = "";
+				int i = 0;
+				for (; i < line.length(); i++) {
+					char c = line.charAt(i);
+					if ((c == ' ') || (c == '\t')) {
+						whitespace += c;
+					} else {
+						break;
+					}
+				}
+				line = whitespace + startCommentLineStr + " " + line.substring(i);
+			}
+			lines.add(line);
+		}
+		return StrUtils.join("\n", lines);
+	}
+
+	private String uncomment(String str, String startCommentLineStr) {
+		int commentStrLen = startCommentLineStr.length();
+		String[] linesIn = str.split("\n");
+		List<String> lines = new ArrayList<>();
+		for (String line : linesIn) {
+			if (line.trim().length() > 0) {
+				String whitespace = "";
+				int i = 0;
+				for (; i < line.length(); i++) {
+					char c = line.charAt(i);
+					if ((c == ' ') || (c == '\t')) {
+						whitespace += c;
+					} else {
+						break;
+					}
+				}
+				if (line.substring(i).startsWith(startCommentLineStr + " ")) {
+					line = whitespace + line.substring(i + commentStrLen + 1);
+				} else if (line.substring(i).startsWith(startCommentLineStr)) {
+					line = whitespace + line.substring(i + commentStrLen);
+				}
+			}
+			lines.add(line);
+		}
+		return StrUtils.join("\n", lines);
 	}
 
 	public void refreshWorkspaces() {
