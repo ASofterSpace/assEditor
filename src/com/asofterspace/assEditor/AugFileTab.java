@@ -108,6 +108,7 @@ public class AugFileTab implements FileTab {
 	private Color highlightColor = Color.black;
 
 	private boolean standalone = false;
+	private boolean editmode = false;
 
 	private String lastSearched = null;
 	private String lastSearchedOrigCaps = null;
@@ -115,7 +116,7 @@ public class AugFileTab implements FileTab {
 
 
 	public AugFileTab(JPanel parentPanel, AugFile augFile, final MainGUI mainGUI, AugFileCtrl augFileCtrl,
-		boolean standalone) {
+		boolean standalone, boolean editmode) {
 
 		this.parent = parentPanel;
 
@@ -127,6 +128,8 @@ public class AugFileTab implements FileTab {
 		this.mainGUI = mainGUI;
 
 		this.standalone = standalone;
+
+		this.editmode = editmode;
 
 		this.onChangeCallback = new Callback() {
 			public void call() {
@@ -276,9 +279,6 @@ public class AugFileTab implements FileTab {
 		JPanel mainPart = new JPanel();
 		mainPart.setLayout(new GridBagLayout());
 
-		JPanel scrolledPanel = new JPanel();
-		scrolledPanel.setLayout(new GridBagLayout());
-
 		fileContentMemo = new CodeEditor();
 		fileContentMemo.enableStartLine(true);
 		fileContentMemo.enableHorzLine(true);
@@ -317,22 +317,28 @@ public class AugFileTab implements FileTab {
 		});
 
 
-		lineMemo = new CodeEditorLineMemo();
-		lineNumbers = new LineNumbering(lineMemo, fileContentMemo);
+		if (!editmode) {
+			lineMemo = new CodeEditorLineMemo();
+			lineNumbers = new LineNumbering(lineMemo, fileContentMemo);
 
-		scrolledPanel.add(lineMemo, new Arrangement(0, 0, 0.0, 1.0));
-		scrolledPanel.add(fileContentMemo, new Arrangement(1, 0, 1.0, 1.0));
+			JPanel scrolledPanel = new JPanel();
+			scrolledPanel.setLayout(new GridBagLayout());
+			scrolledPanel.add(lineMemo, new Arrangement(0, 0, 0.0, 1.0));
+			scrolledPanel.add(fileContentMemo, new Arrangement(1, 0, 1.0, 1.0));
 
-		sourceCodeScroller = new JScrollPane(scrolledPanel);
+			sourceCodeScroller = new JScrollPane(scrolledPanel);
+			sourceCodeScroller.getHorizontalScrollBar().setUnitIncrement(48);
+		} else {
+			sourceCodeScroller = new JScrollPane(fileContentMemo);
+		}
 
 		// scroll blazingly fast! :D
 		sourceCodeScroller.getVerticalScrollBar().setUnitIncrement(99);
-		sourceCodeScroller.getHorizontalScrollBar().setUnitIncrement(48);
 
 		sourceCodeScroller.setPreferredSize(new Dimension(1, 1));
 		sourceCodeScroller.setBorder(BorderFactory.createEmptyBorder());
-		mainPart.add(sourceCodeScroller, new Arrangement(0, 1, 1.0, 0.8));
 
+		mainPart.add(sourceCodeScroller, new Arrangement(0, 1, 1.0, 0.8));
 
 		functionMemo = new FancyCodeEditor();
 		functionMemo.setGradientBackground(true);
@@ -568,7 +574,7 @@ public class AugFileTab implements FileTab {
 	public void setCodeLanguageAndCreateHighlighter() {
 
 		// do nothing if this tab has not yet been initialized
-		if (lineMemo == null) {
+		if (fileContentMemo == null) {
 			return;
 		}
 
@@ -605,7 +611,9 @@ public class AugFileTab implements FileTab {
 		);
 		highlighter.setOnOpenFile(onOpenFileCallback);
 
-		highlighter.setCodeEditorLineMemo(lineMemo);
+		if (lineMemo != null) {
+			highlighter.setCodeEditorLineMemo(lineMemo);
+		}
 
 		highlighter.setFontSize(mainGUI.getFontSize());
 
@@ -624,7 +632,9 @@ public class AugFileTab implements FileTab {
 			case GuiUtils.LIGHT_SCHEME:
 				tab.setForeground(Color.black);
 				tab.setBackground(new Color(235, 215, 255));
-				GuiUtils.setCornerColor(sourceCodeScroller, JScrollPane.LOWER_RIGHT_CORNER, new Color(235, 215, 255));
+				if (sourceCodeScroller != null) {
+					GuiUtils.setCornerColor(sourceCodeScroller, JScrollPane.LOWER_RIGHT_CORNER, new Color(235, 215, 255));
+				}
 				GuiUtils.setCornerColor(sideScrollPane, JScrollPane.LOWER_RIGHT_CORNER, new Color(235, 215, 255));
 				fileContentMemo.setStartLineColor(Color.lightGray);
 				fileContentMemo.setHorzLineColor(Color.lightGray);
@@ -635,7 +645,9 @@ public class AugFileTab implements FileTab {
 			case GuiUtils.DARK_SCHEME:
 				tab.setForeground(new Color(255, 245, 255));
 				tab.setBackground(Color.black);
-				GuiUtils.setCornerColor(sourceCodeScroller, JScrollPane.LOWER_RIGHT_CORNER, Color.black);
+				if (sourceCodeScroller != null) {
+					GuiUtils.setCornerColor(sourceCodeScroller, JScrollPane.LOWER_RIGHT_CORNER, Color.black);
+				}
 				GuiUtils.setCornerColor(sideScrollPane, JScrollPane.LOWER_RIGHT_CORNER, Color.black);
 				fileContentMemo.setStartLineColor(Color.darkGray);
 				fileContentMemo.setHorzLineColor(Color.darkGray);
@@ -671,7 +683,9 @@ public class AugFileTab implements FileTab {
 		errorBanner.setBackground(new Color(192, 0, 0));
 
 		MainGUI.setScheme(scheme, sideScrollPane);
-		MainGUI.setScheme(scheme, sourceCodeScroller);
+		if (sourceCodeScroller != null) {
+			MainGUI.setScheme(scheme, sourceCodeScroller);
+		}
 	}
 
 	public void updateHighlighterConfig() {
@@ -686,11 +700,15 @@ public class AugFileTab implements FileTab {
 		switch (mainGUI.currentScheme) {
 			case GuiUtils.LIGHT_SCHEME:
 				highlighter.setLightScheme();
-				lineNumbers.setLightScheme();
+				if (lineNumbers != null) {
+					lineNumbers.setLightScheme();
+				}
 				break;
 			case GuiUtils.DARK_SCHEME:
 				highlighter.setDarkScheme();
-				lineNumbers.setDarkScheme();
+				if (lineNumbers != null) {
+					lineNumbers.setDarkScheme();
+				}
 				break;
 		}
 

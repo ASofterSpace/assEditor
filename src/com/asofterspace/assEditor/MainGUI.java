@@ -113,7 +113,7 @@ public class MainGUI extends MainWindow {
 	private final static String CONFIG_KEY_HEIGHT = "mainFrameHeight";
 	private final static String CONFIG_KEY_LEFT = "mainFrameLeft";
 	private final static String CONFIG_KEY_TOP = "mainFrameTop";
-	private final static String CONFIG_KEY_FONT_SIZE = "fontSize";
+	public final static String CONFIG_KEY_FONT_SIZE = "fontSize";
 	private final static String CONFIG_KEY_SHOW_FILES_IN_TREE = "showFilesInTree";
 	private final static String CONFIG_KEY_SEARCH_IGNORE_CASE = "searchIgnoreCase";
 	private final static String CONFIG_KEY_SEARCH_USE_ESCAPED_CHARS = "searchUseEscapedChars";
@@ -919,7 +919,7 @@ public class MainGUI extends MainWindow {
 
 		if (newFile != null) {
 			// ... if not, add a tab for it
-			AugFileTab result = new AugFileTab(mainPanelRight, newFile, this, augFileCtrl, standalone);
+			AugFileTab result = new AugFileTab(mainPanelRight, newFile, this, augFileCtrl, standalone, editmode);
 			result.setDefaultIndent(defaultIndentationStr);
 			augFileTabs.add(result);
 			return result;
@@ -1007,7 +1007,7 @@ public class MainGUI extends MainWindow {
 			}
 		} else {
 			// ... if not, add a tab for it
-			loadedTab = new AugFileTab(mainPanelRight, newFile, this, augFileCtrl, standalone);
+			loadedTab = new AugFileTab(mainPanelRight, newFile, this, augFileCtrl, standalone, editmode);
 			loadedTab.setDefaultIndent(defaultIndentationStr);
 			augFileTabs.add(loadedTab);
 		}
@@ -2111,10 +2111,11 @@ public class MainGUI extends MainWindow {
 		List<AugFile> files = augFileCtrl.getFiles();
 		for (AugFile file : files) {
 			file.refreshContent();
-			AugFileTab newTab = new AugFileTab(mainPanelRight, file, this, augFileCtrl, standalone);
+			AugFileTab newTab = new AugFileTab(mainPanelRight, file, this, augFileCtrl, standalone, editmode);
 			newTab.setDefaultIndent(defaultIndentationStr);
 			if (editmode) {
 				newTab.getMemo().setHighlightChanges(false);
+				newTab.getMemo().setWordWrap(true);
 			}
 			augFileTabs.add(newTab);
 		}

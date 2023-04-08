@@ -95,6 +95,7 @@ public class AssEditor {
 
 		if (editmode) {
 			config.set(MainGUI.CONFIG_KEY_SCHEME, GuiUtils.LIGHT_SCHEME);
+			config.set(MainGUI.CONFIG_KEY_FONT_SIZE, 18);
 		}
 
 		augFileCtrl = new AugFileCtrl(config, standalone, editmode, openFilenames);
