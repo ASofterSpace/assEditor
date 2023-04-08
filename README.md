@@ -45,6 +45,7 @@ You can use the following commandline options:
 
 ```
 --standalone .. the editor will be started with an empty workspace with only one empty file loaded, rather than loading the last opened workspace
+--edit .. the editor will be started in plain editor mode - like standalone, but even less powerful and faster to start up
 --version .. display the version of the assEditor, then exit
 --version_for_zip .. display the version of the assEditor (in short form), then exit
 ```
@@ -58,6 +59,8 @@ You can add an alias to bash under Linux to call this more easily, e.g.:
 ```
 alias ae='/absolute/path/to/assEditor/assEditor.sh'
 alias aes='/absolute/path/to/assEditor/assEditor.sh --standalone'
+alias aee='/absolute/path/to/assEditor/assEditor.sh --edit'
+alias edit='/absolute/path/to/assEditor/assEditor.sh --edit'
 ```
 
 If you put this line into ~/.bashrc, the aliasses ae and aes will be available in every bash session.

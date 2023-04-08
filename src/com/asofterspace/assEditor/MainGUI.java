@@ -94,7 +94,7 @@ public class MainGUI extends MainWindow {
 	private AugFileTab currentlyShownTab;
 
 	private final static String CONFIG_KEY_LAST_DIRECTORY = "lastDirectory";
-	private final static String CONFIG_KEY_SCHEME = "scheme";
+	public final static String CONFIG_KEY_SCHEME = "scheme";
 	private final static String CONFIG_KEY_ANTI_ALIASING = "antiAliasing";
 	private final static String CONFIG_KEY_DEFAULT_INDENTATION_STR = "defaultIndentationStr";
 	private final static String CONFIG_KEY_REMOVE_TRAILING_WHITESPACE_ON_SAVE = "onSaveRemoveTrailingWhitespace";
@@ -166,6 +166,7 @@ public class MainGUI extends MainWindow {
 	Boolean searchAsterisk;
 	boolean showFiles;
 	boolean standalone;
+	boolean editmode;
 	String defaultIndentationStr;
 
 	// this keeps track of the tabs we opened, and in which order we did so
@@ -174,13 +175,15 @@ public class MainGUI extends MainWindow {
 	private List<AugFileTab> listOfFutureTabs;
 
 
-	public MainGUI(AugFileCtrl augFileCtrl, ConfigFile config, boolean standalone) {
+	public MainGUI(AugFileCtrl augFileCtrl, ConfigFile config, boolean standalone, boolean editmode) {
 
 		this.augFileCtrl = augFileCtrl;
 
 		this.configuration = config;
 
 		this.standalone = standalone;
+
+		this.editmode = editmode;
 
 		this.showFiles = !standalone;
 
@@ -413,7 +416,9 @@ public class MainGUI extends MainWindow {
 				});
 
 				// we allow saving, which will happen in the backup thread
-				configuration.allowSaving();
+				if (!editmode) {
+					configuration.allowSaving();
+				}
 
 				AssEditor.performPostStartupActions();
 			}
@@ -2108,6 +2113,9 @@ public class MainGUI extends MainWindow {
 			file.refreshContent();
 			AugFileTab newTab = new AugFileTab(mainPanelRight, file, this, augFileCtrl, standalone);
 			newTab.setDefaultIndent(defaultIndentationStr);
+			if (editmode) {
+				newTab.getMemo().setHighlightChanges(false);
+			}
 			augFileTabs.add(newTab);
 		}
 

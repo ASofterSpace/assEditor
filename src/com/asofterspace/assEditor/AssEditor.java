@@ -5,6 +5,7 @@
 package com.asofterspace.assEditor;
 
 import com.asofterspace.toolbox.configuration.ConfigFile;
+import com.asofterspace.toolbox.gui.GuiUtils;
 import com.asofterspace.toolbox.guiImages.FancyCodeEditor;
 import com.asofterspace.toolbox.images.DefaultImageFile;
 import com.asofterspace.toolbox.images.Image;
@@ -25,8 +26,8 @@ import javax.swing.SwingUtilities;
 public class AssEditor {
 
 	public final static String PROGRAM_TITLE = "A Softer Space Editor";
-	public final static String VERSION_NUMBER = "0.0.6.7(" + Utils.TOOLBOX_VERSION_NUMBER + ")";
-	public final static String VERSION_DATE = "18. December 2018 - 19. March 2023";
+	public final static String VERSION_NUMBER = "0.0.6.8(" + Utils.TOOLBOX_VERSION_NUMBER + ")";
+	public final static String VERSION_DATE = "18. December 2018 - 8. April 2023";
 
 	private final static String CONFIG_KEY_BACKUP_SETTINGS_NUM = "backupSettingsNum";
 
@@ -45,6 +46,7 @@ public class AssEditor {
 
 		config = null;
 		boolean standalone = false;
+		boolean editmode = false;
 
 		List<String> openFilenames = new ArrayList<>();
 
@@ -59,6 +61,11 @@ public class AssEditor {
 			}
 			if ("--standalone".equals(arg)) {
 				standalone = true;
+				continue;
+			}
+			if ("--edit".equals(arg)) {
+				standalone = true;
+				editmode = true;
 				continue;
 			}
 			// if this argument was not one of the predefined startup arguments,
@@ -86,9 +93,13 @@ public class AssEditor {
 		// it again after the startup is done in MainGUI
 		config.preventSaving();
 
-		augFileCtrl = new AugFileCtrl(config, standalone, openFilenames);
+		if (editmode) {
+			config.set(MainGUI.CONFIG_KEY_SCHEME, GuiUtils.LIGHT_SCHEME);
+		}
 
-		SwingUtilities.invokeLater(new MainGUI(augFileCtrl, config, standalone));
+		augFileCtrl = new AugFileCtrl(config, standalone, editmode, openFilenames);
+
+		SwingUtilities.invokeLater(new MainGUI(augFileCtrl, config, standalone, editmode));
 	}
 
 	public static void performPostStartupActions() {

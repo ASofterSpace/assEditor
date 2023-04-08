@@ -38,10 +38,14 @@ public class AugFileCtrl {
 
 	private Record activeWorkspace;
 
+	private boolean editmode;
 
-	public AugFileCtrl(ConfigFile configuration, boolean standalone, List<String> openFilenames) {
+
+	public AugFileCtrl(ConfigFile configuration, boolean standalone, boolean editmode, List<String> openFilenames) {
 
 		this.configuration = configuration;
+
+		this.editmode = editmode;
 
 		String activeWorkspaceName = configuration.getValue(CONF_ACTIVE_WORKSPACE);
 
@@ -58,7 +62,14 @@ public class AugFileCtrl {
 			if (openFilenames.size() < 1) {
 				Record recFile = new Record();
 
-				recFile.set(CONF_FILENAME, "untitled");
+				if (editmode) {
+					String EDIT_FILE_NAME = "edit.txt";
+					recFile.set(CONF_FILENAME, EDIT_FILE_NAME);
+					File editFile = new File(EDIT_FILE_NAME);
+					editFile.delete();
+				} else {
+					recFile.set(CONF_FILENAME, "untitled");
+				}
 				recFile.set(CONF_CARET_POS, 0);
 				recFile.set(CONF_LANGUAGE, CodeLanguage.PLAINTEXT.toString());
 				recFile.set(CONF_ACCESS_TIME, DateUtils.serializeDateTime(null));
@@ -464,13 +475,11 @@ public class AugFileCtrl {
 
 	public void saveConfigFileList() {
 
-		StringBuilder fileListBuilder = new StringBuilder();
-
-		Record filesRec = new Record();
-
 		if (activeWorkspace == null) {
 			return;
 		}
+
+		Record filesRec = new Record();
 
 		activeWorkspace.set(CONF_WORKSPACE_FILES, filesRec);
 
