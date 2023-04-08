@@ -30,6 +30,7 @@ public class AugFileCtrl {
 	private final static String CONF_ACTIVE_WORKSPACE = "activeWorkspace";
 	private final static String CONF_WORKSPACE_NAME = "name";
 	private final static String CONF_WORKSPACE_FILES = "files";
+	private final static String EDIT_MODE_FILE_NAME = "editModeFileName";
 	private final static String STANDALONE_WORKSPACE_NAME = "Standalone Non-Persistent Workspace";
 
 	private ConfigFile configuration;
@@ -63,10 +64,26 @@ public class AugFileCtrl {
 				Record recFile = new Record();
 
 				if (editmode) {
-					String EDIT_FILE_NAME = "edit.txt";
+					String EDIT_FILE_NAME = configuration.getValue(EDIT_MODE_FILE_NAME, "edit.txt");
 					recFile.set(CONF_FILENAME, EDIT_FILE_NAME);
 					File editFile = new File(EDIT_FILE_NAME);
-					editFile.delete();
+					if (editFile.exists()) {
+						String fileName = editFile.getAbsoluteFilename();
+						int pos = fileName.lastIndexOf(".");
+						String fileNameStart = fileName;
+						String fileNameEnd = "";
+						if (pos >= 0) {
+							fileNameStart = fileName.substring(0, pos);
+							fileNameEnd = fileName.substring(pos);
+						}
+						int i = 2;
+						editFile = new File(fileNameStart + i + fileNameEnd);
+						while (editFile.exists()) {
+							i++;
+							editFile = new File(fileNameStart + i + fileNameEnd);
+						}
+						recFile.set(CONF_FILENAME, editFile.getAbsoluteFilename());
+					}
 				} else {
 					recFile.set(CONF_FILENAME, "untitled");
 				}
