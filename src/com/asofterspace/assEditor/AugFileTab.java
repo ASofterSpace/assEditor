@@ -106,6 +106,7 @@ public class AugFileTab implements FileTab {
 	private String defaultIndentationStr = "\t";
 
 	private Color highlightColor = Color.black;
+	private Color codeChangedColor = Color.black;
 
 	private boolean standalone = false;
 	private boolean editmode = false;
@@ -531,7 +532,7 @@ public class AugFileTab implements FileTab {
 		if (changed) {
 			if (nameLabel != null) {
 				nameLabel.setText(getFilePath() + GuiUtils.CHANGE_INDICATOR);
-				nameLabel.setForeground(new Color(255, 128, 196));
+				nameLabel.setForeground(getCodeChangedColor());
 			}
 			if (topHUD != null) {
 				topHUD.setBackground(getHighlightColor());
@@ -641,6 +642,7 @@ public class AugFileTab implements FileTab {
 				fileContentMemo.setChangedLineBackgroundColor(new Color(245, 235, 255));
 				fileContentMemo.setChangedLineHighlightColor(new Color(235, 215, 255));
 				setHighlightColor(new Color(235, 215, 255));
+				setCodeChangedColor(new Color(164, 32, 128));
 				break;
 			case GuiUtils.DARK_SCHEME:
 				tab.setForeground(new Color(255, 245, 255));
@@ -654,6 +656,7 @@ public class AugFileTab implements FileTab {
 				fileContentMemo.setChangedLineBackgroundColor(new Color(16, 0, 24));
 				fileContentMemo.setChangedLineHighlightColor(new Color(40, 0, 80));
 				setHighlightColor(new Color(60, 0, 80));
+				setCodeChangedColor(new Color(255, 128, 196));
 				break;
 		}
 
@@ -686,6 +689,8 @@ public class AugFileTab implements FileTab {
 		if (sourceCodeScroller != null) {
 			MainGUI.setScheme(scheme, sourceCodeScroller);
 		}
+
+		setChanged(this.changed);
 	}
 
 	public void updateHighlighterConfig() {
@@ -2323,6 +2328,14 @@ public class AugFileTab implements FileTab {
 
 	public void setHighlightColor(Color highlightColor) {
 		this.highlightColor = highlightColor;
+	}
+
+	public Color getCodeChangedColor() {
+		return codeChangedColor;
+	}
+
+	public void setCodeChangedColor(Color codeChangedColor) {
+		this.codeChangedColor = codeChangedColor;
 	}
 
 	private void checkForErrors() {

@@ -133,7 +133,7 @@ public class MainGUI extends MainWindow {
 	private JScrollPane augFileTreeScroller;
 	private JTextArea noteArea;
 	private JScrollPane noteAreaScroller;
-	private SimpleFile noteAreaFile;
+	private SimpleFile noteAreaFile = null;
 	private JLabel searchStatsLabel;
 	private JLabel ignoreCapsInSearchLabel;
 	private JLabel useEscapedCharsInSearchLabel;
@@ -362,9 +362,6 @@ public class MainGUI extends MainWindow {
 		this.editorPopupMenu = new EditorPopupMenu(this, mainFrame, standalone);
 
 		createMainPanel(mainFrame);
-
-		noteAreaFile = new SimpleFile(configuration.getParentDirectory().getCanonicalDirname() + "/notes.txt");
-		noteArea.setText(noteAreaFile.getContent());
 
 		configureGUI();
 
@@ -1071,10 +1068,12 @@ public class MainGUI extends MainWindow {
 
 	public void saveNotes() {
 
-		String noteText = noteArea.getText();
+		if (noteAreaFile != null) {
+			String noteText = noteArea.getText();
 
-		if (!("".equals(noteText))) {
-			noteAreaFile.saveContent(noteText);
+			if (!("".equals(noteText))) {
+				noteAreaFile.saveContent(noteText);
+			}
 		}
 	}
 
@@ -1284,7 +1283,14 @@ public class MainGUI extends MainWindow {
 	}
 
 	public void toggleNoteArea() {
-		noteAreaScroller.setVisible(!noteAreaScroller.isVisible());
+		boolean newVisibility = !noteAreaScroller.isVisible();
+		if (newVisibility) {
+			if (noteAreaFile == null) {
+				noteAreaFile = new SimpleFile(configuration.getParentDirectory().getCanonicalDirname() + "/notes.txt");
+				noteArea.setText(noteAreaFile.getContent());
+			}
+		}
+		noteAreaScroller.setVisible(newVisibility);
 		mainFrame.pack();
 	}
 
