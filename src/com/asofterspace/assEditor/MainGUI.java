@@ -2399,4 +2399,12 @@ public class MainGUI extends MainWindow {
 		}
 	}
 
+	@Override
+	protected String getIconName() {
+		if (editmode) {
+			return "ico_editmode.png";
+		}
+		return "ico.png";
+	}
+
 }
