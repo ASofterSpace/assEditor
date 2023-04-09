@@ -2122,6 +2122,7 @@ public class MainGUI extends MainWindow {
 			if (editmode) {
 				newTab.getMemo().setHighlightChanges(false);
 				newTab.getMemo().setWordWrap(true);
+				newTab.setCodeLanguageAndCreateHighlighter();
 			}
 			augFileTabs.add(newTab);
 		}

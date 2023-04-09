@@ -579,12 +579,12 @@ public class AugFileTab implements FileTab {
 			return;
 		}
 
+		// ... and get what the file made of it (e.g. transferring null to the initial default)
+		CodeLanguage codeKind = augFile.getSourceLanguage();
+
 		if (highlighter != null) {
 			highlighter.discard();
 		}
-
-		// ... and get what the file made of it (e.g. transferring null to the initial default)
-		CodeLanguage codeKind = augFile.getSourceLanguage();
 
 		highlighter = CodeHighlighterFactory.getHighlighterForLanguage(codeKind, fileContentMemo);
 
