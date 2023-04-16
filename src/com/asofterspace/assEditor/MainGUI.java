@@ -2119,11 +2119,6 @@ public class MainGUI extends MainWindow {
 			file.refreshContent();
 			AugFileTab newTab = new AugFileTab(mainPanelRight, file, this, augFileCtrl, standalone, editmode);
 			newTab.setDefaultIndent(defaultIndentationStr);
-			if (editmode) {
-				newTab.getMemo().setHighlightChanges(false);
-				newTab.getMemo().setWordWrap(true);
-				newTab.setCodeLanguageAndCreateHighlighter();
-			}
 			augFileTabs.add(newTab);
 		}
 

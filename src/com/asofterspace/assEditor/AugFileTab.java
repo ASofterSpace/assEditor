@@ -284,6 +284,11 @@ public class AugFileTab implements FileTab {
 		fileContentMemo.enableStartLine(true);
 		fileContentMemo.enableHorzLine(true);
 
+		if (editmode) {
+			fileContentMemo.setHighlightChanges(false);
+			fileContentMemo.setWordWrap(true);
+		}
+
 		fileContentMemo.addMouseListener(new MouseListener() {
 
 			@Override
