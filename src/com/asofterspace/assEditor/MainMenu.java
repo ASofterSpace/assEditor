@@ -17,6 +17,8 @@ import com.asofterspace.toolbox.coders.HtmlDecoder;
 import com.asofterspace.toolbox.coders.HtmlEncoder;
 import com.asofterspace.toolbox.coders.MorseDecoder;
 import com.asofterspace.toolbox.coders.MorseEncoder;
+import com.asofterspace.toolbox.coders.NumericalDecoder;
+import com.asofterspace.toolbox.coders.NumericalEncoder;
 import com.asofterspace.toolbox.coders.RomanNumeralDecoder;
 import com.asofterspace.toolbox.coders.RomanNumeralEncoder;
 import com.asofterspace.toolbox.coders.UrlDecoder;
@@ -1525,6 +1527,26 @@ public class MainMenu {
 			}
 		});
 		conversions.add(base64dec);
+
+		conversions.addSeparator();
+
+		JMenuItem asciiToNum = new JMenuItem("ASCII to numbers");
+		addTextModificationAction(asciiToNum, new StringModifier() {
+			@Override
+			public String modify(String str) {
+				return NumericalEncoder.encode(str);
+			}
+		});
+		conversions.add(asciiToNum);
+
+		JMenuItem numToAscii = new JMenuItem("Numbers to ASCII");
+		addTextModificationAction(numToAscii, new StringModifier() {
+			@Override
+			public String modify(String str) {
+				return NumericalDecoder.decode(str);
+			}
+		});
+		conversions.add(numToAscii);
 
 		conversions.addSeparator();
 
