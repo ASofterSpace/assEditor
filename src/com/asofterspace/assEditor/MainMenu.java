@@ -2257,6 +2257,8 @@ public class MainMenu {
 					"[Ctrl / Shift] + [Tab] un-tab entire selection\n" +
 					"[Ctrl]+[J] open tab, with [:] inside to jump to line\n" +
 					"[Ctrl]+[I] up+lowcase current word\n" +
+					"[F1] .. [F4] add typographic quote marks\n" +
+					"[F6] add current date-time-stamp\n" +
 					"use [UP] and [DOWN] to highlight proposed tokens\n" +
 					"use [TAB] to tab complete with the selected token\n" +
 					"use [Shift]+[Click] to select from current cursor pos to clicked cursor pos\n" +
