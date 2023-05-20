@@ -479,7 +479,7 @@ public class MainMenu {
 		edit.add(duplicateCurrentLineCtrl);
 
 		JMenuItem duplicateCurrentLineEmpty = new JMenuItem("Duplicate Current Line Empty");
-		duplicateCurrentLineEmpty.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_E, ActionEvent.CTRL_MASK));
+		duplicateCurrentLineEmpty.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_MINUS, ActionEvent.CTRL_MASK));
 		duplicateCurrentLineEmpty.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -491,7 +491,7 @@ public class MainMenu {
 		edit.add(duplicateCurrentLineEmpty);
 
 		JMenuItem deleteCurrentLine = new JMenuItem("Delete Current Line");
-		deleteCurrentLine.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_D, ActionEvent.CTRL_MASK));
+		deleteCurrentLine.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_E, ActionEvent.CTRL_MASK));
 		deleteCurrentLine.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -2247,12 +2247,12 @@ public class MainMenu {
 				GuiUtils.notify(
 					"in general:\n" +
 					"[Ctrl]+[S] save\n" +
-					"[Ctrl]+[D] delete current line(s)\n" +
+					"[Ctrl]+[E] delete current line(s)\n" +
 					"[Ctrl]+[UP] move current line one up\n" +
 					"[Ctrl]+[DOWN] move current line one below\n" +
 					"[Shift]+[UP] / [Shift]+[DOWN] to mark entire rows\n" +
 					"[Shift]+[Enter] / [Ctrl]+[Enter] duplicate cur line(s)\n" +
-					"[Ctrl]+[E] duplicate cur line(s) empty (so every \"...\" is replaced by \"\")\n" +
+					"[Ctrl]+[-] duplicate cur line(s) empty (so every \"...\" is replaced by \"\")\n" +
 					"[Tab] tab entire selection\n" +
 					"[Ctrl / Shift] + [Tab] un-tab entire selection\n" +
 					"[Ctrl]+[J] open tab, with [:] inside to jump to line\n" +
