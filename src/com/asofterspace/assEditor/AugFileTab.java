@@ -1773,7 +1773,32 @@ public class AugFileTab implements FileTab {
 
 		setChanged(false);
 
-		checkForErrors();
+		new Thread(new Runnable() {
+			public void run() {
+				// for up to two seconds, display errors if any are found - as the error finding
+				// is done on highlighting asynchronously and might take a while!
+				try {
+					Thread.sleep(500);
+				} catch (InterruptedException e) {
+				}
+				checkForErrors();
+				try {
+					Thread.sleep(500);
+				} catch (InterruptedException e) {
+				}
+				checkForErrors();
+				try {
+					Thread.sleep(500);
+				} catch (InterruptedException e) {
+				}
+				checkForErrors();
+				try {
+					Thread.sleep(500);
+				} catch (InterruptedException e) {
+				}
+				checkForErrors();
+			}
+		}).start();
 	}
 
 	public void addMissingImports() {
@@ -2353,7 +2378,10 @@ public class AugFileTab implements FileTab {
 			errorBannerLabel.setText(" " + errors.get(0));
 		}
 
-		errorBanner.setVisible(errors.size() > 0);
+		boolean newVisibility = errors.size() > 0;
+		if (errorBanner.isVisible() != newVisibility) {
+			errorBanner.setVisible(newVisibility);
+		}
 	}
 
 	@Override
