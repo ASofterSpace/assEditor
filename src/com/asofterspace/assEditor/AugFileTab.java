@@ -37,6 +37,7 @@ import java.awt.event.MouseListener;
 import java.awt.FontMetrics;
 import java.awt.GridBagLayout;
 import java.awt.Toolkit;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.BorderFactory;
@@ -2160,6 +2161,31 @@ public class AugFileTab implements FileTab {
 
 		for (String line : lines) {
 			if (invert == line.startsWith(needle)) {
+				result.append(line);
+				result.append("\n");
+			}
+		}
+
+		fileContentMemo.setText(result.toString());
+
+		fileContentMemo.setCaretPosition(origCaretPos);
+	}
+
+	public void deleteDuplicateLines() {
+
+		ensureLoaded();
+
+		String contentText = fileContentMemo.getText();
+
+		origCaretPos = fileContentMemo.getCaretPosition();
+
+		String[] lines = contentText.split("\n");
+		StringBuilder result = new StringBuilder();
+		List<String> encounteredLines = new ArrayList<>();
+
+		for (String line : lines) {
+			if (!encounteredLines.contains(line)) {
+				encounteredLines.add(line);
 				result.append(line);
 				result.append("\n");
 			}
