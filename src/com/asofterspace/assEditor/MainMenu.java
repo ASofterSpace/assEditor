@@ -1312,6 +1312,15 @@ public class MainMenu {
 		JMenu stats = new JMenu("Stats");
 		menu.add(stats);
 
+		JMenuItem showReadingTime = new JMenuItem("Show Estimated Reading Time");
+		showReadingTime.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				GuiUtils.notify("The currently opened text requires about " + getReadingTimeStr() + " to read.");
+			}
+		});
+		stats.add(showReadingTime);
+
 		JMenuItem showCharacterAmount = new JMenuItem("Show Amount of Characters");
 		showCharacterAmount.addActionListener(new ActionListener() {
 			@Override
@@ -1362,7 +1371,8 @@ public class MainMenu {
 					getWordAmount() + " words,\n" +
 					getLineAmount() + " lines,\n" +
 					getInsertAmount() + " inserts,\n" +
-					getDeleteAmount() + " deletes"
+					getDeleteAmount() + " deletes,\n\n" +
+					"... and might require about " + getReadingTimeStr() + " to read"
 				);
 			}
 		});
@@ -2679,15 +2689,15 @@ public class MainMenu {
 	private Integer getWordAmount() {
 		if (mainGUI.getCurrentTab() != null) {
 			String content = mainGUI.getCurrentTab().getContent();
-			content = StrUtils.replaceAll(content, ".", " ");
-			content = StrUtils.replaceAll(content, ",", " ");
-			content = StrUtils.replaceAll(content, ";", " ");
-			content = StrUtils.replaceAll(content, "!", " ");
-			content = StrUtils.replaceAll(content, "?", " ");
-			content = StrUtils.replaceAll(content, "\t", " ");
-			content = StrUtils.replaceAll(content, "  ", " ");
-			content = content.trim();
-			return StrUtils.countCharInString(' ', content) + 1;
+			return StrUtils.getWordAmount(content);
+		}
+		return null;
+	}
+
+	private String getReadingTimeStr() {
+		if (mainGUI.getCurrentTab() != null) {
+			String content = mainGUI.getCurrentTab().getContent();
+			return StrUtils.getReadingTimeStr(content);
 		}
 		return null;
 	}
