@@ -38,7 +38,9 @@ import java.awt.FontMetrics;
 import java.awt.GridBagLayout;
 import java.awt.Toolkit;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
@@ -2171,7 +2173,7 @@ public class AugFileTab implements FileTab {
 		fileContentMemo.setCaretPosition(origCaretPos);
 	}
 
-	public void deleteDuplicateLines() {
+	public void deleteDuplicateLinesAfterFirst() {
 
 		ensureLoaded();
 
@@ -2189,6 +2191,41 @@ public class AugFileTab implements FileTab {
 				result.append(line);
 				result.append("\n");
 			}
+		}
+
+		fileContentMemo.setText(result.toString());
+
+		fileContentMemo.setCaretPosition(origCaretPos);
+	}
+
+	public void deleteDuplicateLines() {
+
+		ensureLoaded();
+
+		String contentText = fileContentMemo.getText();
+
+		origCaretPos = fileContentMemo.getCaretPosition();
+
+		String[] lines = contentText.split("\n");
+		StringBuilder result = new StringBuilder();
+		List<String> onceEncounteredLines = new ArrayList<>();
+		Set<String> multiplyEncounteredLines = new HashSet<>();
+
+		for (String line : lines) {
+			if (multiplyEncounteredLines.contains(line)) {
+				continue;
+			}
+			if (onceEncounteredLines.contains(line)) {
+				multiplyEncounteredLines.add(line);
+				onceEncounteredLines.remove(line);
+				continue;
+			}
+			onceEncounteredLines.add(line);
+		}
+
+		for (String line : onceEncounteredLines) {
+			result.append(line);
+			result.append("\n");
 		}
 
 		fileContentMemo.setText(result.toString());

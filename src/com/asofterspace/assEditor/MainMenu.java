@@ -667,7 +667,18 @@ public class MainMenu {
 		});
 		edit.add(randomizeDocument);
 
-		JMenuItem deleteDuplicateLines = new JMenuItem("Delete Duplicated Lines in Entire Document (delete each instance after the first from the top)");
+		JMenuItem deleteDuplicateLinesAfterFirst = new JMenuItem("Delete Duplicated Lines in Entire Document (delete each instance after the first from the top)");
+		deleteDuplicateLinesAfterFirst.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (mainGUI.getCurrentTab() != null) {
+					mainGUI.getCurrentTab().deleteDuplicateLinesAfterFirst();
+				}
+			}
+		});
+		edit.add(deleteDuplicateLinesAfterFirst);
+
+		JMenuItem deleteDuplicateLines = new JMenuItem("Delete Duplicated Lines in Entire Document (delete each instance, also the first)");
 		deleteDuplicateLines.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
