@@ -21,9 +21,9 @@ import com.asofterspace.toolbox.gui.MainWindow;
 import com.asofterspace.toolbox.gui.OpenFileDialog;
 import com.asofterspace.toolbox.io.Directory;
 import com.asofterspace.toolbox.io.File;
-import com.asofterspace.toolbox.io.JSON;
 import com.asofterspace.toolbox.io.SimpleFile;
 import com.asofterspace.toolbox.utils.CallbackWithStatus;
+import com.asofterspace.toolbox.utils.MathUtils;
 import com.asofterspace.toolbox.utils.Record;
 import com.asofterspace.toolbox.utils.StrUtils;
 import com.asofterspace.toolbox.Utils;
@@ -108,7 +108,6 @@ public class MainGUI extends MainWindow {
 	private final static String CONFIG_KEY_COPY_ON_ENTER = "copyOnEnter";
 	private final static String CONFIG_KEY_TAB_ENTIRE_BLOCKS = "tabEntireBlocks";
 	private final static String CONFIG_KEY_PROPOSE_TOKEN_AUTO_COMPLETE = "proposeTokenAutoComplete";
-	private final static String CONFIG_KEY_BACKUP_NUM = "backupNum";
 	private final static String CONFIG_KEY_WIDTH = "mainFrameWidth";
 	private final static String CONFIG_KEY_HEIGHT = "mainFrameHeight";
 	private final static String CONFIG_KEY_LEFT = "mainFrameLeft";
@@ -140,8 +139,6 @@ public class MainGUI extends MainWindow {
 	private JLabel useAsteriskInSearchLabel;
 	private JPanel searchPanelSearchLine;
 	private JPanel searchPanelReplaceLine;
-
-	private Integer currentBackup;
 
 	private int fontSize;
 
@@ -299,8 +296,6 @@ public class MainGUI extends MainWindow {
 
 		proposeTokenAutoComplete = configuration.getBoolean(CONFIG_KEY_PROPOSE_TOKEN_AUTO_COMPLETE, true);
 
-		currentBackup = configuration.getInteger(CONFIG_KEY_BACKUP_NUM, 0);
-
 		fontSize = configuration.getInteger(CONFIG_KEY_FONT_SIZE, DEFAULT_FONT_SIZE);
 
 		showFilesInTree = configuration.getBoolean(CONFIG_KEY_SHOW_FILES_IN_TREE, true);
@@ -313,27 +308,12 @@ public class MainGUI extends MainWindow {
 			@Override
 			public void run() {
 
-				JSON configRoot = configuration.getAllContents();
-
 				while (true) {
 
-					if (currentlyShownTab != null) {
-						currentlyShownTab.backup(currentBackup);
+					// let's make a backup of the file content...
+					saveBackup();
 
-						currentBackup++;
-						// if we ever change the rollover limit here, also update the
-						// amount of leftpadding done in the currentlyShownTab.backup
-						// function!
-						if (currentBackup > 9999) {
-							currentBackup = 0;
-						}
-
-						// we do not set on the config element, just on the JSON root,
-						// as we do not want to save in here...
-						configRoot.set(CONFIG_KEY_BACKUP_NUM, currentBackup);
-					}
-
-					// ... because we are going to save in here anyway!
+					// ... and let's save the file tree as well
 					augFileCtrl.saveConfigFileList();
 
 					try {
@@ -1064,6 +1044,9 @@ public class MainGUI extends MainWindow {
 		}
 
 		saveNotes();
+
+		// whenever we save, also make a backup (in addition to the backups that happen every minute anyway)
+		saveBackup();
 	}
 
 	public void saveNotes() {
@@ -1074,6 +1057,12 @@ public class MainGUI extends MainWindow {
 			if (!("".equals(noteText))) {
 				noteAreaFile.saveContent(noteText);
 			}
+		}
+	}
+
+	private void saveBackup() {
+		if (currentlyShownTab != null) {
+			currentlyShownTab.backup(MathUtils.randomInteger(10000));
 		}
 	}
 
