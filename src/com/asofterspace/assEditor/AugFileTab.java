@@ -740,15 +740,6 @@ public class AugFileTab implements FileTab {
 		highlighter.setProposeTokenAutoComplete(mainGUI.proposeTokenAutoComplete);
 	}
 
-	public void setFileContent(String newContent) {
-
-		// set the new entry content (without saving it anywhere)
-		fileContentMemo.setText(newContent);
-
-		// scroll to the top
-		fileContentMemo.setCaretPosition(0);
-	}
-
 	public AugFile getFile() {
 		return augFile;
 	}
@@ -977,9 +968,7 @@ public class AugFileTab implements FileTab {
 
 		sourceCode = sourceCode.substring(0, lineEnd) + insertStr + sourceCode.substring(lineEnd);
 
-		fileContentMemo.setText(sourceCode);
-
-		fileContentMemo.setCaretPosition(carPos + insertStr.length());
+		setFileContentAndPos(sourceCode, carPos + insertStr.length());
 	}
 
 	public void moveCurrentLineAbove() {
@@ -1087,14 +1076,10 @@ public class AugFileTab implements FileTab {
 
 		sourceCode = sourceCode.substring(0, lineStart) + sourceCode.substring(lineEnd);
 
-		fileContentMemo.setText(sourceCode);
-
 		// set the caret to the next line (well, to where the next line will be after deleting...)
 		int newPos = lineStart + 1;
-		if (newPos > sourceCode.length()) {
-			newPos = sourceCode.length();
-		}
-		fileContentMemo.setCaretPosition(newPos);
+
+		setFileContentAndPos(sourceCode, newPos);
 	}
 
 	/**
@@ -1173,8 +1158,7 @@ public class AugFileTab implements FileTab {
 
 		sourceCode = sourceCode.substring(0, selStart) + lowStr + sourceCode.substring(selEnd);
 
-		fileContentMemo.setText(sourceCode);
-		fileContentMemo.setCaretPosition(carPos);
+		setFileContentAndPos(sourceCode, carPos);
 	}
 
 	public void upLowCurSel() {
@@ -1194,8 +1178,7 @@ public class AugFileTab implements FileTab {
 
 		sourceCode = sourceCode.substring(0, selStart) + upLowStr + sourceCode.substring(selEnd);
 
-		fileContentMemo.setText(sourceCode);
-		fileContentMemo.setCaretPosition(carPos);
+		setFileContentAndPos(sourceCode, carPos);
 	}
 
 	public void upCurSel() {
@@ -1213,8 +1196,7 @@ public class AugFileTab implements FileTab {
 
 		sourceCode = sourceCode.substring(0, selStart) + upStr + sourceCode.substring(selEnd);
 
-		fileContentMemo.setText(sourceCode);
-		fileContentMemo.setCaretPosition(carPos);
+		setFileContentAndPos(sourceCode, carPos);
 	}
 
 	public void lowCurWord() {
@@ -1233,8 +1215,7 @@ public class AugFileTab implements FileTab {
 
 		sourceCode = sourceCode.substring(0, selStart) + lowStr + sourceCode.substring(selEnd);
 
-		fileContentMemo.setText(sourceCode);
-		fileContentMemo.setCaretPosition(carPos);
+		setFileContentAndPos(sourceCode, carPos);
 	}
 
 	public void upLowCurWord() {
@@ -1255,8 +1236,7 @@ public class AugFileTab implements FileTab {
 
 		sourceCode = sourceCode.substring(0, selStart) + upLowStr + sourceCode.substring(selEnd);
 
-		fileContentMemo.setText(sourceCode);
-		fileContentMemo.setCaretPosition(carPos);
+		setFileContentAndPos(sourceCode, carPos);
 	}
 
 	public void upCurWord() {
@@ -1275,8 +1255,7 @@ public class AugFileTab implements FileTab {
 
 		sourceCode = sourceCode.substring(0, selStart) + upStr + sourceCode.substring(selEnd);
 
-		fileContentMemo.setText(sourceCode);
-		fileContentMemo.setCaretPosition(carPos);
+		setFileContentAndPos(sourceCode, carPos);
 	}
 
 	public void indentSelection(String indentWithWhat) {
@@ -1762,13 +1741,7 @@ public class AugFileTab implements FileTab {
 			contentText = highlighter.automagicallyAddSemicolons(contentText);
 		}
 
-		fileContentMemo.setText(contentText);
-
-		if (origCaretPos > contentText.length()) {
-			origCaretPos = contentText.length();
-		}
-
-		fileContentMemo.setCaretPosition(origCaretPos);
+		setFileContentAndPos(contentText, origCaretPos);
 
 		augFile.setContent(contentText);
 
@@ -1856,9 +1829,7 @@ public class AugFileTab implements FileTab {
 
 		contentText = replaceLeadingWhitespacesWithTabs(contentText);
 
-		fileContentMemo.setText(contentText);
-
-		fileContentMemo.setCaretPosition(newCaretPos);
+		setFileContentAndPos(contentText, newCaretPos);
 	}
 
 	private String replaceLeadingWhitespacesWithTabs(String contentText) {
@@ -1934,9 +1905,7 @@ public class AugFileTab implements FileTab {
 
 		contentText = replaceLeadingTabsWithWhitespaces(contentText);
 
-		fileContentMemo.setText(contentText);
-
-		fileContentMemo.setCaretPosition(newCaretPos);
+		setFileContentAndPos(contentText, newCaretPos);
 	}
 
 	private String replaceLeadingTabsWithWhitespaces(String contentText) {
@@ -1986,9 +1955,7 @@ public class AugFileTab implements FileTab {
 
 		contentText = removeTrailingWhitespace(contentText);
 
-		fileContentMemo.setText(contentText);
-
-		fileContentMemo.setCaretPosition(origCaretPos);
+		setFileContentAndPos(contentText, origCaretPos);
 	}
 
 	private String removeTrailingWhitespace(String contentText) {
@@ -2069,9 +2036,7 @@ public class AugFileTab implements FileTab {
 			result.append("\n");
 		}
 
-		fileContentMemo.setText(result.toString());
-
-		fileContentMemo.setCaretPosition(origCaretPos);
+		setFileContentAndPos(result, origCaretPos);
 	}
 
 	public void removeUntilFirstOccurrence(String needle) {
@@ -2145,9 +2110,7 @@ public class AugFileTab implements FileTab {
 			}
 		}
 
-		fileContentMemo.setText(result.toString());
-
-		fileContentMemo.setCaretPosition(origCaretPos);
+		setFileContentAndPos(result, origCaretPos);
 	}
 
 	public void deleteAllLinesStartingWithText(String needle, boolean invert) {
@@ -2168,9 +2131,7 @@ public class AugFileTab implements FileTab {
 			}
 		}
 
-		fileContentMemo.setText(result.toString());
-
-		fileContentMemo.setCaretPosition(origCaretPos);
+		setFileContentAndPos(result, origCaretPos);
 	}
 
 	public void deleteDuplicateLinesAfterFirst() {
@@ -2193,9 +2154,7 @@ public class AugFileTab implements FileTab {
 			}
 		}
 
-		fileContentMemo.setText(result.toString());
-
-		fileContentMemo.setCaretPosition(origCaretPos);
+		setFileContentAndPos(result, origCaretPos);
 	}
 
 	public void deleteDuplicateLines() {
@@ -2228,9 +2187,7 @@ public class AugFileTab implements FileTab {
 			result.append("\n");
 		}
 
-		fileContentMemo.setText(result.toString());
-
-		fileContentMemo.setCaretPosition(origCaretPos);
+		setFileContentAndPos(result, origCaretPos);
 	}
 
 	public TextEncoding getEncoding() {
@@ -2382,7 +2339,7 @@ public class AugFileTab implements FileTab {
 		// we subtract 1, because humans start at 1, but internally we start counting lines at 0
 		int lineStart = StrUtils.getLineStartFromNumber(lineNum - 1, fileContentMemo.getText());
 
-		fileContentMemo.setCaretPosition(lineStart);
+		scrollTo(lineStart);
 	}
 
 	public String getContent() {
@@ -2445,6 +2402,29 @@ public class AugFileTab implements FileTab {
 		if (errorBanner.isVisible() != newVisibility) {
 			errorBanner.setVisible(newVisibility);
 		}
+	}
+
+	public void setFileContent(String newContent) {
+
+		// set the new entry content (without saving it anywhere) and scroll to the top
+		setFileContentAndPos(newContent, 0);
+	}
+
+	private void setFileContentAndPos(StringBuilder result, int caretPos) {
+
+		setFileContentAndPos(result.toString(), caretPos);
+	}
+
+	private void setFileContentAndPos(String text, int caretPos) {
+
+		fileContentMemo.setText(text);
+
+		int len = text.length();
+		if (caretPos > len) {
+			caretPos = len;
+		}
+
+		setCaretPos(caretPos, caretPos);
 	}
 
 	@Override
