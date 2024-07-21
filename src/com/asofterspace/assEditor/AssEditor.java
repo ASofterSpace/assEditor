@@ -14,6 +14,7 @@ import com.asofterspace.toolbox.io.File;
 import com.asofterspace.toolbox.io.JSON;
 import com.asofterspace.toolbox.io.JsonParseException;
 import com.asofterspace.toolbox.io.SimpleFile;
+import com.asofterspace.toolbox.io.TextFile;
 import com.asofterspace.toolbox.utils.StrUtils;
 import com.asofterspace.toolbox.Utils;
 
@@ -26,10 +27,11 @@ import javax.swing.SwingUtilities;
 public class AssEditor {
 
 	public final static String PROGRAM_TITLE = "A Softer Space Editor";
-	public final static String VERSION_NUMBER = "0.0.7.1(" + Utils.TOOLBOX_VERSION_NUMBER + ")";
-	public final static String VERSION_DATE = "18. December 2018 - 17. October 2023";
+	public final static String VERSION_NUMBER = "0.0.7.2(" + Utils.TOOLBOX_VERSION_NUMBER + ")";
+	public final static String VERSION_DATE = "18. December 2018 - 21. July 2024";
 
 	private final static String CONFIG_KEY_BACKUP_SETTINGS_NUM = "backupSettingsNum";
+	private final static String SETTINGS_FILE_NAME = "settings";
 
 	private static ConfigFile config;
 	private static AugFileCtrl augFileCtrl;
@@ -76,17 +78,27 @@ public class AssEditor {
 		try {
 			// we get a config file based on the classpath, such that we know that this is always the
 			// same "install" location, without change even if we are called from somewhere else
-			config = new ConfigFile("settings", true);
+			config = new ConfigFile(SETTINGS_FILE_NAME, true);
 
-			// create a default config file, if necessary
-			if (config.getAllContents().isEmpty()) {
-				config.setAllContents(new JSON("{\"workspaces\": [{\"name\": \"default\", \"files\": []}]}"));
+		} catch (JsonParseException e1) {
+			try {
+				TextFile configAsText = new TextFile(ConfigFile.getConfigFilename(SETTINGS_FILE_NAME, true));
+				configAsText.saveContent("");
+				config = new ConfigFile(SETTINGS_FILE_NAME, true);
+			} catch (JsonParseException e2) {
+				System.out.println("newly created JSON could not be parsed: " + e2);
+				System.exit(1);
 			}
+		}
 
-		} catch (JsonParseException e) {
-			System.err.println("Loading the settings failed:");
-			System.err.println(e);
-			System.exit(1);
+		// create a default config file, if necessary
+		if (config.getAllContents().isEmpty()) {
+			try {
+				config.setAllContents(new JSON("{\"workspaces\": [{\"name\": \"default\", \"files\": []}]}"));
+			} catch (JsonParseException e3) {
+				System.out.println("default JSON could not be parsed: " + e3);
+				System.exit(1);
+			}
 		}
 
 		// we prevent saving as we would save a hundred times during startup, and will allow
