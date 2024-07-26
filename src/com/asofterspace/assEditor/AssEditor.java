@@ -27,8 +27,8 @@ import javax.swing.SwingUtilities;
 public class AssEditor {
 
 	public final static String PROGRAM_TITLE = "A Softer Space Editor";
-	public final static String VERSION_NUMBER = "0.0.7.2(" + Utils.TOOLBOX_VERSION_NUMBER + ")";
-	public final static String VERSION_DATE = "18. December 2018 - 21. July 2024";
+	public final static String VERSION_NUMBER = "0.0.7.3(" + Utils.TOOLBOX_VERSION_NUMBER + ")";
+	public final static String VERSION_DATE = "18. December 2018 - 26. July 2024";
 
 	private final static String CONFIG_KEY_BACKUP_SETTINGS_NUM = "backupSettingsNum";
 	private final static String SETTINGS_FILE_NAME = "settings";
@@ -37,6 +37,9 @@ public class AssEditor {
 	private static AugFileCtrl augFileCtrl;
 	private final static List<Image> stamps = new ArrayList<>();
 	private final static List<FancyCodeEditor> wantStamps = new ArrayList<>();
+	
+	private static boolean standalone = false;
+	private static boolean editmode = false;
 
 
 	public static void main(String[] args) {
@@ -47,8 +50,6 @@ public class AssEditor {
 		Utils.setVersionDate(VERSION_DATE);
 
 		config = null;
-		boolean standalone = false;
-		boolean editmode = false;
 
 		List<String> openFilenames = new ArrayList<>();
 
@@ -117,8 +118,14 @@ public class AssEditor {
 
 	public static void performPostStartupActions() {
 
+		// no need to do anything that takes RAM space and CPU time in edit mode ^^
+		if (editmode) {
+			return;
+		}
+		
 		augFileCtrl.saveConfigFileList();
 
+		// especially stamps take 300 MB RAM... just no need at all in edit mode, they aren't even shown!
 		String classPath = System.getProperty("java.class.path");
 		Directory stampDir = new Directory(classPath + "/../res/stamps");
 		boolean recursively = true;
