@@ -27,8 +27,8 @@ import javax.swing.SwingUtilities;
 public class AssEditor {
 
 	public final static String PROGRAM_TITLE = "A Softer Space Editor";
-	public final static String VERSION_NUMBER = "0.0.7.3(" + Utils.TOOLBOX_VERSION_NUMBER + ")";
-	public final static String VERSION_DATE = "18. December 2018 - 26. July 2024";
+	public final static String VERSION_NUMBER = "0.0.7.4(" + Utils.TOOLBOX_VERSION_NUMBER + ")";
+	public final static String VERSION_DATE = "18. December 2018 - 2. January 2025";
 
 	private final static String CONFIG_KEY_BACKUP_SETTINGS_NUM = "backupSettingsNum";
 	private final static String SETTINGS_FILE_NAME = "settings";
@@ -37,7 +37,7 @@ public class AssEditor {
 	private static AugFileCtrl augFileCtrl;
 	private final static List<Image> stamps = new ArrayList<>();
 	private final static List<FancyCodeEditor> wantStamps = new ArrayList<>();
-	
+
 	private static boolean standalone = false;
 	private static boolean editmode = false;
 
@@ -122,7 +122,7 @@ public class AssEditor {
 		if (editmode) {
 			return;
 		}
-		
+
 		augFileCtrl.saveConfigFileList();
 
 		// especially stamps take 300 MB RAM... just no need at all in edit mode, they aren't even shown!

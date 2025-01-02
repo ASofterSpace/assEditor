@@ -422,8 +422,45 @@ public class AugFileCtrl {
 
 	private void loadSeveralFilesAtStartup(List<String> openFilenames) {
 
+		// if no names given... do nothing!
+		if (openFilenames.size() < 1) {
+			return;
+		}
+
+		// if one name given... load that one!
+		if (openFilenames.size() == 1) {
+			loadAnotherFileWithoutSaving(new File(openFilenames.get(0)));
+		}
+
+		// if several names given...
+		boolean allIndividualFilesExist = true;
+		List<File> filesToLoad = new ArrayList<>();
 		for (String filename : openFilenames) {
-			loadAnotherFileWithoutSaving(new File(filename));
+			File tryFile = new File(filename);
+			if (!tryFile.exists()) {
+				allIndividualFilesExist = false;
+				break;
+			}
+			filesToLoad.add(tryFile);
+		}
+
+		// ... and if files with all these names exist...
+		if (allIndividualFilesExist) {
+			// ... then load them all!
+			for (File fileToLoad : filesToLoad) {
+				loadAnotherFileWithoutSaving(fileToLoad);
+			}
+		} else {
+			// but if they do not all exist:
+			// interpret all this as just ONE file with spaces in its name, and load that one file instead!
+			StringBuilder allConcatenatedBuilder = new StringBuilder();
+			String sep = "";
+			for (String filename : openFilenames) {
+				allConcatenatedBuilder.append(sep);
+				allConcatenatedBuilder.append(filename);
+				sep = " ";
+			}
+			loadAnotherFileWithoutSaving(new File(allConcatenatedBuilder.toString()));
 		}
 	}
 
