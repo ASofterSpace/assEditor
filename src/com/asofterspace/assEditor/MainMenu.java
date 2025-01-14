@@ -1249,6 +1249,17 @@ public class MainMenu {
 		});
 		operations.add(count100Up);
 
+		JMenuItem countCounterUp = new JMenuItem("Count %[COUNTER] Up (replace each occurrence of %[COUNTER] with an increasing number, starting at 0)");
+		countCounterUp.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (mainGUI.getCurrentTab() != null) {
+					mainGUI.getCurrentTab().countCounterUp("%[COUNTER]");
+				}
+			}
+		});
+		operations.add(countCounterUp);
+
 		operations.addSeparator();
 
 		JMenuItem remTextUntil = new JMenuItem("Remove Text From Each Line Until First Instance Of Text In Search Field");

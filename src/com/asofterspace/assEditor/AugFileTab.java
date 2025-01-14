@@ -2039,6 +2039,24 @@ public class AugFileTab implements FileTab {
 		setFileContentAndPos(result, origCaretPos);
 	}
 
+	public void countCounterUp(String needle) {
+
+		ensureLoaded();
+
+		String contentText = fileContentMemo.getText();
+
+		origCaretPos = fileContentMemo.getCaretPosition();
+
+		int counter = 0;
+
+		while (contentText.contains(needle)) {
+			contentText = StrUtils.replaceFirst(contentText, needle, ""+counter);
+			counter++;
+		}
+
+		setFileContentAndPos(contentText, origCaretPos);
+	}
+
 	public void removeUntilFirstOccurrence(String needle) {
 
 		ensureLoaded();
