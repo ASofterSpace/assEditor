@@ -35,6 +35,7 @@ import com.asofterspace.toolbox.io.JSON;
 import com.asofterspace.toolbox.io.JsonParseException;
 import com.asofterspace.toolbox.io.XML;
 import com.asofterspace.toolbox.utils.SortOrder;
+import com.asofterspace.toolbox.utils.SortUtils;
 import com.asofterspace.toolbox.utils.StringModifier;
 import com.asofterspace.toolbox.utils.StrUtils;
 import com.asofterspace.toolbox.utils.TextEncoding;
@@ -44,6 +45,8 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.Font;
+import java.awt.GraphicsEnvironment;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
@@ -1330,6 +1333,34 @@ public class MainMenu {
 		});
 		operations.add(delAllNotStartText);
 
+		operations.addSeparator();
+
+		JMenuItem listFonts = new JMenuItem("List All Available Fonts");
+		listFonts.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (mainGUI.getCurrentTab() != null) {
+					GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+					Font[] fonts = ge.getAllFonts();
+					List<String> fontList = new ArrayList<>();
+					for (Font font : fonts) {
+						String fontStr = font.toString();
+						if (!fontList.contains(fontStr)) {
+							fontList.add(fontStr);
+						}
+					}
+					fontList = SortUtils.sort(fontList, SortOrder.ALPHABETICAL_IGNORE_UMLAUTS);
+					StringBuilder fontBuilder = new StringBuilder();
+					for (String fontName : fontList) {
+						fontBuilder.append("\n");
+						fontBuilder.append(fontName);
+					}
+					mainGUI.getCurrentTab().setContent(mainGUI.getCurrentTab().getContent() + fontBuilder.toString());
+				}
+			}
+		});
+		operations.add(listFonts);
+
 
 		JMenu stats = new JMenu("Stats");
 		menu.add(stats);
@@ -1537,18 +1568,8 @@ public class MainMenu {
 
 		encodings.addSeparator();
 
-		JMenuItem magicallyFix = new JMenuItem("Magically Fix Things");
-		magicallyFix.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				if (mainGUI.getCurrentTab() != null) {
-					mainGUI.getCurrentTab().magicallyFixThings();
-				} else {
-					GuiUtils.notify("No text seems to currently be opened!");
-				}
-			}
-		});
-		encodings.add(magicallyFix);
+		addFixThingsButton(encodings);
+
 
 		JMenu conversions = new JMenu("Conversions");
 		menu.add(conversions);
@@ -1905,6 +1926,10 @@ public class MainMenu {
 			}
 		});
 		conversions.add(cdmUnesc);
+
+		conversions.addSeparator();
+
+		addFixThingsButton(conversions);
 
 
 		JMenu settings = new JMenu("Settings");
@@ -2347,6 +2372,22 @@ public class MainMenu {
 		mainFrame.setJMenuBar(menu);
 
 		return menu;
+	}
+
+	private void addFixThingsButton(JMenuItem parentMenu) {
+
+		JMenuItem magicallyFix = new JMenuItem("Magically Fix Things");
+		magicallyFix.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (mainGUI.getCurrentTab() != null) {
+					mainGUI.getCurrentTab().magicallyFixThings();
+				} else {
+					GuiUtils.notify("No text seems to currently be opened!");
+				}
+			}
+		});
+		parentMenu.add(magicallyFix);
 	}
 
 	private String comment(String str, String startCommentLineStr) {
