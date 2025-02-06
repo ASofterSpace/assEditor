@@ -1062,7 +1062,7 @@ public class MainGUI extends MainWindow {
 
 	private void saveBackup() {
 		if (currentlyShownTab != null) {
-			currentlyShownTab.backup(MathUtils.randomInteger(10000));
+			currentlyShownTab.backup(MathUtils.randomInteger(AssEditor.CONTENT_BACKUP_AMOUNT));
 		}
 	}
 

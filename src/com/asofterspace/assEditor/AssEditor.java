@@ -27,11 +27,14 @@ import javax.swing.SwingUtilities;
 public class AssEditor {
 
 	public final static String PROGRAM_TITLE = "A Softer Space Editor";
-	public final static String VERSION_NUMBER = "0.0.7.5(" + Utils.TOOLBOX_VERSION_NUMBER + ")";
-	public final static String VERSION_DATE = "18. December 2018 - 20. January 2025";
+	public final static String VERSION_NUMBER = "0.0.7.6(" + Utils.TOOLBOX_VERSION_NUMBER + ")";
+	public final static String VERSION_DATE = "18. December 2018 - 6. February 2025";
 
 	private final static String CONFIG_KEY_BACKUP_SETTINGS_NUM = "backupSettingsNum";
 	private final static String SETTINGS_FILE_NAME = "settings";
+
+	public final static int CONTENT_BACKUP_AMOUNT = 100;
+	private final static int SETTINGS_BACKUP_AMOUNT = 25;
 
 	private static ConfigFile config;
 	private static AugFileCtrl augFileCtrl;
@@ -147,12 +150,12 @@ public class AssEditor {
 
 		// backup the configuration (in the same location as the file content backups are kept)
 		SimpleFile backupFile = new SimpleFile(getBackupPath() + "settings_" +
-			StrUtils.leftPad0(currentBackup, 4) + ConfigFile.FILE_EXTENSION);
+			StrUtils.leftPad0(currentBackup, 2) + ConfigFile.FILE_EXTENSION);
 		backupFile.setContent(config.getAllContents().toString(false));
 		backupFile.create();
 
 		currentBackup++;
-		if (currentBackup > 9999) {
+		if (currentBackup >= SETTINGS_BACKUP_AMOUNT) {
 			currentBackup = 0;
 		}
 
