@@ -250,6 +250,15 @@ public class MainMenu {
 		});
 		file.add(deleteFile);
 
+		JMenuItem deleteSelectedFiles = new JMenuItem("Delete Selected Files");
+		deleteSelectedFiles.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				mainGUI.deleteFiles(mainGUI.getHighlightedTabs());
+			}
+		});
+		file.add(deleteSelectedFiles);
+
 		file.addSeparator();
 
 		if (!standalone) {
@@ -261,6 +270,15 @@ public class MainMenu {
 				}
 			});
 			file.add(closeFile);
+
+			JMenuItem closeSelectedFiles = new JMenuItem("Close Selected Files");
+			closeSelectedFiles.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					mainGUI.closeFiles(mainGUI.getHighlightedTabs());
+				}
+			});
+			file.add(closeSelectedFiles);
 
 			JMenuItem closeAllRemovedFiles = new JMenuItem("Close All Non-Existing Files");
 			closeAllRemovedFiles.addActionListener(new ActionListener() {
