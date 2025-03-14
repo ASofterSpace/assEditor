@@ -1901,6 +1901,53 @@ public class MainMenu {
 
 		conversions.addSeparator();
 
+		JMenuItem javaScriptMinify = new JMenuItem("JavaScript minify (remove comments, replace \"\\n\" by \" \")");
+		addTextModificationAction(javaScriptMinify, new StringModifier() {
+			@Override
+			public String modify(String str) {
+				// remove multi-line commments: /* .. */
+				int pos = str.indexOf("/*");
+				while (pos >= 0) {
+					int endPos = str.indexOf("*/", pos);
+					if (endPos >= 0) {
+						str = str.substring(0, pos) + str.substring(endPos + 2);
+						pos = str.indexOf("/*");
+					} else {
+						break;
+					}
+				}
+				// remove multi-line commments: <!-- .. -->
+				pos = str.indexOf("<!--");
+				while (pos >= 0) {
+					int endPos = str.indexOf("-->", pos);
+					if (endPos >= 0) {
+						str = str.substring(0, pos) + str.substring(endPos + 3);
+						pos = str.indexOf("<!--");
+					} else {
+						break;
+					}
+				}
+				// remove starting whitespace
+				str = StrUtils.replaceAllRepeatedly(str, "\n\t", "\n");
+				str = StrUtils.replaceAllRepeatedly(str, "\n ", "\n");
+				List<String> lines = StrUtils.split(str, "\n");
+				List<String> newLines = new ArrayList<>();
+				for (int i = 0; i < lines.size(); i++) {
+					String line = lines.get(i);
+					// remove inline comments
+					pos = line.indexOf("//");
+					if (pos >= 0) {
+						line = line.substring(0, pos);
+					}
+					newLines.add(line);
+				}
+				return StrUtils.join(" ", newLines).trim();
+			}
+		});
+		conversions.add(javaScriptMinify);
+
+		conversions.addSeparator();
+
 		JMenuItem javaStrEsc = new JMenuItem("Java string escape");
 		addTextModificationAction(javaStrEsc, new StringModifier() {
 			@Override
