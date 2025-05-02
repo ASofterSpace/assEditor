@@ -1283,6 +1283,19 @@ public class MainMenu {
 
 		operations.addSeparator();
 
+		JMenuItem duplicateEachLine = new JMenuItem("Duplicate Each Line (transforns xyz into xyzxyz)");
+		duplicateEachLine.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (mainGUI.getCurrentTab() != null) {
+					mainGUI.getCurrentTab().duplicateEachLine();
+				}
+			}
+		});
+		operations.add(duplicateEachLine);
+
+		operations.addSeparator();
+
 		JMenuItem remTextUntil = new JMenuItem("Remove Text From Each Line Until First Instance Of Text In Search Field");
 		remTextUntil.addActionListener(new ActionListener() {
 			@Override

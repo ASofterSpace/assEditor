@@ -2208,6 +2208,26 @@ public class AugFileTab implements FileTab {
 		setFileContentAndPos(result, origCaretPos);
 	}
 
+	public void duplicateEachLine() {
+
+		ensureLoaded();
+
+		String contentText = fileContentMemo.getText();
+
+		origCaretPos = fileContentMemo.getCaretPosition();
+
+		String[] lines = contentText.split("\n");
+		StringBuilder result = new StringBuilder();
+
+		for (String line : lines) {
+			result.append(line);
+			result.append(line);
+			result.append("\n");
+		}
+
+		setFileContentAndPos(result, origCaretPos);
+	}
+
 	public TextEncoding getEncoding() {
 		return augFile.getEncoding();
 	}
