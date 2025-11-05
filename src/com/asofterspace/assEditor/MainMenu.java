@@ -644,118 +644,6 @@ public class MainMenu {
 
 		edit.addSeparator();
 
-		JMenuItem sortDocumentAlph = new JMenuItem("Sort Lines of Entire Document Alphabetically");
-		sortDocumentAlph.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				if (mainGUI.getCurrentTab() != null) {
-					mainGUI.getCurrentTab().sortDocument(SortOrder.ALPHABETICAL);
-				}
-			}
-		});
-		edit.add(sortDocumentAlph);
-
-		JMenuItem sortDocumentNum = new JMenuItem("Sort Lines of Entire Document Numerically");
-		sortDocumentNum.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				if (mainGUI.getCurrentTab() != null) {
-					mainGUI.getCurrentTab().sortDocument(SortOrder.NUMERICAL);
-				}
-			}
-		});
-		edit.add(sortDocumentNum);
-
-		JMenuItem reverseDocument = new JMenuItem("Reverse Lines of Entire Document");
-		reverseDocument.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				if (mainGUI.getCurrentTab() != null) {
-					mainGUI.getCurrentTab().sortDocument(SortOrder.REVERSE);
-				}
-			}
-		});
-		edit.add(reverseDocument);
-
-		JMenuItem randomizeDocument = new JMenuItem("Randomize Lines of Entire Document");
-		randomizeDocument.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				if (mainGUI.getCurrentTab() != null) {
-					mainGUI.getCurrentTab().sortDocument(SortOrder.RANDOM);
-				}
-			}
-		});
-		edit.add(randomizeDocument);
-
-		JMenuItem deleteDuplicateLinesAfterFirst = new JMenuItem("Delete Duplicated Lines in Entire Document (delete each instance after the first from the top)");
-		deleteDuplicateLinesAfterFirst.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				if (mainGUI.getCurrentTab() != null) {
-					mainGUI.getCurrentTab().deleteDuplicateLinesAfterFirst();
-				}
-			}
-		});
-		edit.add(deleteDuplicateLinesAfterFirst);
-
-		JMenuItem deleteDuplicateLines = new JMenuItem("Delete Duplicated Lines in Entire Document (delete each instance, also the first)");
-		deleteDuplicateLines.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				if (mainGUI.getCurrentTab() != null) {
-					mainGUI.getCurrentTab().deleteDuplicateLines();
-				}
-			}
-		});
-		edit.add(deleteDuplicateLines);
-
-		JMenuItem sortSelectedLinesAlph = new JMenuItem("Sort Selected Lines Alphabetically");
-		sortSelectedLinesAlph.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				if (mainGUI.getCurrentTab() != null) {
-					mainGUI.getCurrentTab().sortSelectedLines(SortOrder.ALPHABETICAL);
-				}
-			}
-		});
-		edit.add(sortSelectedLinesAlph);
-
-		JMenuItem sortSelectedLinesNum = new JMenuItem("Sort Selected Lines Numerically");
-		sortSelectedLinesNum.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				if (mainGUI.getCurrentTab() != null) {
-					mainGUI.getCurrentTab().sortSelectedLines(SortOrder.NUMERICAL);
-				}
-			}
-		});
-		edit.add(sortSelectedLinesNum);
-
-		JMenuItem reverseSelectedLines = new JMenuItem("Reverse Selected Lines");
-		reverseSelectedLines.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				if (mainGUI.getCurrentTab() != null) {
-					mainGUI.getCurrentTab().sortSelectedLines(SortOrder.REVERSE);
-				}
-			}
-		});
-		edit.add(reverseSelectedLines);
-
-		JMenuItem sortSelectedStringsAlph = new JMenuItem("Sort Selected Strings (\"foo\", \"bar\") Alphabetically");
-		sortSelectedStringsAlph.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				if (mainGUI.getCurrentTab() != null) {
-					mainGUI.getCurrentTab().sortSelectedStrings(SortOrder.ALPHABETICAL);
-				}
-			}
-		});
-		edit.add(sortSelectedStringsAlph);
-
-		edit.addSeparator();
-
 		JMenuItem search = new JMenuItem("Search");
 		search.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F, ActionEvent.CTRL_MASK));
 		search.addActionListener(new ActionListener() {
@@ -776,6 +664,124 @@ public class MainMenu {
 			});
 			edit.add(searchInWorkspace);
 		}
+
+
+		JMenu sort = new JMenu("Sort");
+		menu.add(sort);
+
+		JMenuItem sortDocumentAlph = new JMenuItem("Sort Lines of Entire Document Alphabetically");
+		sortDocumentAlph.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (mainGUI.getCurrentTab() != null) {
+					mainGUI.getCurrentTab().sortDocument(SortOrder.ALPHABETICAL);
+				}
+			}
+		});
+		sort.add(sortDocumentAlph);
+
+		JMenuItem sortDocumentNum = new JMenuItem("Sort Lines of Entire Document Numerically");
+		sortDocumentNum.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (mainGUI.getCurrentTab() != null) {
+					mainGUI.getCurrentTab().sortDocument(SortOrder.NUMERICAL);
+				}
+			}
+		});
+		sort.add(sortDocumentNum);
+
+		JMenuItem reverseDocument = new JMenuItem("Reverse Lines of Entire Document");
+		reverseDocument.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (mainGUI.getCurrentTab() != null) {
+					mainGUI.getCurrentTab().sortDocument(SortOrder.REVERSE);
+				}
+			}
+		});
+		sort.add(reverseDocument);
+
+		JMenuItem randomizeDocument = new JMenuItem("Randomize Lines of Entire Document");
+		randomizeDocument.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (mainGUI.getCurrentTab() != null) {
+					mainGUI.getCurrentTab().sortDocument(SortOrder.RANDOM);
+				}
+			}
+		});
+		sort.add(randomizeDocument);
+
+		sort.addSeparator();
+
+		JMenuItem deleteDuplicateLinesAfterFirst = new JMenuItem("Delete Duplicated Lines in Entire Document (delete each instance after the first from the top)");
+		deleteDuplicateLinesAfterFirst.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (mainGUI.getCurrentTab() != null) {
+					mainGUI.getCurrentTab().deleteDuplicateLinesAfterFirst();
+				}
+			}
+		});
+		sort.add(deleteDuplicateLinesAfterFirst);
+
+		JMenuItem deleteDuplicateLines = new JMenuItem("Delete Duplicated Lines in Entire Document (delete each instance, also the first)");
+		deleteDuplicateLines.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (mainGUI.getCurrentTab() != null) {
+					mainGUI.getCurrentTab().deleteDuplicateLines();
+				}
+			}
+		});
+		sort.add(deleteDuplicateLines);
+
+		sort.addSeparator();
+
+		JMenuItem sortSelectedLinesAlph = new JMenuItem("Sort Selected Lines Alphabetically");
+		sortSelectedLinesAlph.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (mainGUI.getCurrentTab() != null) {
+					mainGUI.getCurrentTab().sortSelectedLines(SortOrder.ALPHABETICAL);
+				}
+			}
+		});
+		sort.add(sortSelectedLinesAlph);
+
+		JMenuItem sortSelectedLinesNum = new JMenuItem("Sort Selected Lines Numerically");
+		sortSelectedLinesNum.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (mainGUI.getCurrentTab() != null) {
+					mainGUI.getCurrentTab().sortSelectedLines(SortOrder.NUMERICAL);
+				}
+			}
+		});
+		sort.add(sortSelectedLinesNum);
+
+		JMenuItem reverseSelectedLines = new JMenuItem("Reverse Selected Lines");
+		reverseSelectedLines.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (mainGUI.getCurrentTab() != null) {
+					mainGUI.getCurrentTab().sortSelectedLines(SortOrder.REVERSE);
+				}
+			}
+		});
+		sort.add(reverseSelectedLines);
+
+		JMenuItem sortSelectedStringsAlph = new JMenuItem("Sort Selected Strings (\"foo\", \"bar\") Alphabetically");
+		sortSelectedStringsAlph.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (mainGUI.getCurrentTab() != null) {
+					mainGUI.getCurrentTab().sortSelectedStrings(SortOrder.ALPHABETICAL);
+				}
+			}
+		});
+		sort.add(sortSelectedStringsAlph);
 
 
 		JMenu code = new JMenu("Code");
@@ -989,59 +995,65 @@ public class MainMenu {
 		});
 		unindentSelection.add(forceUnindentEightLevels);
 
-		JMenuItem commentUsingSlashSlash = new JMenuItem("Comment Out Selection Using //");
+		JMenu commentSelection = new JMenu("Comment Out Selection");
+		code.add(commentSelection);
+
+		JMenuItem commentUsingSlashSlash = new JMenuItem("Using //");
 		addTextModificationAction(commentUsingSlashSlash, new StringModifier() {
 			@Override
 			public String modify(String str) {
 				return comment(str, "//");
 			}
 		});
-		code.add(commentUsingSlashSlash);
+		commentSelection.add(commentUsingSlashSlash);
 
-		JMenuItem commentUsingHash = new JMenuItem("Comment Out Selection Using #");
+		JMenuItem commentUsingHash = new JMenuItem("Using #");
 		addTextModificationAction(commentUsingHash, new StringModifier() {
 			@Override
 			public String modify(String str) {
 				return comment(str, "#");
 			}
 		});
-		code.add(commentUsingHash);
+		commentSelection.add(commentUsingHash);
 
-		JMenuItem commentUsingDashDash = new JMenuItem("Comment Out Selection Using --");
+		JMenuItem commentUsingDashDash = new JMenuItem("Using --");
 		addTextModificationAction(commentUsingDashDash, new StringModifier() {
 			@Override
 			public String modify(String str) {
 				return comment(str, "--");
 			}
 		});
-		code.add(commentUsingDashDash);
+		commentSelection.add(commentUsingDashDash);
 
-		JMenuItem uncommentUsingSlashSlash = new JMenuItem("Un-Comment Selection Using //");
+		JMenu uncommentSelection = new JMenu("Un-Comment Selection");
+		code.add(uncommentSelection);
+
+		JMenuItem uncommentUsingSlashSlash = new JMenuItem("Using //");
 		addTextModificationAction(uncommentUsingSlashSlash, new StringModifier() {
 			@Override
 			public String modify(String str) {
 				return uncomment(str, "//");
 			}
 		});
-		code.add(uncommentUsingSlashSlash);
+		uncommentSelection.add(uncommentUsingSlashSlash);
 
-		JMenuItem uncommentUsingHash = new JMenuItem("Un-Comment Selection Using #");
+		JMenuItem uncommentUsingHash = new JMenuItem("Using #");
 		addTextModificationAction(uncommentUsingHash, new StringModifier() {
 			@Override
 			public String modify(String str) {
 				return uncomment(str, "#");
 			}
 		});
-		code.add(uncommentUsingHash);
+		uncommentSelection.add(uncommentUsingHash);
 
-		JMenuItem uncommentUsingDashDash = new JMenuItem("Un-Comment Selection Using --");
+		JMenuItem uncommentUsingDashDash = new JMenuItem("Using --");
 		addTextModificationAction(uncommentUsingDashDash, new StringModifier() {
 			@Override
 			public String modify(String str) {
 				return uncomment(str, "--");
 			}
 		});
-		code.add(uncommentUsingDashDash);
+		uncommentSelection.add(uncommentUsingDashDash);
 
 		code.addSeparator();
 
@@ -1462,8 +1474,8 @@ public class MainMenu {
 		});
 		stats.add(showAllStats);
 
-		JMenu encodings = new JMenu("Encodings");
-		menu.add(encodings);
+		JMenu format = new JMenu("Format");
+		menu.add(format);
 
 		usingUTF8WithoutBOM = new JCheckBoxMenuItem("Default UTF-8 (without BOM)");
 		usingUTF8WithoutBOM.addActionListener(new ActionListener() {
@@ -1474,7 +1486,7 @@ public class MainMenu {
 			}
 		});
 		usingUTF8WithoutBOM.setSelected(false);
-		encodings.add(usingUTF8WithoutBOM);
+		format.add(usingUTF8WithoutBOM);
 
 		usingUTF8WithBOM = new JCheckBoxMenuItem("UTF-8 with BOM");
 		usingUTF8WithBOM.addActionListener(new ActionListener() {
@@ -1485,7 +1497,7 @@ public class MainMenu {
 			}
 		});
 		usingUTF8WithBOM.setSelected(false);
-		encodings.add(usingUTF8WithBOM);
+		format.add(usingUTF8WithBOM);
 
 		usingISOLatin1 = new JCheckBoxMenuItem("ISO-Latin-1");
 		usingISOLatin1.addActionListener(new ActionListener() {
@@ -1496,10 +1508,10 @@ public class MainMenu {
 			}
 		});
 		usingISOLatin1.setSelected(false);
-		encodings.add(usingISOLatin1);
+		format.add(usingISOLatin1);
 
 		if (!standalone) {
-			encodings.addSeparator();
+			format.addSeparator();
 
 			JMenuItem allUsingUTF8WithoutBOM = new JMenuItem("Set All Files to Default UTF-8 (without BOM)");
 			allUsingUTF8WithoutBOM.addActionListener(new ActionListener() {
@@ -1511,7 +1523,7 @@ public class MainMenu {
 					setEncoding(TextEncoding.UTF8_WITHOUT_BOM);
 				}
 			});
-			encodings.add(allUsingUTF8WithoutBOM);
+			format.add(allUsingUTF8WithoutBOM);
 
 			JMenuItem allUsingUTF8WithBOM = new JMenuItem("Set All Files to UTF-8 with BOM");
 			allUsingUTF8WithBOM.addActionListener(new ActionListener() {
@@ -1523,7 +1535,7 @@ public class MainMenu {
 					setEncoding(TextEncoding.UTF8_WITH_BOM);
 				}
 			});
-			encodings.add(allUsingUTF8WithBOM);
+			format.add(allUsingUTF8WithBOM);
 
 			JMenuItem allUsingISOLatin1 = new JMenuItem("Set All Files to ISO-Latin-1");
 			allUsingISOLatin1.addActionListener(new ActionListener() {
@@ -1535,10 +1547,10 @@ public class MainMenu {
 					setEncoding(TextEncoding.ISO_LATIN_1);
 				}
 			});
-			encodings.add(allUsingISOLatin1);
+			format.add(allUsingISOLatin1);
 		}
 
-		encodings.addSeparator();
+		format.addSeparator();
 
 		JMenuItem transferLEstoWindows = new JMenuItem("Transfer Line Endings to Windows (CR+LF / \\r\\n)");
 		transferLEstoWindows.addActionListener(new ActionListener() {
@@ -1549,7 +1561,7 @@ public class MainMenu {
 				}
 			}
 		});
-		encodings.add(transferLEstoWindows);
+		format.add(transferLEstoWindows);
 
 		JMenuItem transferLEstoLinux = new JMenuItem("Transfer Line Endings to Linux / OSX (LF / \\n)");
 		transferLEstoLinux.addActionListener(new ActionListener() {
@@ -1560,7 +1572,7 @@ public class MainMenu {
 				}
 			}
 		});
-		encodings.add(transferLEstoLinux);
+		format.add(transferLEstoLinux);
 
 		JMenuItem transferLEstoMacOS = new JMenuItem("Transfer Line Endings to Legacy MacOS (CR / \\r)");
 		transferLEstoMacOS.addActionListener(new ActionListener() {
@@ -1571,9 +1583,9 @@ public class MainMenu {
 				}
 			}
 		});
-		encodings.add(transferLEstoMacOS);
+		format.add(transferLEstoMacOS);
 
-		encodings.addSeparator();
+		format.addSeparator();
 
 		JMenuItem showLineEndings = new JMenuItem("Show Current Line Endings");
 		showLineEndings.addActionListener(new ActionListener() {
@@ -1595,15 +1607,15 @@ public class MainMenu {
 				}
 			}
 		});
-		encodings.add(showLineEndings);
+		format.add(showLineEndings);
 
-		encodings.addSeparator();
+		format.addSeparator();
 
-		addFixThingsButton(encodings);
+		addFixThingsButton(format);
 
 
-		JMenu conversions = new JMenu("Conversions");
-		menu.add(conversions);
+		JMenu encodings = new JMenu("Encodings");
+		menu.add(encodings);
 
 		JMenuItem base64enc = new JMenuItem("Base 64 encode");
 		addTextModificationAction(base64enc, new StringModifier() {
@@ -1612,7 +1624,7 @@ public class MainMenu {
 				return Base64Encoder.encode(str);
 			}
 		});
-		conversions.add(base64enc);
+		encodings.add(base64enc);
 
 		JMenuItem base64dec = new JMenuItem("Base 64 decode");
 		addTextModificationAction(base64dec, new StringModifier() {
@@ -1621,9 +1633,9 @@ public class MainMenu {
 				return Base64Decoder.decode(str);
 			}
 		});
-		conversions.add(base64dec);
+		encodings.add(base64dec);
 
-		conversions.addSeparator();
+		encodings.addSeparator();
 
 		JMenuItem asciiToNum = new JMenuItem("ASCII to numbers");
 		addTextModificationAction(asciiToNum, new StringModifier() {
@@ -1632,7 +1644,7 @@ public class MainMenu {
 				return NumericalEncoder.encode(str);
 			}
 		});
-		conversions.add(asciiToNum);
+		encodings.add(asciiToNum);
 
 		JMenuItem numToAscii = new JMenuItem("Numbers to ASCII");
 		addTextModificationAction(numToAscii, new StringModifier() {
@@ -1641,9 +1653,9 @@ public class MainMenu {
 				return NumericalDecoder.decode(str);
 			}
 		});
-		conversions.add(numToAscii);
+		encodings.add(numToAscii);
 
-		conversions.addSeparator();
+		encodings.addSeparator();
 
 		JMenuItem hexenc = new JMenuItem("Hex encode text");
 		addTextModificationAction(hexenc, new StringModifier() {
@@ -1652,7 +1664,7 @@ public class MainMenu {
 				return HexEncoder.encode(str);
 			}
 		});
-		conversions.add(hexenc);
+		encodings.add(hexenc);
 
 		JMenuItem hexdec = new JMenuItem("Hex decode text");
 		addTextModificationAction(hexdec, new StringModifier() {
@@ -1661,7 +1673,7 @@ public class MainMenu {
 				return HexDecoder.decode(str);
 			}
 		});
-		conversions.add(hexdec);
+		encodings.add(hexdec);
 
 		JMenuItem hexencnum = new JMenuItem("Hex encode number");
 		addTextModificationAction(hexencnum, new StringModifier() {
@@ -1670,7 +1682,7 @@ public class MainMenu {
 				return HexEncoder.encodeNumberToHex(StrUtils.strToInt(str));
 			}
 		});
-		conversions.add(hexencnum);
+		encodings.add(hexencnum);
 
 		JMenuItem hexdecnum = new JMenuItem("Hex decode number");
 		addTextModificationAction(hexdecnum, new StringModifier() {
@@ -1679,9 +1691,9 @@ public class MainMenu {
 				return "" + HexDecoder.decodeNumber(str);
 			}
 		});
-		conversions.add(hexdecnum);
+		encodings.add(hexdecnum);
 
-		conversions.addSeparator();
+		encodings.addSeparator();
 
 		JMenuItem binaryenc = new JMenuItem("Binary encode");
 		addTextModificationAction(binaryenc, new StringModifier() {
@@ -1690,7 +1702,7 @@ public class MainMenu {
 				return BinaryEncoder.encode(str);
 			}
 		});
-		conversions.add(binaryenc);
+		encodings.add(binaryenc);
 
 		JMenuItem binarydec = new JMenuItem("Binary decode");
 		addTextModificationAction(binarydec, new StringModifier() {
@@ -1699,9 +1711,9 @@ public class MainMenu {
 				return BinaryDecoder.decode(str);
 			}
 		});
-		conversions.add(binarydec);
+		encodings.add(binarydec);
 
-		conversions.addSeparator();
+		encodings.addSeparator();
 
 		JMenuItem utf8enc = new JMenuItem("UTF8 encode");
 		addTextModificationAction(utf8enc, new StringModifier() {
@@ -1710,7 +1722,7 @@ public class MainMenu {
 				return Utf8Encoder.encode(str);
 			}
 		});
-		conversions.add(utf8enc);
+		encodings.add(utf8enc);
 
 		JMenuItem utf8dec = new JMenuItem("UTF8 decode");
 		addTextModificationAction(utf8dec, new StringModifier() {
@@ -1719,9 +1731,9 @@ public class MainMenu {
 				return Utf8Decoder.decode(str);
 			}
 		});
-		conversions.add(utf8dec);
+		encodings.add(utf8dec);
 
-		conversions.addSeparator();
+		encodings.addSeparator();
 
 		JMenuItem xmlenc = new JMenuItem("XML escape");
 		addTextModificationAction(xmlenc, new StringModifier() {
@@ -1730,7 +1742,7 @@ public class MainMenu {
 				return XML.escapeXMLstr(str);
 			}
 		});
-		conversions.add(xmlenc);
+		encodings.add(xmlenc);
 
 		JMenuItem xmldec = new JMenuItem("XML unescape");
 		addTextModificationAction(xmldec, new StringModifier() {
@@ -1739,7 +1751,7 @@ public class MainMenu {
 				return XML.unescapeXMLstr(str);
 			}
 		});
-		conversions.add(xmldec);
+		encodings.add(xmldec);
 
 		JMenuItem removeXmlTags2 = new JMenuItem("Remove XML tags");
 		addTextModificationAction(removeXmlTags2, new StringModifier() {
@@ -1748,9 +1760,9 @@ public class MainMenu {
 				return XML.removeXmlTagsFromText(str);
 			}
 		});
-		conversions.add(removeXmlTags2);
+		encodings.add(removeXmlTags2);
 
-		conversions.addSeparator();
+		encodings.addSeparator();
 
 		JMenuItem htmlenc = new JMenuItem("HTML escape");
 		addTextModificationAction(htmlenc, new StringModifier() {
@@ -1759,7 +1771,7 @@ public class MainMenu {
 				return HtmlEncoder.encode(str);
 			}
 		});
-		conversions.add(htmlenc);
+		encodings.add(htmlenc);
 
 		JMenuItem htmldec = new JMenuItem("HTML unescape");
 		addTextModificationAction(htmldec, new StringModifier() {
@@ -1768,7 +1780,7 @@ public class MainMenu {
 				return HtmlDecoder.decode(str);
 			}
 		});
-		conversions.add(htmldec);
+		encodings.add(htmldec);
 
 		JMenuItem removeHtmlTags = new JMenuItem("Remove HTML tags");
 		addTextModificationAction(removeHtmlTags, new StringModifier() {
@@ -1777,9 +1789,9 @@ public class MainMenu {
 				return HTML.removeHtmlTagsFromText(str);
 			}
 		});
-		conversions.add(removeHtmlTags);
+		encodings.add(removeHtmlTags);
 
-		conversions.addSeparator();
+		encodings.addSeparator();
 
 		JMenuItem urlenc = new JMenuItem("URL encode");
 		addTextModificationAction(urlenc, new StringModifier() {
@@ -1788,7 +1800,7 @@ public class MainMenu {
 				return UrlEncoder.encode(str);
 			}
 		});
-		conversions.add(urlenc);
+		encodings.add(urlenc);
 
 		JMenuItem urldec = new JMenuItem("URL decode");
 		addTextModificationAction(urldec, new StringModifier() {
@@ -1797,9 +1809,9 @@ public class MainMenu {
 				return UrlDecoder.decode(str);
 			}
 		});
-		conversions.add(urldec);
+		encodings.add(urldec);
 
-		conversions.addSeparator();
+		encodings.addSeparator();
 
 		JMenuItem morseenc = new JMenuItem("Morse encode");
 		addTextModificationAction(morseenc, new StringModifier() {
@@ -1808,7 +1820,7 @@ public class MainMenu {
 				return MorseEncoder.encode(str);
 			}
 		});
-		conversions.add(morseenc);
+		encodings.add(morseenc);
 
 		JMenuItem morsedec = new JMenuItem("Morse decode");
 		addTextModificationAction(morsedec, new StringModifier() {
@@ -1817,9 +1829,9 @@ public class MainMenu {
 				return MorseDecoder.decode(str);
 			}
 		});
-		conversions.add(morsedec);
+		encodings.add(morsedec);
 
-		conversions.addSeparator();
+		encodings.addSeparator();
 
 		JMenuItem romanNumeralenc = new JMenuItem("Roman Numeral encode");
 		addTextModificationAction(romanNumeralenc, new StringModifier() {
@@ -1828,7 +1840,7 @@ public class MainMenu {
 				return RomanNumeralEncoder.encode(str);
 			}
 		});
-		conversions.add(romanNumeralenc);
+		encodings.add(romanNumeralenc);
 
 		JMenuItem romanNumeraldec = new JMenuItem("Roman Numeral decode");
 		addTextModificationAction(romanNumeraldec, new StringModifier() {
@@ -1837,41 +1849,10 @@ public class MainMenu {
 				return RomanNumeralDecoder.decode(str);
 			}
 		});
-		conversions.add(romanNumeraldec);
+		encodings.add(romanNumeraldec);
 
-		conversions.addSeparator();
-
-		JMenuItem uuidJavaToEcore = new JMenuItem("Java UUID to Ecore");
-		addTextModificationAction(uuidJavaToEcore, new StringModifier() {
-			@Override
-			public String modify(String str) {
-				return UuidEncoderDecoder.convertJavaUUIDtoEcore(str);
-			}
-		});
-		conversions.add(uuidJavaToEcore);
-
-		JMenuItem uuidEcoreToJava = new JMenuItem("Ecore UUID to Java");
-		addTextModificationAction(uuidEcoreToJava, new StringModifier() {
-			@Override
-			public String modify(String str) {
-				return UuidEncoderDecoder.convertEcoreUUIDtoJava(str);
-			}
-		});
-		conversions.add(uuidEcoreToJava);
-
-		JMenuItem generateUuid = new JMenuItem("Generate Java UUID");
-		generateUuid.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				AugFileTab tab = mainGUI.getCurrentTab();
-				if (tab != null) {
-					tab.insertText(UuidEncoderDecoder.generateJavaUUID(), 0);
-				}
-			}
-		});
-		conversions.add(generateUuid);
-
-		conversions.addSeparator();
+		JMenu conversions = new JMenu("Conversions");
+		menu.add(conversions);
 
 		JMenuItem prettyJSON = new JMenuItem("JSON prettify");
 		addTextModificationAction(prettyJSON, new StringModifier() {
@@ -1972,6 +1953,36 @@ public class MainMenu {
 			}
 		});
 		conversions.add(javaStrEsc);
+
+		JMenuItem uuidJavaToEcore = new JMenuItem("Java UUID to Ecore");
+		addTextModificationAction(uuidJavaToEcore, new StringModifier() {
+			@Override
+			public String modify(String str) {
+				return UuidEncoderDecoder.convertJavaUUIDtoEcore(str);
+			}
+		});
+		conversions.add(uuidJavaToEcore);
+
+		JMenuItem uuidEcoreToJava = new JMenuItem("Ecore UUID to Java");
+		addTextModificationAction(uuidEcoreToJava, new StringModifier() {
+			@Override
+			public String modify(String str) {
+				return UuidEncoderDecoder.convertEcoreUUIDtoJava(str);
+			}
+		});
+		conversions.add(uuidEcoreToJava);
+
+		JMenuItem generateUuid = new JMenuItem("Generate Java UUID");
+		generateUuid.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				AugFileTab tab = mainGUI.getCurrentTab();
+				if (tab != null) {
+					tab.insertText(UuidEncoderDecoder.generateJavaUUID(), 0);
+				}
+			}
+		});
+		conversions.add(generateUuid);
 
 		conversions.addSeparator();
 
