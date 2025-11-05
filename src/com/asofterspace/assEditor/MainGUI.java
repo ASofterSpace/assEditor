@@ -424,6 +424,7 @@ public class MainGUI extends MainWindow {
 
 		fileListComponent = new JList<AugFileTab>(augFileTabArray);
 		fileTreeComponent = new FileTree(fileTreeModel);
+		fileTreeComponent.setCellRenderer(new FileTreeCellRenderer());
 		fileTreeEditField = new JTextField();
 		TreeCellEditor fileTreeEditor = new DefaultCellEditor(fileTreeEditField);
 		fileTreeComponent.setEditable(true);
