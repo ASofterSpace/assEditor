@@ -15,6 +15,8 @@ import com.asofterspace.toolbox.coders.HexDecoder;
 import com.asofterspace.toolbox.coders.HexEncoder;
 import com.asofterspace.toolbox.coders.HtmlDecoder;
 import com.asofterspace.toolbox.coders.HtmlEncoder;
+import com.asofterspace.toolbox.coders.JwtTokenDecoder;
+import com.asofterspace.toolbox.coders.JwtTokenEncoder;
 import com.asofterspace.toolbox.coders.MorseDecoder;
 import com.asofterspace.toolbox.coders.MorseEncoder;
 import com.asofterspace.toolbox.coders.NumericalDecoder;
@@ -2015,6 +2017,26 @@ public class MainMenu {
 			}
 		});
 		conversions.add(cdmUnesc);
+
+		conversions.addSeparator();
+
+		JMenuItem encJWT = new JMenuItem("Pack into JWT token");
+		addTextModificationAction(encJWT, new StringModifier() {
+			@Override
+			public String modify(String str) {
+				return JwtTokenEncoder.encode(str);
+			}
+		});
+		conversions.add(encJWT);
+
+		JMenuItem decJWT = new JMenuItem("Extract from JWT token");
+		addTextModificationAction(decJWT, new StringModifier() {
+			@Override
+			public String modify(String str) {
+				return JwtTokenDecoder.decode(str);
+			}
+		});
+		conversions.add(decJWT);
 
 		conversions.addSeparator();
 
