@@ -27,8 +27,8 @@ import javax.swing.SwingUtilities;
 public class AssEditor {
 
 	public final static String PROGRAM_TITLE = "A Softer Space Editor";
-	public final static String VERSION_NUMBER = "0.0.8.0(" + Utils.TOOLBOX_VERSION_NUMBER + ")";
-	public final static String VERSION_DATE = "18. December 2018 - 5. November 2025";
+	public final static String VERSION_NUMBER = "0.0.8.1(" + Utils.TOOLBOX_VERSION_NUMBER + ")";
+	public final static String VERSION_DATE = "18. December 2018 - 9. February 2026";
 
 	private final static String CONFIG_KEY_BACKUP_SETTINGS_NUM = "backupSettingsNum";
 	private final static String SETTINGS_FILE_NAME = "settings";

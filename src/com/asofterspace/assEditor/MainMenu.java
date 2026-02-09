@@ -1297,7 +1297,64 @@ public class MainMenu {
 
 		operations.addSeparator();
 
-		JMenuItem duplicateEachLine = new JMenuItem("Duplicate Each Line (transforns xyz into xyzxyz)");
+		JMenuItem curItem = new JMenuItem("Perform sums across entire document (foo4+5bar turns into foo9bar)");
+		curItem.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (mainGUI.getCurrentTab() != null) {
+					mainGUI.getCurrentTab().performMathOps("+");
+				}
+			}
+		});
+		operations.add(curItem);
+
+		curItem = new JMenuItem("Perform minus operations across entire document (foo5-4bar turns into foo1bar)");
+		curItem.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (mainGUI.getCurrentTab() != null) {
+					mainGUI.getCurrentTab().performMathOps("+");
+				}
+			}
+		});
+		operations.add(curItem);
+
+		curItem = new JMenuItem("Perform factors across entire document (foo4*5bar turns into foo20bar)");
+		curItem.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (mainGUI.getCurrentTab() != null) {
+					mainGUI.getCurrentTab().performMathOps("+");
+				}
+			}
+		});
+		operations.add(curItem);
+
+		curItem = new JMenuItem("Perform divisions across entire document (foo4+5bar turns into foo9bar)");
+		curItem.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (mainGUI.getCurrentTab() != null) {
+					mainGUI.getCurrentTab().performMathOps("/");
+				}
+			}
+		});
+		operations.add(curItem);
+
+		curItem = new JMenuItem("Perform any math ops across entire document (so +, -, * and /)");
+		curItem.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (mainGUI.getCurrentTab() != null) {
+					mainGUI.getCurrentTab().performMathOps(null);
+				}
+			}
+		});
+		operations.add(curItem);
+
+		operations.addSeparator();
+
+		JMenuItem duplicateEachLine = new JMenuItem("Duplicate Each Line (transforms xyz into xyzxyz)");
 		duplicateEachLine.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {

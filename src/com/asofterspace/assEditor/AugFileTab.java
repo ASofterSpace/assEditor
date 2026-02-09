@@ -2057,6 +2057,19 @@ public class AugFileTab implements FileTab {
 		setFileContentAndPos(contentText, origCaretPos);
 	}
 
+	public void performMathOps(String ops) {
+
+		ensureLoaded();
+
+		String contentText = fileContentMemo.getText();
+
+		origCaretPos = fileContentMemo.getCaretPosition();
+
+		contentText = StrUtils.performMathOps(contentText, ops);
+
+		setFileContentAndPos(contentText, origCaretPos);
+	}
+
 	public void removeUntilFirstOccurrence(String needle) {
 
 		ensureLoaded();
