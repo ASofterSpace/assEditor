@@ -35,6 +35,7 @@ import com.asofterspace.toolbox.io.File;
 import com.asofterspace.toolbox.io.HTML;
 import com.asofterspace.toolbox.io.JSON;
 import com.asofterspace.toolbox.io.JsonParseException;
+import com.asofterspace.toolbox.io.TextFile;
 import com.asofterspace.toolbox.io.XML;
 import com.asofterspace.toolbox.utils.SortOrder;
 import com.asofterspace.toolbox.utils.SortUtils;
@@ -51,7 +52,9 @@ import java.awt.Font;
 import java.awt.GraphicsEnvironment;
 import java.nio.file.Files;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.swing.JCheckBoxMenuItem;
@@ -1442,22 +1445,50 @@ public class MainMenu {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (mainGUI.getCurrentTab() != null) {
+					StringBuilder fontFileBuilder = new StringBuilder();
+					fontFileBuilder.append("<html>");
+					fontFileBuilder.append("<head>");
+					fontFileBuilder.append("<style>");
+					fontFileBuilder.append("div { font-size: 175%; padding-bottom: 16pt; }");
+					fontFileBuilder.append("</style>");
+					fontFileBuilder.append("</head>");
+					fontFileBuilder.append("<body>");
+
 					GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
 					Font[] fonts = ge.getAllFonts();
 					List<String> fontList = new ArrayList<>();
+					Map<String, Font> fontMap = new HashMap<>();
 					for (Font font : fonts) {
 						String fontStr = font.toString();
 						if (!fontList.contains(fontStr)) {
 							fontList.add(fontStr);
+							fontMap.put(fontStr, font);
 						}
 					}
 					fontList = SortUtils.sort(fontList, SortOrder.ALPHABETICAL_IGNORE_UMLAUTS);
+
 					StringBuilder fontBuilder = new StringBuilder();
+					fontBuilder.append("Overview:\n");
+					TextFile fontFile = new TextFile("fontlist.htm");
+					fontBuilder.append("file://" + UrlEncoder.encodePath(fontFile.getCanonicalFilename()) + "\n");
 					for (String fontName : fontList) {
 						fontBuilder.append("\n");
 						fontBuilder.append(fontName);
+
+						Font font = fontMap.get(fontName);
+						if (font != null) {
+							fontFileBuilder.append("<div style=\"font-family: '" + font.getFamily() + "'\">");
+							fontFileBuilder.append(font.getFamily());
+							fontFileBuilder.append(":<br>\nABCDEFGHIJKLMNOPQRSTUVWXYZÄÖÜ<br>\n" +
+								"abcdefghijklmnopqrstuvwxyzäöüß\n0123456789+#?!()");
+							fontFileBuilder.append("</div>");
+						}
 					}
 					mainGUI.getCurrentTab().setContent(mainGUI.getCurrentTab().getContent() + fontBuilder.toString());
+
+					fontFileBuilder.append("</body>");
+					fontFileBuilder.append("</html>");
+					fontFile.saveContent(fontFileBuilder.toString());
 				}
 			}
 		});
