@@ -1446,14 +1446,24 @@ public class MainMenu {
 			public void actionPerformed(ActionEvent e) {
 				if (mainGUI.getCurrentTab() != null) {
 					StringBuilder fontFileBuilder = new StringBuilder();
-					fontFileBuilder.append("<html>");
-					fontFileBuilder.append("<head>");
-					fontFileBuilder.append("<style>");
-					fontFileBuilder.append("div { font-size: 175%; padding-bottom: 16pt; }");
-					fontFileBuilder.append("</style>");
-					fontFileBuilder.append("</head>");
-					fontFileBuilder.append("<body>");
-
+					fontFileBuilder.append("<html>\n");
+					fontFileBuilder.append("<head>\n");
+					fontFileBuilder.append("<style>\n");
+					fontFileBuilder.append("div { font-size: 175%; padding-bottom: 16pt; }\n");
+					fontFileBuilder.append("a { cursor: pointer; }\n");
+					fontFileBuilder.append("</style>\n");
+					fontFileBuilder.append("<script>\n");
+					fontFileBuilder.append("window.show = function(idArr) {\n");
+					fontFileBuilder.append("  for (var i = 0; i < idArr.length; i++) {\n");
+					fontFileBuilder.append("    document.getElementById('hidden_' + idArr[i]).style.display = 'block';\n");
+					fontFileBuilder.append("  }\n");
+					fontFileBuilder.append("};\n");
+					fontFileBuilder.append("window.hideLabel = function(id) {\n");
+					fontFileBuilder.append("  document.getElementById('label_' + id).style.display = 'none';\n");
+					fontFileBuilder.append("};\n");
+					fontFileBuilder.append("</script>\n");
+					fontFileBuilder.append("</head>\n");
+					fontFileBuilder.append("<body>\n");
 					GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
 					Font[] fonts = ge.getAllFonts();
 					List<String> fontList = new ArrayList<>();
@@ -1471,17 +1481,48 @@ public class MainMenu {
 					fontBuilder.append("Overview:\n");
 					TextFile fontFile = new TextFile("fontlist.htm");
 					fontBuilder.append("file://" + UrlEncoder.encodePath(fontFile.getCanonicalFilename()) + "\n");
+					String lastFamily = null;
+					String lastFamilyStart = null;
+					List<Integer> hiddenSubFontIds = new ArrayList<>();
+					int idCounter = 0;
+
 					for (String fontName : fontList) {
+						idCounter++;
 						fontBuilder.append("\n");
 						fontBuilder.append(fontName);
 
 						Font font = fontMap.get(fontName);
 						if (font != null) {
-							fontFileBuilder.append("<div style=\"font-family: '" + font.getFamily() + "'\">");
-							fontFileBuilder.append(font.getFamily());
-							fontFileBuilder.append(":<br>\nABCDEFGHIJKLMNOPQRSTUVWXYZÄÖÜ<br>\n" +
-								"abcdefghijklmnopqrstuvwxyzäöüß\n0123456789+#?!()");
-							fontFileBuilder.append("</div>");
+							String curFamily = font.getFamily();
+							if (!curFamily.equals(lastFamily)) {
+								lastFamily = curFamily;
+								String curFamilyStart = curFamily.substring(0, Math.min(curFamily.length(), 12));
+								if (!curFamilyStart.equals(lastFamilyStart)) {
+									if (hiddenSubFontIds.size() > 0) {
+										fontFileBuilder.append("<div id=\"label_" + idCounter + "\" style='font-style: italic; font-size: 125%;'>");
+										fontFileBuilder.append("<a onclick='hideLabel(" + idCounter + "); show([");
+										String sep = "";
+										for (Integer curId : hiddenSubFontIds) {
+											fontFileBuilder.append(sep);
+											sep = ",";
+											fontFileBuilder.append(curId);
+										}
+										fontFileBuilder.append("])'>(show " + hiddenSubFontIds.size() + " sub fonts hidden above)</a>");
+										fontFileBuilder.append("</div>");
+										hiddenSubFontIds = new ArrayList<>();
+									}
+									lastFamilyStart = curFamilyStart;
+									fontFileBuilder.append("<div style=\"");
+								} else {
+									fontFileBuilder.append("<div id=\"hidden_" + idCounter + "\" style=\"display: none; ");
+									hiddenSubFontIds.add(idCounter);
+								}
+								fontFileBuilder.append("font-family: '" + curFamily + "'\">");
+								fontFileBuilder.append(curFamily);
+								fontFileBuilder.append(":<br>\nABCDEFGHIJKLMNOPQRSTUVWXYZÄÖÜ<br>\n" +
+									"abcdefghijklmnopqrstuvwxyzäöüß\n0123456789+#?!()");
+								fontFileBuilder.append("</div>");
+							}
 						}
 					}
 					mainGUI.getCurrentTab().setContent(mainGUI.getCurrentTab().getContent() + fontBuilder.toString());
