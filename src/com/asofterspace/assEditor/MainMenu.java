@@ -11,6 +11,8 @@ import com.asofterspace.toolbox.coders.Base64Encoder;
 import com.asofterspace.toolbox.coders.BinaryDecoder;
 import com.asofterspace.toolbox.coders.BinaryEncoder;
 import com.asofterspace.toolbox.coders.EgsccPrettifier;
+import com.asofterspace.toolbox.coders.EmailDecoder;
+import com.asofterspace.toolbox.coders.EmailEncoder;
 import com.asofterspace.toolbox.coders.HexDecoder;
 import com.asofterspace.toolbox.coders.HexEncoder;
 import com.asofterspace.toolbox.coders.HtmlDecoder;
@@ -1941,6 +1943,26 @@ public class MainMenu {
 			}
 		});
 		encodings.add(urldec);
+
+		encodings.addSeparator();
+
+		JMenuItem emailenc = new JMenuItem("eMail encode");
+		addTextModificationAction(urlenc, new StringModifier() {
+			@Override
+			public String modify(String str) {
+				return EmailEncoder.encode(str);
+			}
+		});
+		encodings.add(emailenc);
+
+		JMenuItem emaildec = new JMenuItem("eMail decode");
+		addTextModificationAction(urldec, new StringModifier() {
+			@Override
+			public String modify(String str) {
+				return EmailDecoder.decode(str);
+			}
+		});
+		encodings.add(emaildec);
 
 		encodings.addSeparator();
 
