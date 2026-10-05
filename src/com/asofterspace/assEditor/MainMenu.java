@@ -2487,6 +2487,15 @@ public class MainMenu {
 		});
 		window.add(toggleFileArea);
 
+		JMenuItem toggleEditMode = new JMenuItem("Toggle Edit Mode (Horizontal Scroll)");
+		toggleEditMode.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				mainGUI.toggleEditMode();
+			}
+		});
+		window.add(toggleEditMode);
+
 		window.addSeparator();
 
 		showFilesInTreeItem = new JCheckBoxMenuItem("Show Files as Tree");

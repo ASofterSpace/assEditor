@@ -1291,6 +1291,12 @@ public class MainGUI extends MainWindow {
 		updateShowFilesInTree();
 	}
 
+	public void toggleEditMode() {
+		editmode = !editmode;
+
+		reloadAllAugFileTabs();
+	}
+
 	public void setOrUnsetCurrentCodeLanguage(CodeLanguage codeKind) {
 
 		currentlyShownTab.setCodeLanguageAndCreateHighlighter(codeKind);
@@ -2095,8 +2101,13 @@ public class MainGUI extends MainWindow {
 
 	public void reloadAllAugFileTabs() {
 
+		String lastVisibleFilePath = null;
+
 		if (augFileTabs != null) {
 			for (AugFileTab augFileTab : augFileTabs) {
+				if (augFileTab.isVisible()) {
+					lastVisibleFilePath = augFileTab.getFilePath();
+				}
 				augFileTab.remove();
 			}
 		}
@@ -2105,11 +2116,21 @@ public class MainGUI extends MainWindow {
 		augFileTabs = new ArrayList<>();
 
 		List<AugFile> files = augFileCtrl.getFiles();
+		AugFileTab tabToShow = null;
 		for (AugFile file : files) {
 			file.refreshContent();
 			AugFileTab newTab = new AugFileTab(mainPanelRight, file, this, augFileCtrl, standalone, editmode);
 			newTab.setDefaultIndent(defaultIndentationStr);
 			augFileTabs.add(newTab);
+
+			// better show any than none at all
+			if (tabToShow == null) {
+				tabToShow = newTab;
+			}
+			// but if we are looking for a particular tab, show exactly that one!
+			if ((lastVisibleFilePath != null) && (lastVisibleFilePath.equals(newTab.getFilePath()))) {
+				tabToShow = newTab;
+			}
 		}
 
 		regenerateAugFileList();
@@ -2117,6 +2138,11 @@ public class MainGUI extends MainWindow {
 		reEnableDisableMenuItems();
 
 		// refreshTitleBar();
+
+		if (tabToShow != null) {
+			tabToShow.show();
+			setCurrentlyShownTab(tabToShow);
+		}
 	}
 
 	/**

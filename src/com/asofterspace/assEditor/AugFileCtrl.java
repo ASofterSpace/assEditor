@@ -39,14 +39,10 @@ public class AugFileCtrl {
 
 	private Record activeWorkspace;
 
-	private boolean editmode;
-
 
 	public AugFileCtrl(ConfigFile configuration, boolean standalone, boolean editmode, List<String> openFilenames) {
 
 		this.configuration = configuration;
-
-		this.editmode = editmode;
 
 		String activeWorkspaceName = configuration.getValue(CONF_ACTIVE_WORKSPACE);
 

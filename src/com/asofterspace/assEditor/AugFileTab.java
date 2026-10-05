@@ -565,6 +565,13 @@ public class AugFileTab implements FileTab {
 		resizeNameLabel();
 	}
 
+	public boolean isVisible() {
+		if (visualPanel == null) {
+			return false;
+		}
+		return visualPanel.isVisible();
+	}
+
 	public void hide() {
 
 		if (visualPanel != null) {
