@@ -2133,16 +2133,16 @@ public class MainGUI extends MainWindow {
 			}
 		}
 
+		if (tabToShow != null) {
+			tabToShow.show();
+			setCurrentlyShownTab(tabToShow);
+		}
+
 		regenerateAugFileList();
 
 		reEnableDisableMenuItems();
 
 		// refreshTitleBar();
-
-		if (tabToShow != null) {
-			tabToShow.show();
-			setCurrentlyShownTab(tabToShow);
-		}
 	}
 
 	/**
